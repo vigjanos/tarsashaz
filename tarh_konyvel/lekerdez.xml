@@ -1,0 +1,680 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <report id="report_lekerdez" model="tarh.havijel.haz" string="nyomtatás képernyőre"
+                name="tarh_konyvel.rep_haz_lekerd" file="tarh_konyvel.lekerdez"
+                report_type="qweb-html"/>
+
+        <report id="report_lekerdez2" model="tarh.havijel.haz" string="nyomtatás pdf"
+                name="tarh_konyvel.rep_haz_lekerd" file="tarh_konyvel.lekerdez"
+                report_type="qweb-pdf"/>
+
+
+        <template id="rep_haz_lekerd">
+            <t t-call="report.external_layout">
+                <t t-call="report.html_container">
+                    <div class="page">
+
+
+                        <h4>
+                            A
+                            <span t-field="docs[0].th_szamlatul"/>
+                            <em>
+                                <strong>
+                                    <span t-field="docs[0].kezdatum"/>
+                                    és
+                                    <span t-field="docs[0].vegdatum"/>
+                                </strong>
+                            </em>
+                            időpontok közötti bankszámla forgalma
+                        </h4>
+
+
+                        <t t-set="lakaskassza" t-value="0"/>
+                        <t t-set="megtakaritasi" t-value="0"/>
+                        <t t-set="felujitasi" t-value="0"/>
+                        <t t-set="penztar" t-value="0"/>
+
+                        <span t-foreach="docs.sor_id" t-as="sor">
+                            <span t-if="sor.bankszamla_thaz.state=='lak_kassza'">
+                                <t t-set="lakaskassza" t-value="1"/>
+                            </span>
+                            <span t-if="sor.bankszamla_thaz.state=='bank_megtak'">
+                                <t t-set="megtakaritasi" t-value="1"/>
+                            </span>
+                            <span t-if="sor.bankszamla_thaz.state=='bank_feluj'">
+                                <t t-set="felujitasi" t-value="1"/>
+                            </span>
+                            <span t-if="sor.bankszamla_thaz.state=='penztar'">
+                                <t t-set="penztar" t-value="1"/>
+                            </span>
+                        </span>
+
+
+                        <!-- ***************************************************Üzemeltetési********************************************************************* -->
+                        <div style="border-top: 1px solid black;"/>
+                        <h4>Üzemeltetési számla bevételek:</h4>
+                        <div class="col-xs-10 col-xs-offset-2">
+                            <table class="table table_boredered">
+                                <tbody>
+                                    <span t-foreach="docs.sor_id" t-as="sor">
+                                        <span t-if="sor.bankszamla_thaz.state=='bank_uzem'">
+                                            <span t-if="sor.adat">
+                                                <span t-if="sor.jovairas != 0">
+                                                    <tr>
+                                                        <td style="padding:0 5 1 5">
+                                                            <span t-field="sor.bankszamla_thaz.state"/>
+                                                        </td>
+                                                        <td style="padding:0 5 1 5">
+                                                            <span t-field="sor.tranzakcio"/>
+                                                        </td>
+                                                        <td class="text-right" style="padding:0 5 0 5">
+                                                            <span t-field="sor.jovairas"
+                                                                  t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                                        </td>
+                                                    </tr>
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </span>
+                                </tbody>
+                            </table>
+
+
+                            <t t-set="osszeg" t-value="0"/>
+                            <span t-foreach="docs.sor_id" t-as="sor">
+                                <span t-if="sor.bankszamla_thaz.state=='bank_uzem'">
+                                    <span t-if="sor.adat">
+                                        <t t-set="osszeg" t-value="osszeg + sor.jovairas"/>
+                                    </span>
+                                </span>
+                                <t t-if="sor_last">
+                                    <h4 style="text-align:right;">
+                                        <strong>
+                                            Üzemeltetési bankszámla bevételek összesen:
+                                            <span t-esc="osszeg"
+                                                  t-esc-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                        </strong>
+                                    </h4>
+                                </t>
+                            </span>
+                        </div>
+
+
+                        <h4>Üzemeltetési számla kiadások:</h4>
+                        <div class="col-xs-10 col-xs-offset-2">
+                            <table class="table table_boredered">
+                                <tbody>
+                                    <div t-foreach="docs.sor_id" t-as="sor">
+                                        <span t-if="sor.bankszamla_thaz.state=='bank_uzem'">
+                                            <span t-if="sor.adat">
+                                                <span t-if="sor.terheles != 0">
+                                                    <tr>
+                                                        <td style="padding:0 5 1 5">
+                                                            <span t-field="sor.bankszamla_thaz.state"/>
+                                                        </td>
+                                                        <td style="padding:0 5 1 5">
+                                                            <span t-field="sor.tranzakcio"/>
+                                                        </td>
+                                                        <td class="text-right" style="padding:0 5 0 5">
+                                                            <span t-field="sor.terheles"
+                                                                  t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                                        </td>
+                                                    </tr>
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </div>
+                                </tbody>
+                            </table>
+
+
+                            <t t-set="osszeg" t-value="0"/>
+                            <span t-foreach="docs.sor_id" t-as="sor">
+                                <span t-if="sor.bankszamla_thaz.state=='bank_uzem'">
+                                    <span t-if="sor.adat">
+                                        <t t-set="osszeg" t-value="osszeg + sor.terheles"/>
+                                    </span>
+                                </span>
+                                <t t-if="sor_last">
+                                    <h4 style="text-align:right;">
+                                        <strong>
+                                            Üzemeltetési bankszámla kiadások összesen:
+                                            <span t-esc="osszeg"
+                                                  t-esc-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                        </strong>
+                                    </h4>
+                                </t>
+                            </span>
+                        </div>
+
+
+                        <div style="border-top: 1px solid black;">
+                            <div t-foreach="docs.sor_id" t-as="sor">
+                                <h4>
+                                    <strong>
+                                        <span t-if="sor.bankszamla_thaz.state=='bank_uzem'">
+                                            <span t-if="sor.tranzakcio=='szla_nyito'">
+                                                <span t-field="sor.bankszamla_thaz"/>
+                                                nyitóegyenleg:
+                                                <span t-field="sor.jovairas"
+                                                      t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                            </span>
+                                            <span t-if="sor.tranzakcio=='szla_zaro'">
+                                                <span t-field="sor.bankszamla_thaz"/>
+                                                záróegyenleg:
+                                                <span t-field="sor.jovairas"
+                                                      t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                            </span>
+                                        </span>
+                                    </strong>
+                                </h4>
+                            </div>
+                        </div>
+
+                        <!-- ****************************************************Lakáskassza******************************************************************** -->
+                        <span t-if="lakaskassza==1">
+                            <div style="border-top: 1px solid black;">
+                                <h4>Lakáskassza számla bevételek:</h4>
+                                <div class="col-xs-10 col-xs-offset-2">
+                                    <table class="table table_boredered">
+                                        <tbody>
+                                            <div t-foreach="docs.sor_id" t-as="sor">
+
+                                                <span t-if="sor.bankszamla_thaz.state=='lak_kassza'">
+
+                                                    <span t-if="sor.adat">
+                                                        <span t-if="sor.jovairas != 0">
+                                                            <tr>
+                                                                <td style="padding:0 5 1 5">
+                                                                    <span t-field="sor.bankszamla_thaz.state"/>
+                                                                </td>
+                                                                <td style="padding:0 5 1 5">
+                                                                    <span t-field="sor.tranzakcio"/>
+                                                                </td>
+                                                                <td class="text-right" style="padding:0 5 0 5">
+                                                                    <span t-field="sor.jovairas"
+                                                                          t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                                                </td>
+                                                            </tr>
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+                                <t t-set="osszeg" t-value="0"/>
+                                <span t-foreach="docs.sor_id" t-as="sor">
+                                    <span t-if="sor.bankszamla_thaz.state=='lak_kassza'">
+                                        <span t-if="sor.adat">
+                                            <t t-set="osszeg" t-value="osszeg + sor.jovairas"/>
+                                        </span>
+                                    </span>
+                                    <t t-if="sor_last">
+                                        <h4 style="text-align:right;">
+                                            <strong>
+                                                Lakáskassza bankszámla bevételek összesen:
+                                                <span t-esc="osszeg"
+                                                      t-esc-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                            </strong>
+                                        </h4>
+                                    </t>
+                                </span>
+                            </div>
+
+                            <h4>Lakáskassza számla kiadások:</h4>
+                            <div class="col-xs-10 col-xs-offset-2">
+                                <table class="table table_boredered">
+                                    <tbody>
+                                        <div t-foreach="docs.sor_id" t-as="sor">
+                                            <span t-if="sor.bankszamla_thaz.state=='lak_kassza'">
+                                                <span t-if="sor.adat">
+                                                    <span t-if="sor.terheles != 0">
+                                                        <tr>
+                                                            <td style="padding:0 5 1 5">
+                                                                <span t-field="sor.bankszamla_thaz.state"/>
+                                                            </td>
+                                                            <td style="padding:0 5 1 5">
+                                                                <span t-field="sor.tranzakcio"/>
+                                                            </td>
+                                                            <td class="text-right" style="padding:0 5 0 5">
+                                                                <span t-field="sor.terheles"
+                                                                      t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                                            </td>
+                                                        </tr>
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </tbody>
+                                </table>
+
+                                <t t-set="osszeg" t-value="0"/>
+                                <span t-foreach="docs.sor_id" t-as="sor">
+                                    <span t-if="sor.bankszamla_thaz.state=='lak_kassza'">
+                                        <span t-if="sor.adat">
+                                            <t t-set="osszeg" t-value="osszeg + sor.terheles"/>
+                                        </span>
+                                    </span>
+                                    <t t-if="sor_last">
+                                        <h4 style="text-align:right;">
+                                            <strong>
+                                                Lakáskassza bankszámla kiadások összesen:
+                                                <span t-esc="osszeg"
+                                                      t-esc-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                            </strong>
+                                        </h4>
+                                    </t>
+                                </span>
+                            </div>
+
+                            <div style="border-top: 1px solid black;">
+                                <div t-foreach="docs.sor_id" t-as="sor">
+                                    <h4>
+                                        <strong>
+                                            <span t-if="sor.bankszamla_thaz.state=='lak_kassza'">
+                                                <span t-if="sor.tranzakcio=='szla_nyito'">
+                                                    <span t-field="sor.bankszamla_thaz"/>
+                                                    nyitóegyenleg:
+                                                    <span t-field="sor.jovairas"
+                                                          t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                                </span>
+                                                <span t-if="sor.tranzakcio=='szla_zaro'">
+                                                    <span t-field="sor.bankszamla_thaz"/>
+                                                    záróegyenleg:
+                                                    <span t-field="sor.jovairas"
+                                                          t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                                </span>
+                                            </span>
+                                        </strong>
+                                    </h4>
+                                </div>
+                            </div>
+                        </span>
+
+
+                        <!-- ************************************************************************************************************************ -->
+                        <span t-if="megtakaritasi==1">
+                            <div style="border-top: 1px solid black;">
+                                <h4>Megtakarítási számla bevételek:</h4>
+                                <div class="col-xs-10 col-xs-offset-2">
+                                    <table class="table table_boredered">
+                                        <tbody>
+                                            <div t-foreach="docs.sor_id" t-as="sor">
+
+                                                <span t-if="sor.bankszamla_thaz.state=='bank_megtak'">
+
+                                                    <span t-if="sor.adat">
+                                                        <span t-if="sor.jovairas != 0">
+                                                            <tr>
+                                                                <td style="padding:0 5 1 5">
+                                                                    <span t-field="sor.bankszamla_thaz.state"/>
+                                                                </td>
+                                                                <td style="padding:0 5 1 5">
+                                                                    <span t-field="sor.tranzakcio"/>
+                                                                </td>
+                                                                <td class="text-right" style="padding:0 5 0 5">
+                                                                    <span t-field="sor.jovairas"
+                                                                          t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                                                </td>
+                                                            </tr>
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+                                <t t-set="osszeg" t-value="0"/>
+                                <span t-foreach="docs.sor_id" t-as="sor">
+                                    <span t-if="sor.bankszamla_thaz.state=='bank_megtak'">
+                                        <span t-if="sor.adat">
+                                            <t t-set="osszeg" t-value="osszeg + sor.jovairas"/>
+                                        </span>
+                                    </span>
+                                    <t t-if="sor_last">
+                                        <h4 style="text-align:right;">
+                                            <strong>
+                                                Megtakarítási bankszámla bevételek összesen:
+                                                <span t-esc="osszeg"
+                                                      t-esc-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                            </strong>
+                                        </h4>
+                                    </t>
+                                </span>
+                            </div>
+
+                            <h4>Megtakarítási számla kiadások:</h4>
+                            <div class="col-xs-10 col-xs-offset-2">
+                                <table class="table table_boredered">
+                                    <tbody>
+                                        <div t-foreach="docs.sor_id" t-as="sor">
+                                            <span t-if="sor.bankszamla_thaz.state=='bank_megtak'">
+                                                <span t-if="sor.adat">
+                                                    <span t-if="sor.terheles != 0">
+                                                        <tr>
+                                                            <td style="padding:0 5 1 5">
+                                                                <span t-field="sor.bankszamla_thaz.state"/>
+                                                            </td>
+                                                            <td style="padding:0 5 1 5">
+                                                                <span t-field="sor.tranzakcio"/>
+                                                            </td>
+                                                            <td class="text-right" style="padding:0 5 0 5">
+                                                                <span t-field="sor.terheles"
+                                                                      t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                                            </td>
+                                                        </tr>
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </tbody>
+                                </table>
+
+                                <t t-set="osszeg" t-value="0"/>
+                                <span t-foreach="docs.sor_id" t-as="sor">
+                                    <span t-if="sor.bankszamla_thaz.state=='bank_megtak'">
+                                        <span t-if="sor.adat">
+                                            <t t-set="osszeg" t-value="osszeg + sor.terheles"/>
+                                        </span>
+                                    </span>
+                                    <t t-if="sor_last">
+                                        <h4 style="text-align:right;">
+                                            <strong>
+                                                Megtakarítási bankszámla kiadások összesen:
+                                                <span t-esc="osszeg"
+                                                      t-esc-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                            </strong>
+                                        </h4>
+                                    </t>
+                                </span>
+                            </div>
+
+                            <div style="border-top: 1px solid black;">
+                                <div t-foreach="docs.sor_id" t-as="sor">
+                                    <h4>
+                                        <strong>
+                                            <span t-if="sor.bankszamla_thaz.state=='bank_megtak'">
+                                                <span t-if="sor.tranzakcio=='szla_nyito'">
+                                                    <span t-field="sor.bankszamla_thaz"/>
+                                                    nyitóegyenleg:
+                                                    <span t-field="sor.jovairas"
+                                                          t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                                </span>
+                                                <span t-if="sor.tranzakcio=='szla_zaro'">
+                                                    <span t-field="sor.bankszamla_thaz"/>
+                                                    záróegyenleg:
+                                                    <span t-field="sor.jovairas"
+                                                          t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                                </span>
+                                            </span>
+                                        </strong>
+                                    </h4>
+                                </div>
+                            </div>
+                        </span>
+                        <!-- **************************************************felújítási********************************************************************** -->
+
+                        <span t-if="felujitasi==1">
+                            <div style="border-top: 1px solid black;">
+                                <h4>Felújítási számla bevételek:</h4>
+                                <div class="col-xs-10 col-xs-offset-2">
+                                    <table class="table table_boredered">
+                                        <tbody>
+                                            <div t-foreach="docs.sor_id" t-as="sor">
+
+                                                <span t-if="sor.bankszamla_thaz.state=='bank_feluj'">
+
+                                                    <span t-if="sor.adat">
+                                                        <span t-if="sor.jovairas != 0">
+                                                            <tr>
+                                                                <td style="padding:0 5 1 5">
+                                                                    <span t-field="sor.bankszamla_thaz.state"/>
+                                                                </td>
+                                                                <td style="padding:0 5 1 5">
+                                                                    <span t-field="sor.tranzakcio"/>
+                                                                </td>
+                                                                <td class="text-right" style="padding:0 5 0 5">
+                                                                    <span t-field="sor.jovairas"
+                                                                          t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                                                </td>
+                                                            </tr>
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <t t-set="osszeg" t-value="0"/>
+                                <span t-foreach="docs.sor_id" t-as="sor">
+                                    <span t-if="sor.bankszamla_thaz.state=='bank_feluj'">
+                                        <span t-if="sor.adat">
+                                            <t t-set="osszeg" t-value="osszeg + sor.jovairas"/>
+                                        </span>
+                                    </span>
+                                    <t t-if="sor_last">
+                                        <h4 style="text-align:right;">
+                                            <strong>
+                                                Felújítási bankszámla bevételek összesen:
+                                                <span t-esc="osszeg"
+                                                      t-esc-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                            </strong>
+                                        </h4>
+                                    </t>
+                                </span>
+                            </div>
+
+
+                            <h4>Felújítási számla kiadások:</h4>
+                            <div class="col-xs-10 col-xs-offset-2">
+                                <table class="table table_boredered">
+                                    <tbody>
+                                        <div t-foreach="docs.sor_id" t-as="sor">
+                                            <span t-if="sor.bankszamla_thaz.state=='bank_feluj'">
+                                                <span t-if="sor.adat">
+                                                    <span t-if="sor.terheles != 0">
+                                                        <tr>
+                                                            <td style="padding:0 5 1 5">
+                                                                <span t-field="sor.bankszamla_thaz.state"/>
+                                                            </td>
+                                                            <td style="padding:0 5 1 5">
+                                                                <span t-field="sor.tranzakcio"/>
+                                                            </td>
+                                                            <td class="text-right" style="padding:0 5 0 5">
+                                                                <span t-field="sor.terheles"
+                                                                      t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                                            </td>
+                                                        </tr>
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </tbody>
+                                </table>
+
+                                <t t-set="osszeg" t-value="0"/>
+                                <span t-foreach="docs.sor_id" t-as="sor">
+                                    <span t-if="sor.bankszamla_thaz.state=='bank_feluj'">
+                                        <span t-if="sor.adat">
+                                            <t t-set="osszeg" t-value="osszeg + sor.terheles"/>
+                                        </span>
+                                    </span>
+                                    <t t-if="sor_last">
+                                        <h4 style="text-align:right;">
+                                            <strong>
+                                                Felújítási bankszámla kiadások összesen:
+                                                <span t-esc="osszeg"
+                                                      t-esc-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                            </strong>
+                                        </h4>
+                                    </t>
+                                </span>
+                            </div>
+
+                            <div style="border-top: 1px solid black;">
+                                <div t-foreach="docs.sor_id" t-as="sor">
+                                    <h4>
+                                        <strong>
+                                            <span t-if="sor.bankszamla_thaz.state=='bank_feluj'">
+                                                <span t-if="sor.tranzakcio=='szla_nyito'">
+                                                    <span t-field="sor.bankszamla_thaz"/>
+                                                    nyitóegyenleg:
+                                                    <span t-field="sor.jovairas"
+                                                          t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                                </span>
+                                                <span t-if="sor.tranzakcio=='szla_zaro'">
+                                                    <span t-field="sor.bankszamla_thaz"/>
+                                                    záróegyenleg:
+                                                    <span t-field="sor.jovairas"
+                                                          t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                                </span>
+                                            </span>
+                                        </strong>
+                                    </h4>
+                                </div>
+                            </div>
+                        </span>
+                        <!-- ************************************************************************************************************************ -->
+
+                        <!-- **************************************************pénztár********************************************************************** -->
+
+                        <span t-if="penztar==1">
+                            <div style="border-top: 1px solid black;">
+                                <h4>Pénztár bevételek:</h4>
+                                <div class="col-xs-10 col-xs-offset-2">
+                                    <table class="table table_boredered">
+                                        <tbody>
+                                            <div t-foreach="docs.sor_id" t-as="sor">
+
+                                                <span t-if="sor.bankszamla_thaz.state=='penztar'">
+
+                                                    <span t-if="sor.adat">
+                                                        <span t-if="sor.jovairas != 0">
+                                                            <tr>
+                                                                <td style="padding:0 5 1 5">
+                                                                    <span t-field="sor.bankszamla_thaz.state"/>
+                                                                </td>
+                                                                <td style="padding:0 5 1 5">
+                                                                    <span t-field="sor.tranzakcio"/>
+                                                                </td>
+                                                                <td class="text-right" style="padding:0 5 0 5">
+                                                                    <span t-field="sor.jovairas"
+                                                                          t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                                                </td>
+                                                            </tr>
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <t t-set="osszeg" t-value="0"/>
+                                <span t-foreach="docs.sor_id" t-as="sor">
+                                    <span t-if="sor.bankszamla_thaz.state=='penztar'">
+                                        <span t-if="sor.adat">
+                                            <t t-set="osszeg" t-value="osszeg + sor.jovairas"/>
+                                        </span>
+                                    </span>
+                                    <t t-if="sor_last">
+                                        <h4 style="text-align:right;">
+                                            <strong>
+                                                Pénztár bevételek összesen:
+                                                <span t-esc="osszeg"
+                                                      t-esc-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                            </strong>
+                                        </h4>
+                                    </t>
+                                </span>
+                            </div>
+
+
+                            <h4>Pénztár kiadások:</h4>
+                            <div class="col-xs-10 col-xs-offset-2">
+                                <table class="table table_boredered">
+                                    <tbody>
+                                        <div t-foreach="docs.sor_id" t-as="sor">
+                                            <span t-if="sor.bankszamla_thaz.state=='penztar'">
+                                                <span t-if="sor.adat">
+                                                    <span t-if="sor.terheles != 0">
+                                                        <tr>
+                                                            <td style="padding:0 5 1 5">
+                                                                <span t-field="sor.bankszamla_thaz.state"/>
+                                                            </td>
+                                                            <td style="padding:0 5 1 5">
+                                                                <span t-field="sor.tranzakcio"/>
+                                                            </td>
+                                                            <td class="text-right" style="padding:0 5 0 5">
+                                                                <span t-field="sor.terheles"
+                                                                      t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                                            </td>
+                                                        </tr>
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </tbody>
+                                </table>
+
+                                <t t-set="osszeg" t-value="0"/>
+                                <span t-foreach="docs.sor_id" t-as="sor">
+                                    <span t-if="sor.bankszamla_thaz.state=='penztar'">
+                                        <span t-if="sor.adat">
+                                            <t t-set="osszeg" t-value="osszeg + sor.terheles"/>
+                                        </span>
+                                    </span>
+                                    <t t-if="sor_last">
+                                        <h4 style="text-align:right;">
+                                            <strong>
+                                                Pénztár kiadások összesen:
+                                                <span t-esc="osszeg"
+                                                      t-esc-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                            </strong>
+                                        </h4>
+                                    </t>
+                                </span>
+                            </div>
+
+                            <div style="border-top: 1px solid black;">
+                                <div t-foreach="docs.sor_id" t-as="sor">
+                                    <h4>
+                                        <strong>
+                                            <span t-if="sor.bankszamla_thaz.state=='penztar'">
+                                                <span t-if="sor.tranzakcio=='szla_nyito'">
+                                                    <span t-field="sor.bankszamla_thaz"/>
+                                                    nyitóegyenleg:
+                                                    <span t-field="sor.jovairas"
+                                                          t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                                </span>
+                                                <span t-if="sor.tranzakcio=='szla_zaro'">
+                                                    <span t-field="sor.bankszamla_thaz"/>
+                                                    záróegyenleg:
+                                                    <span t-field="sor.jovairas"
+                                                          t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}"/>
+                                                </span>
+                                            </span>
+                                        </strong>
+                                    </h4>
+                                </div>
+                            </div>
+                        </span>
+                        <!-- ************************************************************************************************************************ -->
+                        <div class="row col-xs-12 text-right mt32">
+                            Nyomtatva:
+                            <span t-esc="time.strftime('%x')"/>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>

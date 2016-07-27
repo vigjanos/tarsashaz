@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="kiserlet_form_view" model="ir.ui.view">
+            <field name="name">tarh.kiserlet</field>
+            <field name="model">tarh.kiserlet</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <field name="tulajdonos" options="{'no_create' : True}"/>
+                            <field name="kezdet"/>
+                            <field name="befejezes"/>
+                            <!--  <button string="gomb" icon="" states="" type="object" name="gomb_nyomas"/> -->
+                            <button icon="fa-pencil-square-o" states="" type="object" name="gomb_nyomas"
+                                    class="oe_stat_button">
+                                 <field name="egyenleg" widget="statinfo"/>
+
+                            </button>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="tarh_kiserlet_action" model="ir.actions.act_window">
+            <field name="name">tarh.kiserlet.action</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.kiserlet</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                <!-- Add Text Here -->
+              </p><p>
+                <!-- More details about what a user can do with this object will be OK -->
+              </p>
+            </field>
+            <field name="view_id" ref="kiserlet_form_view"/>
+        </record>
+
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="tarh_kiserlet_menu" name="kiserlet" parent="iktatas"
+                  action="tarh_kiserlet_action" sequence="32"/>
+
+
+    </data>
+</openerp>

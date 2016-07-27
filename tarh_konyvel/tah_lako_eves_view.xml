@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="tarh_lako_eves_view" model="ir.ui.view">
+            <field name="name">tarh.lako.eves.view</field>
+            <field name="model">tarh.lako.eves</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <h1>
+                            <label string="Társasház összes lakó egyenlege"/>
+                        </h1>
+                        <group>
+                            <field name="kezdatum"/>
+                            <field name="vegdatum"/>
+                            <field name="tarsashaz" options="{'no_create' : True}"
+                                   domain="[('is_company','=',True),('name','ilike','%rsash%')]"
+                                   on_change="onchange_tarsashaz(tarsashaz)"/>
+                            <button string="Lekérdez" type="object" name="lekerdez"/>
+                        </group>
+                        <notebook>
+                            <page string="Ez a sor eleme">
+                                <field name="tulaj_id">
+                                    <form string="">
+                                        <group>
+                                            <field name="tulajdonos"/>
+                                        </group>
+                                        <notebook>
+                                            <page string="megint valami">
+                                                <field name="eloiras_id">
+                                                    <!--
+                                                    <form string="">
+                                                        <group>
+                                                            <field name="eloiras"/>
+                                                            <field name="osszeg"/>
+                                                        </group>
+                                                        <tree string="fa mutatás">
+                                                            <field name="eloiras"/>
+                                                            <field name="osszeg"/>
+                                                            <field name="tul_id"/>
+                                                        </tree>
+                                                    </form>
+                                                    -->
+                                                </field>
+                                            </page>
+                                        </notebook>
+                                    </form>
+                                    <!--
+
+                                    <tree string="ezek az elemek">
+                                        <field name="tulajdonos"/>
+                                    </tree>
+                                    -->
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="tarh_lako_eves_view_tree" model="ir.ui.view">
+            <field name="name">tarh.lako.eves.view.tree</field>
+            <field name="model">tarh.lako.eves</field>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="tarsashaz"/>
+                    <field name="kezdatum"/>
+                    <field name="vegdatum"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="tarh_lako_eves_action" model="ir.actions.act_window">
+            <field name="name">tarh_lako_eves</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.lako.eves</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_lako_eves_view"/>
+
+        </record>
+
+
+        <menuitem id="tarh_lako_eves_menu" name="Társasház lakók folyószámla" parent="konyvel_lekerdezesek"
+                  action="tarh_lako_eves_action" sequence="92"/>
+
+        odoo
+
+
+    </data>
+</openerp>

@@ -1,0 +1,657 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <report id="lako_eves_lekerdez1"
+                model="tarh.lako.eves"
+                string="képernyőre"
+                name="tarh_konyvel.lako_eves_lekerdez_tmpl"
+                file="tarh_konyvel.tarh_lako_eves_nyomtat"
+                report_type="qweb-html"/>
+
+        <report id="lako_eves_lekerdez2"
+                model="tarh.lako.eves"
+                string="pdf-be"
+                name="tarh_konyvel.lako_eves_lekerdez_tmpl"
+                file="tarh_konyvel.tarh_lako_eves_nyomtat"
+                report_type="qweb-pdf"/>
+
+        <report id="lako_eves_lekerdez3"
+                model="tarh.lako.eves"
+                string="képernyőre 2. verzió"
+                name="tarh_konyvel.lako_eves_lekerdez_tmpl2"
+                file="tarh_konyvel.tarh_lako_eves_nyomtat"
+                report_type="qweb-html"/>
+
+        <report id="lako_eves_lekerdez4"
+                model="tarh.lako.eves"
+                string="pdf-be 2. verzió"
+                name="tarh_konyvel.lako_eves_lekerdez_tmpl2"
+                file="tarh_konyvel.tarh_lako_eves_nyomtat"
+                report_type="qweb-pdf"/>
+
+
+        <template id="lako_eves_lekerdez_tmpl">
+
+            <t t-foreach="docs.tulaj_id" t-as="tulaj">
+                <t t-call="report.external_layout">
+                    <t t-call="report.html_container">
+                        <div class="page">
+                            <div class="row">
+                                <div class="col-xs-7">
+                                    <span t-field="tulaj.tulajdonos.name"/>
+                                    <br/>
+                                    <span t-field="tulaj.tulajdonos.city"/>
+                                    <span t-field="tulaj.tulajdonos.parent_id.zip"/>
+                                    <br/>
+                                    <span t-field="tulaj.tulajdonos.street"/>
+                                    <span t-field="tulaj.tulajdonos.street2"/>
+                                    ingatlan
+                                    <br/>
+                                    <t t-if="tulaj.tulajdonos.alb_szam &gt; 0">
+                                        <span t-field="tulaj.tulajdonos.alb_szam"/>. számú albetét,
+                                    </t>
+                                    <span t-field="tulaj.tulajdonos.tulhanyad"/>/
+                                    <span t-field="tulaj.tulajdonos.th_oszto"/>
+                                    tulajdoni hányad
+                                    <br/>
+
+                                </div>
+                                <div class="col-xs-5">
+                                    <div class="text-right">
+                                        <t t-if="tulaj.tulajdonos.email">Email:
+                                            <span t-field="tulaj.tulajdonos.email"/>
+                                        </t>
+                                    </div>
+                                    <div class="text-right">
+                                        <t t-if="tulaj.tulajdonos.postai">Levélcím:
+                                            <span t-field="tulaj.tulajdonos.levcim"/>
+                                        </t>
+                                    </div>
+                                    <div class="text-right">Alapterület:
+                                        <span t-field="tulaj.tulajdonos.alapterulet"/>
+                                        nm.,
+                                        vízóra:
+                                        <span t-field="tulaj.tulajdonos.vizora"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row col-xs-10 col-xs-offset-1 mt8 mb8 text-center">
+                                <t t-set="osszesen" t-value="0"/>
+                                <t t-set="nyitoegyenleg" t-value="0"/>
+                                <t t-set="zaroegyenleg" t-value="0"/>
+                                <t t-set="befizetesek" t-value="0"/>
+                                <t t-set="nyitodatum" t-value="docs[0].kezdatum"/>
+                                <t t-foreach="tulaj.eloiras_id" t-as="eloir">
+                                    <t t-if="eloir.eloiras_e == False and 'egyenleg' in eloir.szoveg">
+                                        <t t-set="nyitoegyenleg" t-value="eloir.osszeg"/>
+                                        <t t-set="nyitodatum" t-value="eloir.datum"/>
+                                    </t>
+                                </t>
+                                <h4>
+                                    <span t-field="tulaj.tulajdonos.name"/>
+                                    folyószámla
+                                    <br/>
+                                    <t t-esc="nyitodatum"/>
+                                    és
+                                    <span t-field="docs[0].vegdatum"/>
+                                    dátum között
+                                </h4>
+                            </div>
+                            <div class="row col-xs-10 col-xs-offset-1">
+                                <strong>Kötelezettségek:</strong>
+                            </div>
+                            <div class="row col-xs-8 col-xs-offset-2">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">
+                                                <strong>Előírások</strong>
+                                            </th>
+                                            <th class="text-center">
+                                                <strong>Összeg</strong>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="tulaj.eloiras_id" t-as="eloir">
+                                            <t t-if="eloir.eloiras_e and eloir.kdatum == '1900-01-01'">
+                                                <tr>
+                                                    <td style="padding:0 5 1 5">
+                                                        <span t-field="eloir.szoveg"/>
+                                                    </td>
+                                                    <td style="padding:0 5 1 5" class="text-right">
+                                                        <span t-field="eloir.osszeg"
+                                                              t-field-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+
+                                                    </td>
+                                                </tr>
+                                                <t t-set="osszesen" t-value="osszesen + eloir.osszeg"/>
+
+                                            </t>
+                                        </t>
+                                        <tr>
+                                            <td>
+                                                <strong>
+                                                    Kötelezettségek összesen:
+                                                </strong>
+                                            </td>
+                                            <td class="text-right">
+                                                <strong>
+                                                    <t t-esc="osszesen"
+                                                       t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                            <div class="row col-xs-10 col-xs-offset-1">
+                                <strong>Befizetések:</strong>
+                            </div>
+                            <div class="row col-xs-8 col-xs-offset-2">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">
+                                                <strong>Dátum</strong>
+                                            </th>
+                                            <th class="text-center">
+                                                <strong>Jogcím</strong>
+                                            </th>
+                                            <th class="text-center">
+                                                <strong>Összeg</strong>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="tulaj.eloiras_id" t-as="eloir">
+                                            <t t-if="eloir.eloiras_e == False and 'egyenleg' not in eloir.szoveg">
+                                                <tr>
+                                                    <td style="padding:0 5 1 5">
+                                                        <span t-field="eloir.datum"/>
+                                                    </td>
+                                                    <td style="padding:0 5 1 5">
+                                                        <span t-field="eloir.szoveg"/>
+                                                    </td>
+                                                    <td style="padding:0 5 1 5" class="text-right">
+                                                        <span t-field="eloir.osszeg"
+                                                              t-field-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+
+                                                    </td>
+                                                </tr>
+                                                <t t-set="befizetesek" t-value="befizetesek + eloir.osszeg"/>
+                                            </t>
+                                        </t>
+                                        <tr>
+                                            <td></td>
+                                            <td>
+                                                <strong>
+                                                    Befizetések összesen:
+                                                </strong>
+                                            </td>
+                                            <td class="text-right">
+                                                <strong>
+                                                    <t t-esc="befizetesek"
+                                                       t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            <div class="row col-xs-10 col-xs-offset-1">
+                                <strong>Elszámolás:</strong>
+                            </div>
+                            <div class="row col-xs-12">
+
+                                <div class="col-xs-8 col-xs-offset-2">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Szöveg:</th>
+                                                <th>Összeg:</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td style="padding:0 5 1 5">
+                                                    Nyitóegyenleg:
+                                                </td>
+                                                <td style="padding:0 5 1 5" class="text-right">
+                                                    <t t-esc="nyitoegyenleg"
+                                                       t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:0 5 1 5">
+                                                    Kötelezettségek:
+                                                </td>
+                                                <td style="padding:0 5 1 5" class="text-right">
+                                                    <t t-esc="osszesen * -1"
+                                                       t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:0 5 1 5">
+                                                    Befizetések:
+                                                </td>
+                                                <td style="padding:0 5 1 5" class="text-right">
+                                                    <t t-esc="befizetesek"
+                                                       t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+
+                                                <td style="padding:0 5 1 5">
+                                                    <strong>Zároegyenleg:</strong>
+                                                </td>
+                                                <td class="text-right">
+                                                    <strong>
+                                                        <t t-esc="nyitoegyenleg-osszesen+befizetesek"
+                                                           t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row col-xs-12" align="center">
+                                <h4>TISZTELT TULAJDONOS!</h4>
+                            </div>
+                            <div class="row col-xs-10 col-xs-offset-1" align="justify">
+                                <t t-set="zaroegyenleg" t-value="nyitoegyenleg-osszesen+befizetesek"/>
+                                <t t-if="zaroegyenleg  &lt;  0">
+                                    Tájékoztatom, hogy folyószámláján
+                                    <span t-field="docs[0].vegdatum"/>
+                                    napján
+                                    <strong>
+                                        <t t-esc="zaroegyenleg * -1"
+                                           t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                    </strong>
+                                    tartozás mutatkozik! Kérjük, hogy a tartozás befizetéséről a
+                                    <span t-field="docs[0].tarsashaz.name"/>
+                                    <span t-field="docs[0].tarsashaz.uzemeltetesi"/>
+                                    számú,
+                                    <span t-field="docs[0].bank"/>
+                                    fiókjában vezetett bankszámlájára mielőbb szíveskedjék intézkedni!
+                                    Felhívjuk a szíves figyelmét, hogy a fizetési kötelezettségek összege lakossági
+                                    folyószámláról
+                                    is utalható. Kérjük, hogy amennyiben a kötelezettségeiket csekken kívánják
+                                    teljesíteni,
+                                    úgy ezt lehetőleg valamelyik
+                                    <span t-field="docs[0].bank"/>
+                                    fiókban tegyék, mivel a
+                                    postai feladás további költséget jelent a Társasház számára!
+                                </t>
+                                <t t-if="zaroegyenleg  &gt;=  0">
+                                    Felhívjuk a szíves figyelmét, hogy a fizetési kötelezettségek összege a
+                                    <span t-field="docs[0].tarsashaz.name"/>
+                                    <span t-field="docs[0].tarsashaz.uzemeltetesi"/>
+                                    számú,
+                                    <span t-field="docs[0].bank"/>
+                                    fiókjában vezetett bankszámlájára lakossági
+                                    folyószámláról is utalható. Kérjük, hogy amennyiben a kötelezettségeiket csekken
+                                    kívánják teljesíteni, úgy ezt lehetőleg valamelyik
+                                    <span t-field="docs[0].bank"/>
+                                    fiókban tegyék, mivel a postai feladás további költséget jelent a Társasház számára!
+                                </t>
+                            </div>
+                            <div class="row col-xs-12" align="center">
+                                <h4>KÖSZÖNJÜK!</h4>
+                            </div>
+                            <div class="row col-xs-12 text-right mt32">
+                                Nyomtatva:
+                                <span t-esc="time.strftime('%x')"/>
+                            </div>
+                        </div> <!-- Ez a page div-je! -->
+                    </t>
+                </t>
+            </t>
+        </template>
+
+
+        <template id="lako_eves_lekerdez_tmpl2">
+
+            <t t-foreach="docs.tulaj_id" t-as="tulaj">
+                <t t-call="report.external_layout">
+                    <t t-call="report.html_container">
+                        <div class="page">
+                            <div class="row">
+                                <div class="col-xs-7">
+                                    <span t-field="tulaj.tulajdonos.name"/>
+                                    <br/>
+                                    <span t-field="tulaj.tulajdonos.city"/>
+                                    <span t-field="tulaj.tulajdonos.parent_id.zip"/>
+                                    <br/>
+                                    <span t-field="tulaj.tulajdonos.street"/>
+                                    <span t-field="tulaj.tulajdonos.street2"/>
+                                    ingatlan
+                                    <br/>
+                                    <t t-if="tulaj.tulajdonos.alb_szam &gt; 0">
+                                        <span t-field="tulaj.tulajdonos.alb_szam"/>. számú albetét,
+                                    </t>
+                                    <span t-field="tulaj.tulajdonos.tulhanyad"/>/
+                                    <span t-field="tulaj.tulajdonos.th_oszto"/>
+                                    tulajdoni hányad
+                                    <br/>
+
+                                </div>
+                                <div class="col-xs-5">
+                                    <div class="text-right">
+                                        <t t-if="tulaj.tulajdonos.email">Email:
+                                            <span t-field="tulaj.tulajdonos.email"/>
+                                        </t>
+                                    </div>
+                                    <div class="text-right">
+                                        <t t-if="tulaj.tulajdonos.postai">Levélcím:
+                                            <span t-field="tulaj.tulajdonos.levcim"/>
+                                        </t>
+                                    </div>
+                                    <div class="text-right">Alapterület:
+                                        <span t-field="tulaj.tulajdonos.alapterulet"/>
+                                        nm.,
+                                        vízóra:
+                                        <span t-field="tulaj.tulajdonos.vizora"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row col-xs-10 col-xs-offset-1 mt8 mb32 text-center">
+                                <t t-set="osszesen" t-value="0"/>
+                                <t t-set="nyitoegyenleg" t-value="0"/>
+                                <t t-set="zaroegyenleg" t-value="0"/>
+                                <t t-set="befizetesek" t-value="0"/>
+                                <t t-set="nyitodatum" t-value="docs[0].kezdatum"/>
+                                <t t-foreach="tulaj.eloiras_id" t-as="eloir">
+                                    <t t-if="eloir.eloiras_e == False and 'egyenleg' in eloir.szoveg">
+                                        <t t-set="nyitoegyenleg" t-value="eloir.osszeg"/>
+                                        <t t-set="nyitodatum" t-value="eloir.datum"/>
+                                    </t>
+                                </t>
+                                <h4>
+                                    <span t-field="tulaj.tulajdonos.name"/>
+                                    folyószámla
+                                    <br/>
+                                    <t t-esc="nyitodatum"/>
+                                    és
+                                    <span t-field="docs[0].vegdatum"/>
+                                    dátum között
+                                </h4>
+                            </div>
+
+                            <div class="row col-xs-10 col-xs-offset-1">
+                                <strong>Havi előírások:</strong>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-8 col-xs-offset-2">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">
+                                                    <strong>Megnevezés</strong>
+                                                </th>
+                                                <th class="text-center">
+                                                    <strong>dátumtól</strong>
+                                                </th>
+                                                <th class="text-center">
+                                                    <strong>dátumig</strong>
+                                                </th>
+                                                <th class="text-center">
+                                                    <strong>Összeg</strong>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="tulaj.eloiras_id" t-as="eloir">
+                                                <t t-if="eloir.eloiras_e == True and eloir.kdatum != '1900-01-01'">
+                                                    <tr>
+                                                        <td style="padding:0 5 1 5">
+                                                            <span t-field="eloir.szoveg"/>
+                                                        </td>
+                                                        <td style="padding:0 5 1 5">
+                                                            <span t-field="eloir.kdatum"/>
+                                                        </td>
+                                                        <td style="padding:0 5 1 5">
+                                                            <t t-if="eloir.datum &lt; docs[0].vegdatum ">
+                                                                <span t-field="eloir.datum"/>
+                                                            </t>
+                                                        </td>
+                                                        <td style="padding:0 5 1 5" class="text-right">
+                                                            <span t-field="eloir.osszeg"
+                                                                  t-field-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </t>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+
+                            <div class="row col-xs-6">
+                                <strong>Befizetések:</strong>
+
+
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">
+                                                <strong>Dátum</strong>
+                                            </th>
+                                            <th class="text-center">
+                                                <strong>Jogcím</strong>
+                                            </th>
+                                            <th class="text-center">
+                                                <strong>Összeg</strong>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="tulaj.eloiras_id" t-as="eloir">
+                                            <t t-if="eloir.eloiras_e == False and 'egyenleg' not in eloir.szoveg">
+                                                <tr>
+                                                    <td style="padding:0 5 1 5">
+                                                        <span t-field="eloir.datum"/>
+                                                    </td>
+                                                    <td style="padding:0 5 1 5">
+                                                        <span t-field="eloir.szoveg"/>
+                                                    </td>
+                                                    <td style="padding:0 5 1 5" class="text-right">
+                                                        <span t-field="eloir.osszeg"
+                                                              t-field-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+
+                                                    </td>
+                                                </tr>
+                                                <t t-set="befizetesek" t-value="befizetesek + eloir.osszeg"/>
+                                            </t>
+                                        </t>
+                                        <tr>
+                                            <td></td>
+                                            <td>
+                                                <strong>
+                                                    Befizetések összesen:
+                                                </strong>
+                                            </td>
+                                            <td class="text-right">
+                                                <strong>
+                                                    <t t-esc="befizetesek"
+                                                       t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+
+                            <div class="row col-xs-5 col-xs-offset-1">
+                                <strong>Összes kötelezettség az időszakban:</strong>
+
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">
+                                                <strong>Előírások</strong>
+                                            </th>
+                                            <th class="text-center">
+                                                <strong>Összeg</strong>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="tulaj.eloiras_id" t-as="eloir">
+                                            <t t-if="eloir.eloiras_e and eloir.kdatum == '1900-01-01'">
+                                                <tr>
+                                                    <td style="padding:0 5 1 5">
+                                                        <span t-field="eloir.szoveg"/>
+                                                    </td>
+                                                    <td style="padding:0 5 1 5" class="text-right">
+                                                        <span t-field="eloir.osszeg"
+                                                              t-field-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+
+                                                    </td>
+                                                </tr>
+                                                <t t-set="osszesen" t-value="osszesen + eloir.osszeg"/>
+
+                                            </t>
+                                        </t>
+                                        <tr>
+                                            <td>
+                                                <strong>
+                                                    Kötelezettségek összesen:
+                                                </strong>
+                                            </td>
+                                            <td class="text-right">
+                                                <strong>
+                                                    <t t-esc="osszesen"
+                                                       t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+
+                                <strong>Elszámolás:</strong>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Szöveg:</th>
+                                            <th>Összeg:</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="padding:0 5 1 5">
+                                                Nyitóegyenleg:
+                                            </td>
+                                            <td style="padding:0 5 1 5" class="text-right">
+                                                <t t-esc="nyitoegyenleg"
+                                                   t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding:0 5 1 5">
+                                                Kötelezettségek:
+                                            </td>
+                                            <td style="padding:0 5 1 5" class="text-right">
+                                                <t t-esc="osszesen * -1"
+                                                   t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding:0 5 1 5">
+                                                Befizetések:
+                                            </td>
+                                            <td style="padding:0 5 1 5" class="text-right">
+                                                <t t-esc="befizetesek"
+                                                   t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+
+                                            <td style="padding:0 5 1 5">
+                                                <strong>Zároegyenleg:</strong>
+                                            </td>
+                                            <td class="text-right">
+                                                <strong>
+                                                    <t t-esc="nyitoegyenleg-osszesen+befizetesek"
+                                                       t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+
+                            </div>
+
+
+
+
+
+                            <div class="row col-xs-12" align="center">
+                                <h4>TISZTELT TULAJDONOS!</h4>
+                            </div>
+                            <div class="row col-xs-10 col-xs-offset-1" align="justify">
+                                <t t-set="zaroegyenleg" t-value="nyitoegyenleg-osszesen+befizetesek"/>
+                                <t t-if="zaroegyenleg  &lt;  0">
+                                    Tájékoztatom, hogy folyószámláján
+                                    <span t-field="docs[0].vegdatum"/>
+                                    napján
+                                    <strong>
+                                        <t t-esc="zaroegyenleg * -1"
+                                           t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                    </strong>
+                                    tartozás mutatkozik! Kérjük, hogy a tartozás befizetéséről a
+                                    <span t-field="docs[0].tarsashaz.name"/>
+                                    <span t-field="docs[0].tarsashaz.uzemeltetesi"/>
+                                    számú,
+                                    <span t-field="docs[0].bank"/>
+                                    fiókjában vezetett bankszámlájára mielőbb szíveskedjék intézkedni!
+                                    Felhívjuk a szíves figyelmét, hogy a fizetési kötelezettségek összege lakossági
+                                    folyószámláról
+                                    is utalható. Kérjük, hogy amennyiben a kötelezettségeiket csekken kívánják
+                                    teljesíteni,
+                                    úgy ezt lehetőleg valamelyik
+                                    <span t-field="docs[0].bank"/>
+                                    fiókban tegyék, mivel a
+                                    postai feladás további költséget jelent a Társasház számára!
+                                </t>
+                                <t t-if="zaroegyenleg  &gt;=  0">
+                                    Felhívjuk a szíves figyelmét, hogy a fizetési kötelezettségek összege a
+                                    <span t-field="docs[0].tarsashaz.name"/>
+                                    <span t-field="docs[0].tarsashaz.uzemeltetesi"/>
+                                    számú,
+                                    <span t-field="docs[0].bank"/>
+                                    fiókjában vezetett bankszámlájára lakossági
+                                    folyószámláról is utalható. Kérjük, hogy amennyiben a kötelezettségeiket csekken
+                                    kívánják teljesíteni, úgy ezt lehetőleg valamelyik
+                                    <span t-field="docs[0].bank"/>
+                                    fiókban tegyék, mivel a postai feladás további költséget jelent a Társasház számára!
+                                </t>
+                            </div>
+                            <div class="row col-xs-12" align="center">
+                                <h4>KÖSZÖNJÜK!</h4>
+                            </div>
+                            <div class="row col-xs-12 text-right mt32">
+                                Nyomtatva:
+                                <span t-esc="time.strftime('%x')"/>
+                            </div>
+                        </div> <!-- Ez a page div-je! -->
+                    </t>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</openerp>

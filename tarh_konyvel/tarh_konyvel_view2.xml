@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="tarh_havijel_haz_tree_view">
+            <field name="name">tarh.havijel.haz.tree</field>
+            <field name="model">tarh.havijel.haz</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="tree_string">
+                    <field name="kezdatum" />
+                    <field name="vegdatum" />
+                    <field name="th_szamlatul" />
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="tarh_havijel_haz_form_view">
+            <field name="name">tarh.havijel.haz.form</field>
+            <field name="model">tarh.havijel.haz</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="form_string">
+                    <sheet string="Haz_havijelentes">
+                        <h1>
+                            <label string="Társasházak időszaki forgalma"/>
+                        </h1>
+
+
+                        <group>
+                            <field name="kezdatum" select="1" />
+                            <field name="vegdatum" select="1" />
+                            <field name="th_szamlatul" options="{'no_create' : True}" select="1"
+                                   domain="[('is_company','=',True),('name','ilike','%rsash%')]" />
+                        </group>
+                        <group>
+                            <button name="kiszamol" string="Lekérdezés" type="object" />
+                        </group>
+
+                        <notebook>
+                            <page string="Időszaki forgalom">
+                                <field name="sor_id">
+                                    <tree string="Tranzakciók elemei">
+                                        <field name="bankszamla_thaz" />
+                                        <field name="tranzakcio" />
+                                        <field name="jovairas" />
+                                        <field name="terheles" />
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <!-- Ez itt az új bejegyzés!
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" help="Follow this project to automatically track the events associated to tasks and issues of this project." groups="base.group_user"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+
+-->
+
+                </form>
+            </field>
+        </record>
+
+
+
+        <record model="ir.actions.act_window" id="action_tarh_havijel_haz_tree_view">
+            <field name="name">tarh.havijel.haz</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.havijel.haz</field>
+            <!-- <field name="domain">[('field_name','condition',criteria)]</field> -->
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_havijel_haz_form_view" />
+        </record>
+
+
+        <record model="ir.ui.view" id="tarh_haz_lakoegy_tree_view">
+            <field name="name">tarh.haz.lakoegy.tree</field>
+            <field name="model">tarh.haz.lakoegy</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="tree_string">
+                    <field name="kezdatum" />
+                    <field name="vegdatum" />
+                    <field name="tarsashaz" />
+
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="tarh_haz_lakoegy_form_view">
+            <field name="name">tarh.haz.lakoegy.form</field>
+            <field name="model">tarh.haz.lakoegy</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="form_string">
+                    <sheet string="Haz_havijelentes">
+                        <h1>
+                            <label string="Társasház lakóinak egyenlege"/>
+                        </h1>
+                        <group>
+                            <field name="kezdatum" select="1" />
+                            <field name="vegdatum" select="1" />
+                            <field name="tarsashaz" options="{'no_create' : True}" select="1"
+                                   domain="[('is_company','=',True),('name','ilike','%rsash%')]" on_change="onchange_tarsashaz(tarsashaz, vegdatum)"/>
+                            <field name="bankszamla" select="1" invisible="1" />
+                        </group>
+                        <group>
+                            <group>
+                                <field name="min_tartozas"/>
+                                <field name="min_honap"/>
+                                <field name="lekerdate"/>
+                            </group>
+                            <button name="lakoegyenlegek" string="Lekérdezés" type="object" />
+
+                        </group>
+                        <notebook>
+                            <page string="Időszaki forgalom">
+                                <field name="sor_id">
+                                    <tree string="Tranzakciók elemei">
+                                        <field name="albetet"/>
+                                        <field name="tulaj" />
+                                        <field name="cim"/>
+                                        <field name="kezdoegyenleg" />
+                                        <field name="eloirasok" />
+                                        <field name="befizetesek"/>
+                                        <field name="zaroegyenleg"/>
+                                        <field name="havi_eloiras"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+
+        <record model="ir.actions.act_window" id="action_tarh_haz_lakoegy_tree_view">
+            <field name="name">tarh.haz.lakoegy</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.haz.lakoegy</field>
+            <!-- <field name="domain">[('field_name','condition',criteria)]</field> -->
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_haz_lakoegy_form_view" />
+        </record>
+
+
+
+
+
+    </data>
+</openerp>

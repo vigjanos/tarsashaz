@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+
+        <!--
+                <record id="papirforma_fekvo" model="report.paperformat">
+                </record>
+                    <field name="name">Papirforma_fekvo</field>
+                    <field name="orientation">Landscape</field>
+
+
+                <record id="report_riport1"
+                    model="ir.action.report.xml">
+                    <field name="paperformat_id" ref="paperformat_us"/>
+                </record>
+
+
+
+                    <report id="report_session"
+                    model="tarh.haz.havijel"
+                    string="képernyőre"
+                    name="tarh_konyvel.report_session1"
+                    file="tarh_konyvel.reports"
+                    report_type="qweb-html" />
+
+                <report id="report_session2"
+                    model="tarh.haz.havijel"
+                    string="nyomtatás pdf"
+                    name="tarh_konyvel.report_session1"
+                    file="tarh_konyvel.reports"
+                    report_type="qweb-pdf" />
+         -->
+
+
+        <report id="report_my_report"
+                model="my.report"
+                string="képernyőre"
+                name="tarh_konyvel.report_riport1"
+                file="tarh_konyvel.reports"
+                report_type="qweb-html" />
+
+        <report id="report_my_report2"
+                model="my.report"
+                string="nyomtatás pdf-be"
+                name="tarh_konyvel.report_riport1"
+                file="tarh_konyvel.reports"
+                report_type="qweb-pdf" />
+
+
+        <report id="report_my_report3"
+                model="my.report"
+                string="partner nélkül képernyőre"
+                name="tarh_konyvel.report_riport2"
+                file="tarh_konyvel.reports"
+                report_type="qweb-html" />
+
+        <report id="report_my_report4"
+                model="my.report"
+                string="partner nélkül pdf-be"
+                name="tarh_konyvel.report_riport2"
+                file="tarh_konyvel.reports"
+                report_type="qweb-pdf" />
+
+        <report id="report_my_report5"
+                model="my.report"
+                string="társasházzal képernyőre"
+                name="tarh_konyvel.report_riport3"
+                file="tarh_konyvel.reports"
+                report_type="qweb-html" />
+
+        <report id="report_my_report6"
+                model="my.report"
+                string="társasházzal pdf-be"
+                name="tarh_konyvel.report_riport3"
+                file="tarh_konyvel.reports"
+                report_type="qweb-pdf" />
+
+        <template id="report_riport1">
+            <t t-call="report.external_layout">
+                <t t-call="report.html_container">
+                    <div class="page">
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">dátum</th>
+                                    <th class="text-center">sorszám</th>
+                                    <th class="text-center">partner</th>
+                                    <th class="text-center">tranzakció</th>
+                                    <th class="text-center">forgalom</th>
+                                    <th class="text-center">megjegyzés</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="docs" t-as="dokk">
+                                    <td width="10%">
+                                        <span t-field="dokk.erteknap" />
+                                    </td>
+                                    <td width="10%">
+                                        <span t-field="dokk.kivonatszam" />
+                                    </td>
+                                    <td width="25%">
+                                        <span t-field="dokk.partner.name" />
+                                    </td>
+                                    <td width="22%">
+                                        <span t-field="dokk.tarh_tranzakcio" />
+                                    </td>
+                                    <td class="text-right"  width="12%">
+                                        <t t-if="dokk.jovairas!=0">
+                                            <span t-field="dokk.jovairas"
+                                                  t-field-options='{"widget":"monetary", "display_currency":"res_company.currency_id"}' />
+                                        </t>
+                                        <t t-if="dokk.terheles!=0">
+                                            <t t-set="terhel" t-value="dokk.terheles*-1" />
+                                            <span t-esc="terhel"
+                                                  t-esc-options='{"widget":"monetary", "display_currency":"res_company.currency_id"}' />
+                                        </t>
+                                    </td>
+                                    <td width="21%">
+                                        <span t-field="dokk.megjegyzes" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </t>
+            </t>
+        </template>
+
+
+        <template id="report_riport2">
+            <t t-call="report.external_layout">
+                <t t-call="report.html_container">
+                    <div class="page">
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">dátum</th>
+                                    <th class="text-center">sorszám</th>
+                                    <th class="text-center">tranzakció</th>
+                                    <th class="text-center">forgalom</th>
+                                    <th class="text-center">megjegyzés</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="docs" t-as="dokk">
+                                    <td>
+                                        <span t-field="dokk.erteknap" />
+                                    </td>
+                                    <td>
+                                        <span t-field="dokk.kivonatszam" />
+                                    </td>
+                                    <td>
+                                        <span t-field="dokk.tarh_tranzakcio" />
+                                    </td>
+                                    <td class="text-right">
+                                        <t t-if="dokk.jovairas!=0">
+                                            <span t-field="dokk.jovairas"
+                                                  t-field-options='{"widget":"monetary", "display_currency":"res_company.currency_id"}' />
+                                        </t>
+                                        <t t-if="dokk.terheles!=0">
+                                            <t t-set="terhel" t-value="dokk.terheles*-1" />
+                                            <span t-esc="terhel"
+                                                  t-esc-options='{"widget":"monetary", "display_currency":"res_company.currency_id"}' />
+                                        </t>
+                                    </td>
+                                    <td>
+                                        <span t-field="dokk.megjegyzes" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </t>
+            </t>
+        </template>
+
+        <template id="report_riport3">
+            <t t-call="report.external_layout">
+                <t t-call="report.html_container">
+                    <div class="page">
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">dátum</th>
+                                    <th class="text-center">sorszám</th>
+                                    <th class="text-center">társasház</th>
+                                    <th class="text-center">tranzakció</th>
+                                    <th class="text-center">forgalom</th>
+                                    <th class="text-center">megjegyzés</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="docs" t-as="dokk">
+                                    <td>
+                                        <span t-field="dokk.erteknap" />
+                                    </td>
+                                    <td>
+                                        <span t-field="dokk.kivonatszam" />
+                                    </td>
+                                    <td>
+                                        <span t-field="dokk.th_szamlatul" />
+                                    </td>
+                                    <td>
+                                        <span t-field="dokk.tarh_tranzakcio" />
+                                    </td>
+                                    <td class="text-right">
+                                        <t t-if="dokk.jovairas!=0">
+                                            <span t-field="dokk.jovairas"
+                                                  t-field-options='{"widget":"monetary", "display_currency":"res_company.currency_id"}' />
+                                        </t>
+                                        <t t-if="dokk.terheles!=0">
+                                            <t t-set="terhel" t-value="dokk.terheles*-1" />
+                                            <span t-esc="terhel"
+                                                  t-esc-options='{"widget":"monetary", "display_currency":"res_company.currency_id"}' />
+                                        </t>
+                                    </td>
+                                    <td>
+                                        <span t-field="dokk.megjegyzes" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </t>
+            </t>
+        </template>
+
+
+        <!--
+                <template id="report_session1">
+                    <t t-call="report.external_layout">
+                        <t t-call="report.html_container">
+                            <div class="page">
+                                <h4>
+                                    <span t-field="docs[0].th_szamlatul" />
+                                    <span t-field="docs[0].kezdatum" />
+                                    és
+                                    <span t-field="docs[0].vegdatum" />
+                                </h4>
+                                <h5>
+                                    között a
+                                    <span t-field="docs[0].bankszamla_thaz" />
+                                    bankszámlájának forgalma
+                                </h5>
+                                <div class="col-xs-8 col-xs-offset-1">
+                                    <table class="table table-bordered" style="border: 2px solid #777777">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center" style="border: 2px solid #777777">Tranzakció</th>
+                                                <th class="text-center" style="border: 2px solid #777777"> Jóváírás</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            <tr t-foreach="docs" t-as="o">
+                                                <t t-if="o.jovairas &gt; 0">
+                                                    <td style="padding:0 5 1 5">
+                                                        <span t-field="o.tarh_tranzakcio" />
+                                                    </td>
+                                                    <td class="text-right" style="padding:0 5 0 5">
+                                                        <span t-esc="o.jovairas"
+                                                            t-esc-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}" />
+                                                    </td>
+                                                </t>
+                                            </tr>
+                                            <t t-set="osszeg" t-value="0" />
+                                            <tr t-foreach="docs" t-as="o">
+                                                <t t-set="osszeg" t-value="osszeg + o.jovairas" />
+                                                <t t-if="o_last">
+                                                    <td style="border: 2px solid #777777"> Összesen: </td>
+                                                    <td class="text-right" style="border: 2px solid #777777">
+                                                        <span t-esc="osszeg"
+                                                            t-esc-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}" />
+                                                    </td>
+                                                </t>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-xs-8 col-xs-offset-4">
+                                    <table class="table table-bordered" style="border: 2px solid #777777">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center" style="border: 2px solid #777777">Tranzakció</th>
+                                                <th class="text-center" style="border: 2px solid #777777"> Terhelés</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr t-foreach="docs" t-as="o">
+                                                <t t-if="o.terheles &gt; 0">
+                                                    <td style="padding:0 5 0 5">
+                                                        <span t-field="o.tarh_tranzakcio" />
+                                                    </td>
+                                                    <td class="text-right" style="padding:0 5 0 5">
+                                                        <span t-esc="o.terheles"
+                                                            t-esc-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}" />
+                                                    </td>
+                                                </t>
+                                            </tr>
+                                            <t t-set="osszeg" t-value="0" />
+                                            <tr t-foreach="docs" t-as="o">
+                                                <t t-set="osszeg" t-value="osszeg + o.terheles" />
+                                                <t t-if="o_last">
+                                                    <td style="border: 2px solid #777777"> Összesen: </td>
+                                                    <td class="text-right" style="border: 2px solid #777777">
+                                                        <span t-esc="osszeg"
+                                                            t-esc-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;res_company.currency_id&quot;}" />
+                                                    </td>
+                                                </t>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </t>
+                    </t>
+
+                </template>
+        -->
+
+
+    </data>
+</openerp>

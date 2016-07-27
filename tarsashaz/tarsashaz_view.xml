@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="tarsashaz_form_view">
+            <field name="name">res.partner.view.tarsashaz</field>
+            <field name="model">res.partner</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='buttons']" position="inside">
+                    <button class="oe_inline oe_stat_button" type="action"
+                            name="%(tarh_konyvel.action_tarh_lako_havijel_tree)d"
+                            icon="fa-tasks"
+                            context="{'search_default_tulaj': active_id}">
+                        <field  string="Egyenleg" name="egyenleg" widget="statinfo"/>
+                    </button>
+                    <button class="oe_inline oe_stat_button" type="action"
+                            name="%(tarh_konyvel.act_tarh_kinnlev)d"
+                            icon="fa-tasks"
+                            context="{'search_default_tulaj': active_id}">
+                        <field  string="Felszólítások" name="felszolitas" widget="statinfo"/>
+                    </button>
+
+
+                </xpath>
+
+
+                <field name="state_id" position="replace">
+                    <field name="state_id" invisible="1" />
+                </field>
+                <field name="website" position="replace">
+                    <field name="website" attrs="{'invisible': [('is_company','=', False)]}" />
+                </field>
+
+                <field name="function" position="replace">
+                    <field name="vat" string="Adoszam:"
+                           attrs="{'invisible': [('is_company','=', False)]}" />
+                </field>
+
+                <field name="website" position="after">
+                    <field name="alb_szam" attrs="{'invisible': [('customer','=', False)]}" />
+                    <field name="hrsz" attrs="{'invisible': [('customer','=', False)]}" />
+                    <field name="alapterulet" attrs="{'invisible': [('customer','=', False)]}" />
+                    <field name="tulhanyad" attrs="{'invisible': [('customer','=', False)]}" />
+                    <field name="th_oszto" attrs="{'invisible': [('customer','=', False)]}" />
+                    <field name="postai" attrs="{'invisible': ['|',('customer','=', False), ('is_company','=',True)]}" />
+                    <field name="levcim" attrs="{'invisible': ['|',('customer','=', False), ('is_company','=',True)]}" />
+                </field>
+
+                <!--
+                                <field name="child_ids" position="after">
+                                    <page colspan="4">
+                                        <group string="Bankszamlak">
+                                            <field name="bank_ids" nolabel="1"
+                                                   context="{'default_company_id': active_id }"    />
+
+
+                                        </group>
+                                    </page>
+                                </field>
+
+                -->
+                <field name="title" position="replace">
+                    <field name="onkormanyzati"
+                           attrs="{'invisible': ['|',('customer','=', False), ('is_company','=',True)]}" />
+                    <field name="vizora" attrs="{'invisible': [('customer','=', False)]}" />
+                    <field name="parkolohely" attrs="{'invisible': [('customer','=', False)]}" />
+                    <field name="phely_szam"
+                           attrs="{'invisible': ['|',('parkolohely','=','n'),('customer','=', False)]}" />
+                    <field name="alb_vetel"
+                           attrs="{'invisible': ['|',('customer','=', False), ('is_company','=',True)]}" />
+                    <field name="alb_eladas"
+                           attrs="{'invisible': ['|',('customer','=', False), ('is_company','=',True)]}" />
+                    <field name="lakoszam"
+                           attrs="{'invisible': ['|',('customer','=', False), ('is_company','=',True)]}" />
+                    <field name="lakoingatlan"
+                           attrs="{'invisible': ['|',('customer','=', False), ('is_company','=',True)]}" />
+                    <field name="uzemeltetesi"
+                           attrs="{'invisible': ['|',('customer','=', False), ('is_company','=',False)]}" />
+                    <field name="muszakis"
+                           attrs="{'invisible': ['|',('customer','=', False), ('is_company','=',False)]}" />
+                    <field name="konyvelo"
+                           attrs="{'invisible': ['|',('customer','=', False), ('is_company','=',False)]}" />
+
+                </field>
+
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="tarsashaz_tree_view">
+            <field name="name">res.partner.tree.tarsashaz</field>
+            <field name="model">res.partner</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="base.view_partner_tree" />
+            <field name="arch" type="xml">
+                <field name="display_name" position="after">
+                    <field name="alb_szam" string="Alb.sz."/>
+                    <!--                    <field name="city" />   -->
+                    <field name="street" />
+                    <field name="street2" />
+                </field>
+                <field name="email" position="replace">
+                    <field name="alapterulet"  />
+                </field>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="tarsashaz_bank_tree_view">
+            <field name="name">res.partner.tree.tarsashaz.bank</field>
+            <field name="model">res.partner.bank</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="base.view_partner_bank_tree" />
+            <field name="arch" type="xml">
+                <field name="footer" position="replace">
+                    <field name="state" />
+                </field>
+            </field>
+        </record>
+
+        <record id="view_tarsashaz_adatok_form" model="ir.ui.view">
+            <field name="name">res.partner.tarsashaz.adatok.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="priority">2</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <!--
+                                <xpath expr="//page[@string='Contacts']" position="before">
+                                    <page name="Lakosok" String="Lakosok" />
+                                </xpath>
+                -->
+                <xpath expr="//page[@string='Contacts']/field/kanban/templates/t/div/div/div/div/table/tr/td/div/a[@t-if='record.email.raw_value']" position="before">
+                    <div t-if="record.street2.raw_value"><h3><field name="street2"/></h3></div>
+
+                </xpath>
+
+                <xpath expr="//form[@string='Contact']/sheet/div" position="inside">
+                    <div class="oe_right oe_button_box" name="buttons2">
+                        <button class="oe_inline oe_stat_button" type="action"
+                                name="%(tarh_konyvel.action_tarh_lako_havijel_tree)d"
+                                icon="fa-tasks"
+                                context="{'search_default_tulaj': active_id}">
+                            <field  string="Egyenleg" name="egyenleg" widget="statinfo"/>
+                        </button>
+                        <button class="oe_inline oe_stat_button" type="action"
+                                name="%(tarh_konyvel.act_tarh_kinnlev)d"
+                                icon="fa-tasks"
+                                context="{'search_default_tulaj': active_id}">
+                            <field  string="Felszólítások" name="felszolitas" widget="statinfo"/>
+                        </button>
+
+                    </div>
+
+                </xpath>
+
+                <xpath expr="//form[@string='Contact']/sheet/group[2]" position="after">
+
+                    <group>
+                        <group>
+                            <field name="alb_szam" attrs="{'invisible': [('customer','=', False)]}" />
+                            <field name="hrsz" attrs="{'invisible': [('customer','=', False)]}" />
+                            <field name="alapterulet" attrs="{'invisible': [('customer','=', False)]}" />
+                            <field name="tulhanyad" attrs="{'invisible': [('customer','=', False)]}" />
+                            <field name="th_oszto" attrs="{'invisible': [('customer','=', False)]}" />
+                            <field name="postai" attrs="{'invisible': ['|',('customer','=', False)]}" />
+                            <field name="levcim" attrs="{'invisible': ['|',('customer','=', False)]}" />
+                        </group>
+                        <group>
+                            <field name="onkormanyzati"
+                                   attrs="{'invisible': ['|',('customer','=', False)]}" />
+                            <field name="vizora" attrs="{'invisible': [('customer','=', False)]}" />
+                            <field name="parkolohely" attrs="{'invisible': [('customer','=', False)]}" />
+                            <field name="phely_szam"
+                                   attrs="{'invisible': ['|',('parkolohely','=','n'),('customer','=', False)]}" />
+                            <field name="alb_vetel"
+                                   attrs="{'invisible': ['|',('customer','=', False)]}" />
+                            <field name="alb_eladas"
+                                   attrs="{'invisible': ['|',('customer','=', False)]}" />
+                            <field name="lakoszam"
+                                   attrs="{'invisible': ['|',('customer','=', False)]}" />
+                            <field name="lakoingatlan"
+                                   attrs="{'invisible': ['|',('customer','=', False)]}" />
+
+                        </group>
+                    </group>
+
+                </xpath>
+
+
+                <!--                 <xpath expr="//page[@string='Contacts']/field/kanban/templates/t/div/div/div/div/table/tr/td/h4/a/field[@name='name']" position="after">
+                                     <div t-if="record.street2.raw_value"><field name="street2"/></div>
+
+                                </xpath>
+
+                -->
+
+                <page name="sales_purchases" position="before">
+
+                    <page string="Alapító-SZMSZ" col="4" name="alapito"
+                          attrs="{'invisible': ['|',('is_company','=',False),('supplier','=',True)]}">
+                        <group>
+                            <field name="alapito_ids" widget="many2many_binary"/>
+
+                        </group>
+
+                        <!--
+                            <group>
+                                <group>
+                                    <field name="property_account_position" widget="selection"/>
+                                </group>
+                                <group>
+                                    <field name="last_reconciliation_date"/>
+                                </group>
+                                <group>
+                                    <field name="property_account_receivable" groups="account.group_account_invoice" />
+                                    <field name="property_payment_term" widget="selection"/>
+                                    <field name="credit"/>
+                                    <field name="credit_limit"/>
+                                </group>
+                                <group>
+                                    <field name="property_account_payable" groups="account.group_account_invoice"/>
+                                    <field name="property_supplier_payment_term" widget="selection"/>
+                                    <field name="debit"/>
+                                </group>
+                            </group>
+                            <field name="bank_ids" context="{'default_partner_id': active_id, 'form_view_ref': 'base.view_partner_bank_form'}">
+                                <tree string="Bank Details">
+                                    <field name="state" invisible="1"/>
+                                    <field name="sequence" invisible="1"/>
+                                    <field name="acc_number"/>
+                                    <field name="bank_name"/>
+                                    <field name="owner_name"/>
+                                </tree>
+                            </field>
+
+
+
+                            -->
+                    </page>
+                    <page string="Biztosítás" name="biztositas" attrs="{'invisible': ['|',('is_company','=',False),('supplier','=',True)]}">
+                        <group>
+                            <group>
+                                <field name="biztosito" string="Biztosító:"/>
+                            </group>
+                            <group>
+
+                                <field name="bizt_kotvszam" string="Biztosítás kötvényszáma:"/>
+                            </group >
+                            <group colspan="4">
+                                <field name="bizt_megj" string="Egyéb megjegyzés:"/>
+                                <field name="biztositas_ids" widget="many2many_binary"/>
+                            </group>
+                        </group>
+
+                        <!--
+                            <div>
+                                <p>Accounting-related settings are managed on <button name="open_commercial_entity" type="object" string="the parent company" class="oe_link"/></p>
+                            </div>
+                        -->
+                    </page>
+
+
+                    <page string="S.O.S." name="veszhelyzet" attrs="{'invisible': ['|',('is_company','=',False),('supplier','=',True)]}">
+                        <group>
+                            <group>
+                                <field name="sos_gondnok"  />
+                                <field name="sos_vizes" string="Vízvezeték szerelő"/>
+                            </group>
+                            <group>
+
+                                <field name="sos_elektromos" string="Villanyszerelő"/>
+                                <field name="sos_lift" string="Lift-szerelő"/>
+                            </group >
+                        </group>
+                    </page>
+
+                    <page string="Közművek" name="kozmuvek" attrs="{'invisible': ['|',('is_company','=',False),('supplier','=',True)]}">
+                        <!--
+                            <div>
+                                <p>Accounting-related settings are managed on <button name="open_commercial_entity" type="object" string="the parent company" class="oe_link"/></p>
+                            </div>
+                        -->
+                    </page>
+
+                </page>
+            </field>
+        </record>
+
+    </data>
+</openerp>
+

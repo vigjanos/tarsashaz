@@ -1,0 +1,109 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* tarsashaz
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0-20130916-231138\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-08-13 07:06+0000\n"
+"PO-Revision-Date: 2014-08-13 07:06+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: tarsashaz
+#: field:res.partner,phely_szam:0
+msgid "Parkolohely szam:"
+msgstr "Parkolóhely szám:"
+
+#. module: tarsashaz
+#: field:res.partner,onkormanyzati:0
+msgid "Onkormanyzati"
+msgstr "Önkormányzati"
+
+#. module: tarsashaz
+#: selection:res.partner,parkolohely:0
+#: selection:res.partner,vizora:0
+msgid "Van"
+msgstr "Van"
+
+#. module: tarsashaz
+#: field:res.partner,hrsz:0
+msgid "Helyrajzi szam"
+msgstr "Helyrajzi szám"
+
+#. module: tarsashaz
+#: field:res.partner,alapterulet:0
+msgid "Alapterulet m2:"
+msgstr "Alapterület m2:"
+
+#. module: tarsashaz
+#: view:res.partner:0
+msgid "Adoszam:"
+msgstr "Adószám:"
+
+#. module: tarsashaz
+#: field:res.partner,alb_eladas:0
+msgid "Albetet eladasa"
+msgstr "Albetét eladása"
+
+#. module: tarsashaz
+#: field:res.partner,tulhanyad:0
+msgid "Tul. hanyad:"
+msgstr "Tul. hányad:"
+
+#. module: tarsashaz
+#: selection:res.partner,onkormanyzati:0
+msgid "nem"
+msgstr "Nem"
+
+#. module: tarsashaz
+#: selection:res.partner,parkolohely:0
+#: selection:res.partner,vizora:0
+msgid "Nincs"
+msgstr "Nincs"
+
+#. module: tarsashaz
+#: field:res.partner,th_oszto:0
+msgid "Hanyad oszto:"
+msgstr "Tul. hányad osztó:"
+
+#. module: tarsashaz
+#: view:res.partner:0
+msgid "Bankszamlak"
+msgstr "Bankszámlák"
+
+#. module: tarsashaz
+#: model:ir.model,name:tarsashaz.model_res_partner
+msgid "Partner"
+msgstr "Partner"
+
+#. module: tarsashaz
+#: field:res.partner,alb_vetel:0
+msgid "Albetet vetele"
+msgstr "Albetét vétele"
+
+#. module: tarsashaz
+#: selection:res.partner,onkormanyzati:0
+msgid "Igen"
+msgstr "Igen"
+
+#. module: tarsashaz
+#: field:res.partner,alb_szam:0
+msgid "Albetet szama:"
+msgstr "Albetét száma:"
+
+#. module: tarsashaz
+#: field:res.partner,parkolohely:0
+msgid "Sajat_parkolo"
+msgstr "Sajat_parkoló"
+
+#. module: tarsashaz
+#: field:res.partner,vizora:0
+msgid "Vizora"
+msgstr "Vizóra"
+

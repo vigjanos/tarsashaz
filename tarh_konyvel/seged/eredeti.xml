@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<t t-name="tarh_konyvel.report_session1">
+
+
+
+	<t t-call="report.external_layout">
+		<t t-call="report.html_container">
+			<div class="page">
+				<h4>
+					<span t-field="docs[0].th_szamlatul" />
+					<span t-field="docs[0].kezdatum" />
+					és
+					<span t-field="docs[0].vegdatum" />
+					közötti elszámolása
+				</h4>
+				<div class="col-xs-8 col-xs-offset-1">
+					<table class="table table-bordered" style="border: 2px solid #777777">
+						<thead>
+							<tr>
+								<th class="text-center" style="border: 2px solid #777777">Tranzakció</th>
+								<th class="text-center" style="border: 2px solid #777777"> Jóváírás</th>
+							</tr>
+						</thead>
+						<tbody>
+
+							<tr t-foreach="docs" t-as="o">
+								<t t-if="o.jovairas > 0">
+									<td style="border: 1px solid #777777">
+										<span t-field="o.tarh_tranzakcio" />
+									</td>
+									<td class="text-right" style="border: 1px solid #777777">
+										<span t-field="o.jovairas" />
+									</td>
+								</t>
+							</tr>
+							<t t-set="osszeg" t-value="0" />
+							<tr t-foreach="docs" t-as="o">
+								<t t-set="osszeg" t-value="osszeg + o.jovairas" />
+								<t t-if="o_last">
+									<td style="border: 2px solid #777777"> Összesen: </td>
+									<td class="text-right" style="border: 2px solid #777777">
+										<span t-esc="osszeg" />
+									</td>
+								</t>
+							</tr>
+
+						</tbody>
+					</table>
+				</div>
+				<div class="col-xs-8 col-xs-offset-4">
+					<table class="table table-bordered" style="border: 2px solid #777777">
+						<thead>
+							<tr>
+								<th class="text-center" style="border: 2px solid #777777">Tranzakció</th>
+								<th class="text-center" style="border: 2px solid #777777"> Terhelés</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr t-foreach="docs" t-as="o">
+								<t t-if="o.terheles > 0">
+									<td style="border: 1px solid #777777">
+										<span t-field="o.tarh_tranzakcio" />
+									</td>
+									<td class="text-right" style="border: 1px solid #777777">
+										<span t-field="o.terheles" />
+									</td>
+								</t>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</t>
+	</t>
+
+</t>
+
+
+
+
+<!-- Példa az loop -- változó problémára 
+<t t-set="total" t-value="0" /> 
+<t t-foreach="o.message_follower_ids" t-as="f"> 
+<t t-set="total" t-value="total+1"/> 
+<t t-if="f_last"> 
+	<strong>
+	<p class="text-right">
+	<t t-esc="total"/> followers</p>
+	</strong> 
+	</t> </t> -->
+

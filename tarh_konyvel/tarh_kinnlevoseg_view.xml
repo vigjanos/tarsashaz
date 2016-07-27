@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="tarh_kinnlevoseg_form_view" model="ir.ui.view">
+            <field name="name">tarh.kinnlevoseg.form</field>
+            <field name="model">tarh.felszol</field>
+            <field name="arch" type="xml">
+                <form string="Kinnlevoseg">
+                    <header>
+                        <field name="felsz_status" widget="statusbar" clickable="True"/>
+                    </header>
+                    <sheet>
+                        <h1>
+                            <label string="Kinnlévőségek, felszólítások"/>
+                        </h1>
+                        <group>
+                            <div class="oe_right oe_button_box" name="buttons">
+                                <button class="oe_inline oe_stat_button" type="action"
+                                        name="%(tarh_konyvel.action_tarh_lako_havijel_tree)d"
+                                        icon="fa-tasks"
+                                        context="{'search_default_tulaj': tulaj}">
+                                    <field string="Egyenleg" name="egyenleg" widget="statinfo"/>
+                                </button>
+                                <button class="oe_inline oe_stat_button" type="action"
+                                        name="%(tarh_konyvel.action_tarh_lako_havijel_tree)d"
+                                        icon="fa-tasks"
+                                        context="{'search_default_tulaj': tulaj}">
+                                    <field string="Havi előírás" name="havi_eloir" widget="statinfo"/>
+                                </button>
+
+                                <button class="oe_inline oe_stat_button" type="action"
+                                        name=""
+                                        icon="fa-tasks">
+                                    <field string="-ig könyvelve" name="utso_konyv_nap" widget="statinfo"/>
+                                </button>
+
+                                <button name="datum_aktualizal" string="Új határidő" type="object"
+                                        groups="base.group_erp_manager"/>
+
+
+                            </div>
+                            <group colspan="4">
+                                <field name="id"/>
+                                <field name="tulaj" options="{'no_create' : True}" on_change="onchange_tulaj(tulaj)"/>
+                                <field name="tarsashaz" options="{'no_create' : True}"/>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="felsz_date" on_change="onchange_felsz_date(felsz_date)"/>
+                                    <field name="felsz_hatarido"/>
+                                </group>
+                                <group>
+                                    <field name="felsz_tipus"/>
+                                    <field name="ugyved"/>
+                                </group>
+                            </group>
+                            <group colspan="4">
+                                <field name="megjegyzes"/>
+                                <field name="feltoltes_ids" widget="many2many_binary"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="tarh_kinnlevoseg_tree_view" model="ir.ui.view">
+            <field name="name">tarh.kinnlevoseg.tree</field>
+            <field name="model">tarh.felszol</field>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="id"/>
+                    <field name="tulaj"/>
+                    <field name="felsz_tipus"/>
+                    <field name="felsz_status"/>
+                    <field name="felsz_date"/>
+                    <field name="megjegyzes"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="tarh_kinnlevoseg_search_view" model="ir.ui.view">
+            <field name="name">tarh.kinnlevoseg.search</field>
+            <field name="model">tarh.felszol</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                    <field name="tulaj" string="Tulajdonos"/>
+                    <field name="tarsashaz" string="Társasház"/>
+                    <field name="ugyved" string="Ügyvéd"/>
+                    <field name="megjegyzes" string="Megjegyzés"/>
+                    <field name="felsz_tipus" string="Felszólítás típusa"/>
+                    <field name="felsz_status" string="Felszólítás státusza"/>
+                    <separator/>
+                    <group expand="0" string="Csoportosítás...">
+                        <filter string="Társasházak" domain="[]"
+                                context="{'group_by':'tarsashaz'}"/>
+                        <filter string="Tulajdonos" domain="[]" context="{'group_by':'tulaj'}"/>
+                        <filter string="Felszólítás típus" domain="[]"
+                                context="{'group_by':'felsz_tipus'}"/>
+                        <filter string="Állapot" domain="[]"
+                                context="{'group_by':'felsz_status'}"/>
+                        <filter string="Eljáró ügyvéd" domain="[]"
+                                context="{'group_by':'ugyved'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="act_tarh_kinnlev">
+            <field name="name">tarh.felszol</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.felszol</field>
+            <!-- <field name="domain">[('field_name','condition',criteria)]</field> -->
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_kinnlevoseg_tree_view"/>
+        </record>
+
+        <menuitem name="Kinnlévőségek kezelése" parent="konyvel_menu" id="kinnlevosegek"
+                  sequence="40"/>
+        <menuitem name="Felszólítások követése" sequence="30"
+                  parent="kinnlevosegek" id="kinnlevosegek1_sub" action="act_tarh_kinnlev"/>
+
+
+        <report id="report_felszolitok_1"
+                model="tarh.felszol"
+                string="nyomtatás képernyőre"
+                name="tarh_konyvel.report_felszolitok1"
+                file="tarh_konyvel.tarh_kinnlevoseg_view"
+                report_type="qweb-html"/>
+
+        <report id="report_felszolitok_2"
+                model="tarh.felszol"
+                string="nyomtatás pdf-be"
+                name="tarh_konyvel.report_felszolitok1"
+                file="tarh_konyvel.tarh_kinnlevoseg_view"
+                report_type="qweb-pdf"/>
+        <!--
+                <template id="report_felszolitok1">
+                    <t t-call="report.external_layout">
+                        <t t-call="report.html_container">
+                            <div class="page">
+                                <div t-foreach="docs" t-as="dokk">
+                                    <div class="row mt32">
+                                        <div class="col-xs-3">
+                                            <strong>
+                                                <span t-field="dokk.tulaj.name"/>
+                                            </strong>
+                                        </div>
+                                        <div class="col-xs-3">
+                                            <span t-field="dokk.tarsashaz"/>
+                                        </div>
+                                        <div class="col-xs-3">
+                                            <span t-field="dokk.felsz_tipus"/>
+                                        </div>
+                                        <div class="col-xs-3">
+                                            <div class="text-left">
+                                                <span t-field="dokk.felsz_date"/>
+                                                /
+                                                <span t-field="dokk.felsz_hatarido"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb32">
+                                        <div class="col-xs-3">
+                                            <span t-field="dokk.felsz_status"/>
+                                        </div>
+                                        <div class="col-xs-9">
+                                            <span t-field="dokk.megjegyzes"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </t>
+                    </t>
+                </template>
+        -->
+        <template id="report_felszolitok1">
+            <t t-call="report.external_layout">
+                <t t-call="report.html_container">
+                    <div class="page">
+                        <div class="row mt32 mb32">
+                            <h4>
+                                Felszólítások nyomonkövetése
+                            </h4>
+                        </div>
+                        <div t-foreach="docs" t-as="dokk">
+                            <table class="table table-bordered" width="100%" border="3">
+                                <tr>
+                                    <td width="30%">
+                                        <strong>
+                                            <span t-field="dokk.tarsashaz"/>
+                                            <br/>
+                                        </strong>
+                                        HRSZ:
+                                        <span t-field="dokk.tarsashaz.hrsz"/>
+
+                                    </td>
+                                    <td width="35%">
+                                        <strong>
+                                            <span t-field="dokk.tulaj.name"/>
+                                            <br/>
+                                        </strong>
+                                        <span t-field="dokk.tulaj.alb_szam"/>. albetét
+                                        <span t-field="dokk.tulaj.street2"/>
+
+                                    </td>
+                                    <td width="20%">
+                                        <span t-field="dokk.felsz_tipus"/>
+                                    </td>
+                                    <td width="15%">
+                                        <strong>
+                                            <span t-field="dokk.felsz_status"/>
+                                        </strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Elindítva:
+                                        <span t-field="dokk.felsz_date"/>
+                                        <br/>
+                                        Határidő:
+                                        <span t-field="dokk.felsz_hatarido"/>
+                                    </td>
+                                    <td colspan="3">
+                                        <span t-field="dokk.megjegyzes"/>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="col-xs-12">
+                                <div style="border-bottom: 2px solid black;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>

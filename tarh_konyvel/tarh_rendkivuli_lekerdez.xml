@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="tarh_rendkivuli_lekerdez_view" model="ir.ui.view">
+            <field name="name">tarh_rendkivuli_view</field>
+            <field name="model">tarh.rendkivuli.lekerdez</field>
+            <field name="arch" type="xml">
+                <form string="Rendkívüli előírások - befizetések">
+                    <sheet>
+                        <h1>
+                            <label string="Rendkívüli előírások - befizetések"/>
+                        </h1>
+                        <group>
+                            <field name="kezddatum"/>
+                            <field name="vegdatum"/>
+                            <field name="tarsashaz" options="{'no_create' : True}" domain="[('is_company','=',True),('name','ilike','%rsash%')]"/>
+                            <button string="Lekérdezés" type="object" name="lekerdez"/>
+                        </group>
+                        <notebook>
+                            <page string="tulajdonosok">
+
+                                <field name="sor_ids">
+
+                                    <tree string="Rendkívüli előírás-befizetés">
+                                        <field name="alb_szam"/>
+                                        <field name="tulajdonos"/>
+                                        <field name="eloiras"/>
+                                        <field name="befizetes"/>
+                                        <field name="egyenleg"/>
+                                    </tree>
+
+
+                                </field>
+
+
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="tarh_rendkivuli_lekerdez_tree" model="ir.ui.view">
+            <field name="name">tarh_rendkivuli_tree</field>
+            <field name="model">tarh.rendkivuli.lekerdez</field>
+            <field name="arch" type="xml">
+                <tree string="Rendkívüli előírások-befizetések">
+                    <field name="kezddatum"/>
+                    <field name="vegdatum"/>
+                    <field name="tarsashaz"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="tarh_rendkivuli_lekerdez_action" model="ir.actions.act_window">
+            <field name="name">tarh_rendkivuli_</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.rendkivuli.lekerdez</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_rendkivuli_lekerdez_view"/>
+        </record>
+
+        <menuitem id="rendkivuli_lista" name="Rendkívüli előírás-befizetés" parent="konyvel_folyoszamla"
+                  action="tarh_rendkivuli_lekerdez_action" sequence="60"/>
+
+
+        <report id="rendkivuli_lekerdez"
+                model="tarh.rendkivuli.lekerdez"
+                string="képernyőre"
+                name="tarh_konyvel.rendkivuli_lekerdez1"
+                file="tarh_konyvel.tarh_rendkivuli_lekerdez"
+                report_type="qweb-html" />
+
+        <report id="rendkivuli_lekerdez2"
+                model="tarh.rendkivuli.lekerdez"
+                string="pdf-be küldve"
+                name="tarh_konyvel.rendkivuli_lekerdez1"
+                file="tarh_konyvel.tarh_rendkivuli_lekerdez"
+                report_type="qweb-pdf" />
+
+        <template id="rendkivuli_lekerdez1">
+            <t t-call="report.external_layout">
+                <t t-call="report.html_container">
+                    <div class="page">
+                        <style>
+                            .alul1 {
+                            margin-bottom: 1cm;
+                            }
+                        </style>
+                        <div class="row">
+                            <div class="col-xs-10 col-xs-offset-1">
+                                <h4 class="alul1" align="center">
+                                    A <span t-field="docs[0].tarsashaz.name"/> rendkívüli befizetés előírásai és a tulajdonosok
+                                    befizetései <span t-field="docs[0].kezddatum"/> és <span t-field="docs[0].vegdatum"/> között
+                                </h4>
+                            </div>
+                        </div>
+                        <table class="table table-condensed" style="font-size:16px;">
+                            <thead>
+                                <tr style="font-size:16px;">
+                                    <th class="text-center">
+                                        <strong>Alb.szám</strong>
+                                    </th>
+                                    <th class="text-center">
+                                        <strong>Emelet</strong>
+                                    </th>
+                                    <th class="text-center">
+                                        <strong>Tulajdonos</strong>
+                                    </th>
+                                    <th class="text-center">
+                                        <strong>Előírás</strong>
+                                    </th>
+                                    <th class="text-center">
+                                        <strong>Befizetés</strong>
+                                    </th>
+                                    <th class="text-center">
+                                        <strong>Egyenleg</strong>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="sum_eloiras" t-value="0"/>
+                                <t t-set="sum_befizetes" t-value="0"/>
+                                <t t-set="sum_egyenleg" t-value="0"/>
+                                <t t-foreach="docs.sor_ids" t-as="sor">
+                                    <tr style="font-size:16px;">
+                                        <td style="padding:0 5 1 5" class="text-center">
+                                            <span t-field="sor.tulajdonos.alb_szam"/>
+                                        </td>
+                                        <td style="padding:0 5 1 5"  class="text-center">
+                                            <span t-field="sor.tulajdonos.street2"/>
+                                        </td>
+                                        <td style="padding:0 5 1 5">
+                                            <span t-field="sor.tulajdonos.name"/>
+                                        </td>
+
+                                        <td style="padding:0 5 1 5" class="text-right">
+                                            <span t-field="sor.eloiras"
+                                                  t-field-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}' />
+                                            <t t-set="sum_eloiras" t-value="sum_eloiras + sor.eloiras"/>
+                                        </td>
+                                        <td style="padding:0 5 1 5" class="text-right">
+                                            <span t-field="sor.befizetes"
+                                                  t-field-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}' />
+                                            <t t-set="sum_befizetes" t-value="sum_befizetes + sor.befizetes"/>
+                                        </td>
+                                        <td style="padding:0 5 1 5" class="text-right">
+                                            <span t-field="sor.egyenleg"
+                                                  t-field-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}' />
+                                            <t t-set="sum_egyenleg" t-value="sum_egyenleg + sor.egyenleg"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <tr style="font-size:16px;">
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <strong>Összesen:</strong>
+                                    </td>
+                                    <td class="text-right">
+                                        <strong>
+                                            <span t-esc="sum_eloiras"
+                                                  t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}' />
+                                        </strong>
+                                    </td>
+                                    <td class="text-right">
+                                        <strong>
+                                            <span t-esc="sum_befizetes"
+                                                  t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}' />
+                                        </strong>
+
+                                    </td>
+                                    <td class="text-right">
+                                        <strong>
+                                            <span t-esc="sum_egyenleg"
+                                                  t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}' />
+                                        </strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </t>
+            </t>
+
+
+        </template>
+
+    </data>
+</openerp>

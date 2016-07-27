@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="tarh_bejszamlak_form_view" model="ir.ui.view">
+            <field name="name">tarh.bejszamlak.form</field>
+            <field name="model">tarh.bejszamlak</field>
+            <field name="arch" type="xml">
+                <form string="bej_szamlak">
+                    <header>
+                        <field name="status" widget="statusbar" clickable="True"/>
+                            <!--    options="{'fold_field': 'fold'}" Ez nem tudom mit csinál-->
+                    </header>
+                    <sheet>
+                        <h1>
+                            <label string="Bejövő számlák nyilvántartása"/>
+                        </h1>
+                        <group>
+                            <group colspan="4">
+                                <field name="id"/>
+                                <field name="tarsashaz" options="{'no_create' : True}"/>
+                                <field name="beszallito" options="{'no_create' : True}"/>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="tarh_tranzakcio"/>
+                                    <field name="szamla_osszeg"/>
+                                </group>
+                                <group>
+                                    <field name="erk_datum"/>
+                                    <field name="fiz_hatarido"/>
+                                </group>
+                            </group>
+                            <group colspan="4">
+                                <field name="referencia" placeholder="Számlaszám, utalás kódja stb."/>
+                                <field name="megjegyzes"/>
+                               <!-- <field name="status"/> -->
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="tarh_bejszamlak_tree_view" model="ir.ui.view">
+            <field name="name">tarh.bejszamlak.tree</field>
+            <field name="model">tarh.bejszamlak</field>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="id"/>
+                    <field name="tarsashaz"/>
+                    <field name="beszallito"/>
+                    <field name="tarh_tranzakcio"/>
+                    <field name="fiz_hatarido"/>
+                    <field name="status"/>
+                    <field name="szamla_osszeg"/>
+                </tree>
+            </field>
+        </record>
+
+
+
+        <record model="ir.actions.act_window" id="act_tarh_bejszamlak">
+            <field name="name">tarh.bejszamlak</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.bejszamlak</field>
+             <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_bejszamlak_form_view" />
+        </record>
+
+        <menuitem name="Iktatás" parent="konyvel_menu" id="iktatas"
+                  sequence="48" />
+        <menuitem name="Bejövő számlák iktatása" sequence="31"
+                  parent="iktatas" id="iktatas1_sub" action="act_tarh_bejszamlak" />
+
+
+
+    </data>
+</openerp>

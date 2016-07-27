@@ -1,0 +1,591 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <report id="report_lekerdez3"
+                model="tarh.lako.havijel"
+                string="kiírás képernyőre"
+                name="tarh_konyvel.rep_lako_lekerd"
+                file="tarh_konyvel.lekerdez_lakoegy"
+                report_type="qweb-html"/>
+
+        <report id="report_lekerdez4"
+                model="tarh.lako.havijel"
+                string="nyomtatás pdf"
+                name="tarh_konyvel.rep_lako_lekerd"
+                file="tarh_konyvel.lekerdez_lakoegy"
+                report_type="qweb-pdf"/>
+
+                <report id="felszol_kepviselet"
+                model="tarh.lako.havijel"
+                string="képviseleti felszólítás pdf"
+                name="tarh_konyvel.rep_kepviseleti_felsz"
+                file="tarh_konyvel.lekerdez_lakoegy"
+                report_type="qweb-pdf"/>
+
+        <report id="felszol_lako_olajos"
+                model="tarh.lako.havijel"
+                string="felszólító Olajos pdf"
+                name="tarh_konyvel.olajos_felsz_lako"
+                file="tarh_konyvel.lekerdez_lakoegy"
+                report_type="qweb-pdf"/>
+
+        <report id="felszol_lako_zvakan"
+                model="tarh.lako.havijel"
+                string="felszólító Zvekán pdf"
+                name="tarh_konyvel.zvekan_felsz_lako"
+                file="tarh_konyvel.lekerdez_lakoegy"
+                report_type="qweb-pdf"/>
+
+
+        <template id="rep_kepviseleti_felsz">
+            <t t-call="report.external_layout">
+                <t t-call="report.html_container">
+                    <div class="page">
+                        <div class="row">
+                            <div class="col-xs-6" style="font-size:16px;">
+                                <h3>
+                                    <strong>
+                                        <span t-field="docs[0].tulaj.name"/>
+                                        <br/>
+                                    </strong>
+                                </h3>
+                                <span t-field="docs[0].tulaj.city"/>
+                                <span t-field="docs[0].tulaj.parent_id.zip"/>
+                                <span t-field="docs[0].tulaj.street"/>
+                                <br/>
+
+                                <span t-field="docs[0].tulaj.street2"/>
+                                ingatlan
+                                <t t-if="docs[0].tulaj.alb_szam &gt; 0">,
+                                    <span t-field="docs[0].tulaj.alb_szam"/>. számú albetét
+                                </t>
+                                <br/>
+                            </div>
+                            <div class="col-xs-4 col-xs-offset-2" style="font-size:16px;">
+                                <div class="text-right">
+                                    <t t-if="docs[0].tulaj.email">Email:
+                                        <span t-field="docs[0].tulaj.email"/>
+                                    </t>
+                                </div>
+                                <div class="text-right">
+                                    <t t-if="docs[0].tulaj.postai">Levélcím:
+                                        <span t-field="docs[0].tulaj.levcim"/>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt16 mb16 col-xs-12">
+                            <h4>
+                                <strong>
+                                    Tárgy: Felszólítás társasházi közös költség megfizetése iránt
+                                </strong>
+                            </h4>
+                        </div>
+                        <div class="row mt16 mb16 col-xs-11 col-xs-offset-1">
+                            <h4>
+                                <strong>
+                                    Tisztelt <span t-field="docs[0].tulaj.name"/>!
+                                </strong>
+                            </h4>
+                        </div>
+                        <t t-set="aktualegy" t-value="0"/>
+                        <span t-foreach="docs.sor_id" t-as="o">
+                            <t t-if="'Aktu' in o.szoveg">
+                                <t t-set="aktualegy" t-value="o.befizetes"/>
+                            </t>
+                        </span>
+                        <div class="row mt32 mb16 col-xs-10 col-xs-offset-1 text-justify" style="font-size:16px;">
+                            A <span t-field="docs[0].tulaj.parent_id.name"/>
+                            megbízásából eljárva, tájékoztatom Önt, hogy <span t-field="docs[0].vegdatum"/>. napjával
+                            bezárólag Önnek
+                        </div>
+                        <div class="row mb16 col-xs-10 col-xs-offset-1 text-center">
+                            <h2>
+                                <strong>
+                                    <span t-esc="aktualegy * -1"
+                                          t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                </strong>
+                            </h2>
+                        </div>
+                        <div class="row mb16 col-xs-10 col-xs-offset-1" style="font-size:16px;">
+                            tartozása áll fenn a Társasházzal szemben.
+                        </div>
+
+                        <div class="row mb16 col-xs-10 col-xs-offset-1 text-justify" style="font-size:16px;">
+                            Kérem Önt, hogy tartozását, levelem kézhezvételét
+                            követő 8 napon belül rendezni szíveskedjék a közös képviselet által biztosított csekk felhasználásával, vagy
+                            banki átutalással, a <span t-field="docs[0].tulaj.parent_id.name"/> <span t-field="docs[0].tulaj.parent_id.uzemeltetesi"/>
+                            számú bankszámlájára, mert ellenkező esetben kénytelen leszek jogi úton érvényt szerezni
+                            a Társasház követelésének.
+                        </div>
+                        <div class="row mt16 mb16 col-xs-10 col-xs-offset-1 text-justify" style="font-size:16px;">
+                            Megjegyzem, hogy amennyiben jelen felszólításom eredménytelen marad, úgy Irodánk <strong>ügyvédi felszólítást</strong> küld,
+                            majd <strong> fizetési meghagyást </strong> indít Önnel szemben, amely késedelmi kamat, illeték és további
+                            ügyvédi költség fizetési kötelezettségével is jár. Tájékoztatom,
+                            hogy ezután a 2003. évi CXXXIII. társasházi törvény 30. és 31. §-a alapján kezdeményezni
+                            fogom ingatlanának <strong>jelzálogjoggal</strong> történő megterhelését, mely eljárás tetemes költsége szintén
+                            Önt fogja terhelni.
+                        </div>
+                        <div class="row mt16 mb32 col-xs-10 col-xs-offset-1 text-justify" style="font-size:16px;">
+                            Amennyiben tartozását időközben rendezte, úgy szíves elnézését kérem a zavarásért!
+                        </div>
+
+                        <div class="row mb32 col-xs-8 col-xs-offset-1" style="font-size:16px;">
+                            Budapest, <span t-field="docs[0].lekerdatum"/>
+                        </div>
+                        <div class="row mb32 col-xs-8 col-xs-offset-4" style="font-size:16px;">
+                            Köszönettel:
+                        </div>
+                        <div class="row mb32 col-xs-4 col-xs-offset-6 text-center" style="font-size:16px;">
+                            ......................................
+                            <br/>
+                            <span t-field="user.name"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+
+        <template id="olajos_felsz_lako">
+            <t t-call="tarh_konyvel.external_layout_olajos">
+                <t t-call="report.html_container">
+                    <div class="page">
+                        <div class="row">
+                            <div class="col-xs-6" style="font-size:16px;">
+                                <h3>
+                                    <strong>
+                                        <span t-field="docs[0].tulaj.name"/>
+                                        <br/>
+                                    </strong>
+                                </h3>
+                                <span t-field="docs[0].tulaj.city"/>
+                                <span t-field="docs[0].tulaj.parent_id.zip"/>
+                                <span t-field="docs[0].tulaj.street"/>
+                                <br/>
+
+                                <span t-field="docs[0].tulaj.street2"/>
+                                ingatlan
+                                <t t-if="docs[0].tulaj.alb_szam &gt; 0">,
+                                    <span t-field="docs[0].tulaj.alb_szam"/>. számú albetét
+                                </t>
+                                <br/>
+                            </div>
+                            <div class="col-xs-4 col-xs-offset-2" style="font-size:16px;">
+                                <div class="text-right">
+                                    <t t-if="docs[0].tulaj.email">Email:
+                                        <span t-field="docs[0].tulaj.email"/>
+                                    </t>
+                                </div>
+                                <div class="text-right">
+                                    <t t-if="docs[0].tulaj.postai">Levélcím:
+                                        <span t-field="docs[0].tulaj.levcim"/>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt16 mb16 col-xs-12">
+                            <h4>
+                                <strong>
+                                    Tárgy: Ügyvédi felszólítás társasházi közös költség megfizetése iránt
+                                </strong>
+                            </h4>
+                        </div>
+                        <div class="row mt16 mb16 col-xs-11 col-xs-offset-1">
+                            <h4>
+                                <strong>
+                                    Tisztelt <span t-field="docs[0].tulaj.name"/>!
+                                </strong>
+                            </h4>
+                        </div>
+                        <t t-set="aktualegy" t-value="0"/>
+                        <span t-foreach="docs.sor_id" t-as="o">
+                            <t t-if="'Aktu' in o.szoveg">
+                                <t t-set="aktualegy" t-value="o.befizetes"/>
+                            </t>
+                        </span>
+                        <div class="row mt32 mb16 col-xs-10 col-xs-offset-1 text-justify" style="font-size:16px;">
+                            Alulírott dr. Olajos Szilvia ügyvéd a
+                            <span t-field="docs[0].tulaj.parent_id.name"/>
+                            megbízásából eljárva, tájékoztatom, hogy <span t-field="docs[0].vegdatum"/>. napjával
+                            bezárólag Önnek
+                        </div>
+                        <div class="row mb16 col-xs-10 col-xs-offset-1 text-center">
+                            <h2>
+                                <strong>
+                                    <span t-esc="aktualegy * -1"
+                                          t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                </strong>
+                            </h2>
+                        </div>
+                        <div class="row mb16 col-xs-10 col-xs-offset-1" style="font-size:16px;">
+                            közös költség tartozása áll fenn a Társasházzal szemben.
+                        </div>
+
+                        <div class="row mb16 col-xs-10 col-xs-offset-1 text-justify" style="font-size:16px;">
+                            Kérem Önt, hogy tartozását, valamint jelen ügyvédi fizetési felszólítás 5.000,- Ft ügyvédi díját levelem kézhezvételét
+                            követő 8 napon belül rendezni szíveskedjék a közös képviselet által biztosított csekk felhasználásával, vagy banki átutalással, a
+                            <span t-field="docs[0].bankszamla"/>
+                            Társasház bankszámlájára, mert ellenkező esetben kénytelen leszek jogi úton érvényt szerezni
+                            a Társasház követelésének.
+                        </div>
+                        <div class="row mt16 mb16 col-xs-10 col-xs-offset-1 text-justify" style="font-size:16px;">
+                            Megjegyzem, hogy amennyiben jelen ügyvédi felszólításom eredménytelen marad, úgy Irodánk <strong> fizetési meghagyást </strong> indít Önnel
+                            szemben, amely késedelmi kamat, illeték és további ügyvédi költség fizetési kötelezettségével is jár. Tájékoztatom,
+                            hogy a jogerős fizetési meghagyás, illetve a 2003. évi CXXXIII. társasházi törvény 30. és 31. §-a alapján kezdeményezni
+                            fogom ingatlanának <strong>jelzálogjoggal</strong> történő megterhelését, mely eljárás tetemes költsége szintén Önt fogja terhelni.
+                        </div>
+                        <div class="row mt16 mb32 col-xs-10 col-xs-offset-1 text-justify" style="font-size:16px;">
+                            Amennyiben tartozását időközben rendezte, úgy szíves elnézését kérem a zavarásért!
+                        </div>
+
+                        <div class="row mb32 col-xs-8 col-xs-offset-1" style="font-size:16px;">
+                            Budapest, <span t-field="docs[0].lekerdatum"/>
+                        </div>
+                        <div class="row mb32 col-xs-8 col-xs-offset-4" style="font-size:16px;">
+                            Köszönettel:
+                        </div>
+                        <div class="row mb32 col-xs-4 col-xs-offset-6 text-center" style="font-size:16px;">
+                            ......................................
+                            <br/>
+                            dr. Olajos Szilvia
+                            <br/>
+                            ügyvéd
+                        </div>
+
+                    </div>
+
+                    <!-- page div-je -->
+                </t>
+            </t>
+        </template>
+
+
+        <template id="zvekan_felsz_lako">
+            <t t-call="tarh_konyvel.external_layout_zvekan">
+                <t t-call="report.html_container">
+                    <div class="page">
+                        <div class="row">
+                            <div class="col-xs-6" style="font-size:16px;">
+                                <h3>
+                                    <strong>
+                                        <span t-field="docs[0].tulaj.name"/>
+                                        <br/>
+                                    </strong>
+                                </h3>
+                                <span t-field="docs[0].tulaj.city"/>
+                                <span t-field="docs[0].tulaj.parent_id.zip"/>
+                                <span t-field="docs[0].tulaj.street"/>
+                                <br/>
+
+                                <span t-field="docs[0].tulaj.street2"/>
+                                ingatlan
+                                <t t-if="docs[0].tulaj.alb_szam &gt; 0">,
+                                    <span t-field="docs[0].tulaj.alb_szam"/>. számú albetét
+                                </t>
+                                <br/>
+                            </div>
+                            <div class="col-xs-4 col-xs-offset-2" style="font-size:16px;">
+                                <div class="text-right">
+                                    <t t-if="docs[0].tulaj.email">Email:
+                                        <span t-field="docs[0].tulaj.email"/>
+                                    </t>
+                                </div>
+                                <div class="text-right">
+                                    <t t-if="docs[0].tulaj.postai">Levélcím:
+                                        <span t-field="docs[0].tulaj.levcim"/>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt16 mb16 col-xs-12">
+                            <h4>
+                                <strong>
+                                    Tárgy: Ügyvédi felszólítás társasházi közös költség megfizetése iránt
+                                </strong>
+                            </h4>
+                        </div>
+                        <div class="row mt16 mb16 col-xs-11 col-xs-offset-1">
+                            <h4>
+                                <strong>
+                                    Tisztelt <span t-field="docs[0].tulaj.name"/>!
+                                </strong>
+                            </h4>
+                        </div>
+                        <t t-set="aktualegy" t-value="0"/>
+                        <span t-foreach="docs.sor_id" t-as="o">
+                            <t t-if="'Aktu' in o.szoveg">
+                                <t t-set="aktualegy" t-value="o.befizetes"/>
+                            </t>
+                        </span>
+                        <div class="row mt32 mb16 col-xs-10 col-xs-offset-1 text-justify" style="font-size:16px;">
+                            Alulírott dr. Zvekán Erzsébet ügyvéd a
+                            <span t-field="docs[0].tulaj.parent_id.name"/>
+                            megbízásából eljárva, tájékoztatom, hogy <span t-field="docs[0].vegdatum"/>. napjával
+                            bezárólag Önnek
+                        </div>
+                        <div class="row mb16 col-xs-10 col-xs-offset-1 text-center">
+                            <h2>
+                                <strong>
+                                    <span t-esc="aktualegy * -1"
+                                          t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                </strong>
+                            </h2>
+                        </div>
+                        <div class="row mb16 col-xs-10 col-xs-offset-1" style="font-size:16px;">
+                            közös költség tartozása áll fenn a Társasházzal szemben.
+                        </div>
+
+                        <div class="row mb16 col-xs-10 col-xs-offset-1 text-justify" style="font-size:16px;">
+                            Kérem Önt, hogy tartozását, valamint jelen ügyvédi fizetési felszólítás 5.000,- Ft ügyvédi díját levelem kézhezvételét
+                            követő 8 napon belül rendezni szíveskedjék a közös képviselet által biztosított csekk felhasználásával, vagy banki átutalással, a
+                            <span t-field="docs[0].bankszamla"/>
+                            Társasház bankszámlájára, mert ellenkező esetben kénytelen leszek jogi úton érvényt szerezni
+                            a Társasház követelésének.
+                        </div>
+                        <div class="row mt16 mb16 col-xs-10 col-xs-offset-1 text-justify" style="font-size:16px;">
+                            Megjegyzem, hogy amennyiben jelen ügyvédi felszólításom eredménytelen marad, úgy Irodánk <strong> fizetési meghagyást </strong> indít Önnel
+                            szemben, amely késedelmi kamat, illeték és további ügyvédi költség fizetési kötelezettségével is jár. Tájékoztatom,
+                            hogy a jogerős fizetési meghagyás, illetve a 2003. évi CXXXIII. társasházi törvény 30. és 31. §-a alapján kezdeményezni
+                            fogom ingatlanának <strong>jelzálogjoggal</strong> történő megterhelését, mely eljárás tetemes költsége szintén Önt fogja terhelni.
+                        </div>
+                        <div class="row mt16 mb32 col-xs-10 col-xs-offset-1 text-justify" style="font-size:16px;">
+                            Amennyiben tartozását időközben rendezte, úgy szíves elnézését kérem a zavarásért!
+                        </div>
+
+                        <div class="row mb32 col-xs-8 col-xs-offset-1" style="font-size:16px;">
+                            Budapest, <span t-field="docs[0].lekerdatum"/>
+                        </div>
+                        <div class="row mb32 col-xs-8 col-xs-offset-4" style="font-size:16px;">
+                            Köszönettel:
+                        </div>
+                        <div class="row mb32 col-xs-4 col-xs-offset-6 text-center" style="font-size:16px;">
+                            ......................................
+                            <br/>
+                            dr. Zvekán Erzsébet
+                            <br/>
+                            ügyvéd
+                        </div>
+                    </div>
+
+                    <!-- page div-je -->
+                </t>
+            </t>
+        </template>
+
+
+
+        <template id="rep_lako_lekerd">
+            <t t-call="report.external_layout">
+                <t t-call="report.html_container">
+                    <div class="page">
+
+
+                        <div class="row">
+                            <div class="col-xs-6" style="font-size:16px;">
+                                <span t-field="docs[0].tulaj.parent_id.name"/>
+                                <br/>
+                                <span t-field="docs[0].tulaj.city"/>
+                                <span t-field="docs[0].tulaj.parent_id.zip"/>
+                                <br/>
+
+                                <span t-field="docs[0].tulaj.street2"/>
+                                ingatlan
+                                <t t-if="docs[0].tulaj.alb_szam &gt; 0">,
+                                    <span t-field="docs[0].tulaj.alb_szam"/>. számú albetét
+                                </t>
+                                <br/>
+                            </div>
+                            <div class="col-xs-4 col-xs-offset-1" style="font-size:16px;">
+                                <div class="text-right">
+                                    Ügyintézőnk:
+                                    <span t-field="user.name"/>
+                                    <br/>
+                                    Telefon:
+                                    <span t-field="user.phone"/>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <h4 class="text-center">
+                            <strong>
+                                <span t-field="docs[0].tulaj.name"/>
+                            </strong>
+                            tulajdonos egyenlege
+                            <span t-field="docs[0].kezdatum"/>
+                            és
+                            <span t-field="docs[0].vegdatum"/>
+                            között
+                        </h4>
+
+                        <div class="col-xs-10 col-xs-offset-1">
+                            <h4 class="text-center">Előírások és befizetések</h4>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Könyvelés napja</th>
+                                        <th class="text-center">Előírás/befizetés</th>
+                                        <th class="text-center">Előírások</th>
+                                        <th class="text-center">Befizetések</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+
+                                    <tr t-foreach="docs.sor_id" t-as="sor">
+                                        <td style="padding:0 5 1 5">
+                                            <span t-field="sor.erteknap"/>
+                                        </td>
+                                        <td style="padding:0 5 1 5">
+                                            <span t-field="sor.szoveg"/>
+                                        </td>
+                                        <td class="text-right" style="padding:0 5 0 5">
+                                            <span t-field="sor.eloiras"
+                                                  t-field-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                        </td>
+
+
+                                        <td class="text-right" style="padding:0 5 0 5">
+                                            <span t-field="sor.befizetes"
+                                                  t-field-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                        </td>
+                                    </tr>
+
+
+                                </tbody>
+                            </table>
+                            <t t-set="sum_befiz" t-value="0"/>
+                            <t t-set="sum_eloir" t-value="0"/>
+                            <t t-set="nyitoegy" t-value="0"/>
+                            <t t-set="aktualegy" t-value="0"/>
+                            <h4 class="text-center">Összesítés</h4>
+
+                            <span t-foreach="docs.sor_id" t-as="o">
+                                <t t-if="'Nyit' in o.szoveg">
+                                    <t t-set="nyitoegy" t-value="o.befizetes"/>
+                                </t>
+                                <t t-if="'Aktu' in o.szoveg">
+                                    <t t-set="aktualegy" t-value="o.befizetes"/>
+                                </t>
+                                <t t-if=" 'egyenleg' not in o.szoveg">
+                                    <t t-set="sum_befiz" t-value="sum_befiz + o.befizetes"/>
+                                    <t t-set="sum_eloir" t-value="sum_eloir + o.eloiras"/>
+                                </t>
+                            </span>
+
+
+                            <div class="row">
+                                <div class="col-xs-8 col-xs-offset-2">
+                                    <table class="table table-condensed">
+                                        <tbody>
+                                            <tr>
+                                                <td style="padding:0 5 1 5">
+                                                    Nyitóegyenleg:
+                                                </td>
+                                                <td class="text-right" style="padding:0 5 0 5">
+                                                    <span t-esc="nyitoegy"
+                                                          t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                                </td>
+
+                                            </tr>
+
+                                            <tr>
+                                                <td style="padding:0 5 1 5">
+                                                    Előírások összesen:
+                                                </td>
+                                                <td class="text-right" style="padding:0 5 0 5">
+                                                    -
+                                                    <span t-esc="sum_eloir"
+                                                          t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                                </td>
+
+                                            </tr>
+
+                                            <tr>
+                                                <td style="padding:0 5 1 5">
+                                                    Befizetések összesen:
+                                                </td>
+                                                <td class="text-right" style="padding:0 5 0 5">
+                                                    <span t-esc="sum_befiz"
+                                                          t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                                </td>
+
+                                            </tr>
+
+
+                                            <tr>
+                                                <td>
+                                                    <strong>Aktuális egyenleg:</strong>
+                                                </td>
+                                                <td style="text-align:right">
+                                                    <strong>
+                                                        <span t-esc="aktualegy"
+                                                              t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                                    </strong>
+                                                </td>
+
+                                            </tr>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+                            </div>
+
+
+                            <!--
+                                                        <h4>
+                                                            <div class="row">
+                                                                <div class="col-xs-5 col-xs-offset-1">
+                                                                    Előírások összesen:
+                                                                    <br />
+                                                                    Befizetések összesen:
+                                                                </div>
+                                                                <div class="col-xs-4" style="text-align:right">
+                                                                    <span t-esc="sum_eloir" t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                                                    <br />
+                                                                    <span t-esc="sum_befiz" t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                                                </div>
+                                                            </div>
+                                                        </h4>
+                            -->
+
+
+                            <t t-if="aktualegy >= 0">
+                                <center>
+                                    <strong>
+                                        Kérjük befizetéseiket a
+                                        <span t-field="docs[0].bankszamla"/>
+                                        Társasház számlára szíveskedjenek teljesíteni!
+                                    </strong>
+                                </center>
+                            </t>
+
+
+                            <t t-if="aktualegy &lt; 0">
+                                <center>
+                                    <strong>
+                                        Tájékoztatjuk, hogy folyószámláján a
+                                        <span t-field="docs[0].vegdatum"/>
+                                        nappal
+                                        <span t-esc="aktualegy*-1"
+                                              t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                        tartozás mutatkozik!
+                                        Kérjük a tartozás befizetéséről a
+                                        <span t-field="docs[0].bankszamla"/>
+                                        Társasház számlájára mielőbb szíveskedjenek intézkedni!
+                                    </strong>
+                                </center>
+                            </t>
+
+                        </div>
+                    </div>
+                    <!-- page vége -->
+                </t>
+            </t>
+        </template>
+
+    </data>
+</openerp>

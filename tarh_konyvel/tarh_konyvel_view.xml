@@ -1,0 +1,935 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="tarh_bankbiz_form_view">
+            <field name="name">tarh.bankbiz.form</field>
+            <field name="model">tarh.bankbiz</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="form_string">
+                    <sheet>
+                        <h1>
+                            <label string="Bankbizonylat könyvelése"/>
+                        </h1>
+                        <group>
+                            <field name="th_szamlatul" options="{'no_create' : True}"
+                                   placeholder="Könyvelendő társasház"
+                                   select="1" on_change="onchange_th_szamlatul(th_szamlatul)"
+                                   domain="[('name','ilike','társash')]"/>
+                            <field name="bankszamla_thaz" domain="[('partner_id','=',th_szamlatul)]"
+                                   placeholder="Társasház bankszámlája"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="erk_datum" select="1"
+                                       on_change="onchange_erk_datum(erk_datum)"/>
+                                <field name="biz_datum" select="1" context="{'erteknap':'biz_datum'}"
+                                       invisible="1"/>
+                                <field name="kivonatszam" placeholder="Bankbizonylat sorszáma"/>
+                            </group>
+                            <group>
+                                <field name="nyitoegyenleg"/>
+                                <field name="zaroegyenleg"/>
+
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Bizonylat eleme:">
+                                <field name="bankbiz_sor">
+                                    <form string="Tranzakció rögzítése" version="7.0">
+                                        <h1>
+                                            <label string="Egy tranzakció könyvelése"/>
+                                        </h1>
+                                        <group>
+                                            <field name="partner"
+                                                   domain="['|',('is_company','=',True),('parent_id','=',parent.th_szamlatul)]"
+                                                   on_change="onchange_partneruj(parent.biz_datum, partner)"/>
+
+                                            <field name="tarh_tranzakcio"
+                                                   on_change="onchange_tranzakcio(tarh_tranzakcio)"/>
+                                            <field name="erteknap"/>
+
+                                            <field name="partner_banksz" domain="[('partner_id', '=', partner)]"/>
+                                            <field name="jovairas" invisible="1"/>
+
+
+                                            <field name="jovairas_ossz"
+                                                   attrs="{'invisible': [('jovairas', '=', False)]}"/>
+                                            <field name="terheles_ossz"
+                                                   attrs="{'invisible': [('jovairas', '=', True)]}"/>
+
+
+                                            <field name="postai" attrs="{'invisible': [('jovairas', '=', False)]}"
+                                            />
+                                            <!--  on_change="csekkes_befiz(postai,partner,parent.th_szamlatul)"-->
+
+
+                                        </group>
+                                        <group>
+                                            <group>
+                                                <field name="megjegyzes"/>
+                                            </group>
+                                            <group>
+                                                <field name="eloiras"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                    <tree string="Tranzakció elemei">
+                                        <field name="partner"/>
+                                        <field name="tarh_tranzakcio"/>
+                                        <field label="Értéknap" name="erteknap"/>
+                                        <field name="jovairas" invisible="1"/>
+                                        <field name="terheles_ossz" attrs="{'invisible': [('jovairas', '=', True)]}"/>
+                                        <field name="jovairas_ossz" attrs="{'invisible': [('jovairas', '=', False)]}"/>
+                                    </tree>
+                                </field>
+                                <group class="oe_subtotal_footer oe_right" colspan="2"
+                                       name="sum_tranzakciok">
+                                    <field name="sum_jovairas"/>
+                                    <field name="sum_terheles"/>
+                                    <div class="oe_subtotal_footer_separator oe_inline">
+                                        <label for="sum_tranzakciok"/>
+                                        <button name="button_dummy" string="(frissít)" type="object"
+                                                class="oe_edit_only oe_link"/>
+                                    </div>
+                                    <field name="sum_tranzakciok" nolabel="1"
+                                           class="oe_subtotal_footer_separator"/>
+                                </group>
+                                <div class="oe_clear"/>
+
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="tarh_bankbiz_tree_view">
+            <field name="name">tarh.bankbiz.tree</field>
+            <field name="model">tarh.bankbiz</field>
+            <field name="type">tree</field>
+            <field name="field_parent">child_id</field>
+            <field name="arch" type="xml">
+                <tree string="tree_string" toolbar="1" colors="blue:sum_tranzakciok == 0 ">
+                    <field name="th_szamlatul" invisible="1"/>
+                    <field name="bankszamla_thaz"/>
+                    <field name="kivonatszam"/>
+                    <field name="biz_datum"/>
+                    <field name="sum_jovairas"/>
+                    <field name="sum_terheles"/>
+                    <field name="sum_tranzakciok"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="tarh_bszamla_nyito_tree_view">
+            <field name="name">tarh.bszamla.nyito.tree</field>
+            <field name="model">tarh.bszamla.nyito</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="tree_string" editable="top">
+                    <field name="tarh_bszamla" select="1"/>
+                    <field name="egyenleg_datuma"/>
+                    <field name="egyenleg"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="tarh_bszamla_nyito_search_view" model="ir.ui.view">
+            <field name="name">tarh.bszamla.nyito.search</field>
+            <field name="model">tarh.bszamla.nyito</field>
+            <field name="arch" type="xml">
+                <search string="tarh_bszamla_nyito">
+                    <field name="tarh_bszamla"/>
+                </search>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="tarh_lako_nyito_tree_view">
+            <field name="name">tarh.lako.nyito.tree</field>
+            <field name="model">tarh.lako.nyito</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="tree_string" editable="top">
+                    <field name="tarh_lako" on_change="tulaj_valt(tarh_lako)"/>
+                    <field name="tarsashaz"/>
+                    <field name="egyenleg"/>
+                    <field name="egyenleg_datuma"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="my_report_tree_view">
+            <field name="name">my.report.tree</field>
+            <field name="model">my.report</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="tree_string" create="false" delete="false" edit="false">
+                    <field name="erteknap" select="1"/>
+                    <field name="th_szamlatul" select="1"/>
+                    <field name="partner" select="1"/>
+                    <field name="tarh_tranzakcio" select="1"/>
+                    <field name="jovairas"/>
+                    <field name="terheles"/>
+                    <field name="megjegyzes" invisible="1"/>
+                    <field name="kivonatszam" invisible="1"/>
+                    <field name="bankszamla_thaz" invisible="1"/>
+                    <field name="postan" invisible="1"/>
+
+                </tree>
+            </field>
+        </record>
+        <!--
+                <record model="ir.ui.view" id="tarh_haz_havijel_tree_view">
+                    <field name="name">tarh.haz.havijel.tree</field>
+                    <field name="model">tarh.haz.havijel</field>
+                    <field name="type">tree</field>
+                    <field name="arch" type="xml">
+                        <tree string="tree_string" create="false" delete="false" edit="false">
+                            <field name="kezdatum" select="1" />
+                            <field name="vegdatum" select="1" />
+                            <field name="th_szamlatul" select="1" />
+                            <field name="tarh_tranzakcio" select="1" />
+                            <field name="jovairas" />
+                            <field name="terheles" />
+                            <field name="terhel_min" invisible="1" />
+                            <field name="bankszamla_thaz" invisible="1" />
+
+                        </tree>
+                    </field>
+                </record>
+        -->
+
+
+        <record model="ir.ui.view" id="my_report_form_view">
+            <field name="name">my.report.form</field>
+            <field name="model">my.report</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="form_string" version="7.0">
+                    <sheet string="Tranzakció adatai">
+                        <group>
+                            <group>
+                                <field name="th_szamlatul" select="1"/>
+                            </group>
+                            <group>
+                                <field name="bankszamla_thaz"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="erteknap"/>
+                                <field name="partner"/>
+                                <field name="tarh_tranzakcio"/>
+
+                            </group>
+                            <group>
+                                <field name="kivonatszam"/>
+                                <field name="jovairas"/>
+                                <field name="terheles"/>
+                            </group>
+                            <group>
+                                <field name="megjegyzes"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <!--
+                <record model="ir.ui.view" id="tarh_haz_havijel_form_view">
+                    <field name="name">tarh.haz.havijel.form</field>
+                    <field name="model">tarh.haz.havijel</field>
+                    <field name="type">form</field>
+                    <field name="arch" type="xml">
+                        <form string="form_string" version="7.0">
+                            <sheet string="Társasház időszaki jelentés">
+                                <group>
+                                    <field name="kezdatum" select="1" />
+                                    <field name="vegdatum" />
+                                    <field name="th_szamlatul" />
+                                    <field name="bankszamla_thaz" domain="[('partner_id', '=', th_szamlatul)]" />
+                                </group>
+                                <group>
+                                    <button name="havijel_beir" string="Lekérdezés" type="object" />
+                                </group>
+                            </sheet>
+                        </form>
+                    </field>
+                </record>
+        -->
+
+        <record model="ir.ui.view" id="tarh_lako_havijel_form_view">
+            <field name="name">tarh.lako.havijel.form</field>
+            <field name="model">tarh.lako.havijel</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="form_string" version="7.0">
+                    <sheet>
+                        <h1>
+                            <label string="Albetétek egyenlegének lekérdezése"/>
+                        </h1>
+                        <group>
+                            <field name="kezdatum" select="1"/>
+                            <field name="vegdatum"/>
+                            <field name="tulaj" options="{'no_create' : True}"
+                                   on_change="onchange_tul(tulaj, kezdatum, vegdatum)"/>
+                            <field name="tarsashaz" options="{'no_create' : True}" invisible="1"
+                                   on_change="onchange_tarsashaz(tarsashaz)"/>
+                            <field name="bankszamla" invisible="1"/>
+                            <field name="lekerdatum"/>
+
+
+                        </group>
+                        <group>
+                            <button name="lako_havijel_beir" string="Lekérdezés" type="object"/>
+                        </group>
+                        <notebook>
+                            <page string="Terhelések-Jóváírások:">
+                                <field name="sor_id">
+                                    <tree string="Tranzakciók elemei">
+                                        <field name="erteknap"/>
+                                        <field name="szoveg"/>
+                                        <field name="eloiras"/>
+                                        <field name="befizetes"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                        <!-- -->
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!--2015-07-06 beszúrás -->
+
+        <record id="tarh_lako_havijel_search_view" model="ir.ui.view">
+            <field name="name">tarh.lako.havijel.search</field>
+            <field name="model">tarh.lako.havijel</field>
+            <field name="arch" type="xml">
+                <search string="tarh_lako_havijel">
+                    <field name="tulaj"/>
+                    <field name="tarsashaz"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="tarh_eloiras_haz_form_view">
+            <field name="name">tarh.eloiras.haz.form</field>
+            <field name="model">tarh.eloiras.haz</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="form_string" version="7.0">
+                    <sheet string="Adatbevitel">
+                        <group>
+                            <field name="konyvelt_haz" options="{'no_create' : True}"
+                                   placeholder="Könyvelendő társasház"
+                                   select="1"/>
+                            <field name="eloirfajta" placeholder="Az előírás fajtája"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="eloir_kezd" placeholder="Előírás kezdete dátum"/>
+                                <field name="eloir_vege" placeholder="Előírás vége dátum"/>
+                                <field name="esedekes" placeholder="A hónap melyik napján esedékes"/>
+                            </group>
+                            <group>
+                                <field name="terulet_aranyos"/>
+                                <field name="rendszeres"/>
+                                <field name="osszeg"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="tarh_eloiras_lako_form_view">
+            <field name="name">tarh.eloiras.lako.form</field>
+            <field name="model">tarh.eloiras.lako</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="form_string" version="7.0">
+                    <sheet string="Egyes lakok havi eloirasai">
+                        <group>
+                            <field name="tarsashaz" options="{'no_create' : True}" placeholder="Társasház választása"
+                                   select="1"/>
+                            <field name="lako" options="{'no_create' : True}" domain="[('parent_id','=', tarsashaz)]"
+                                   on_change="onchange_lako(lako)"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="eloir_kezd" placeholder="Előírás kezdete dátum"/>
+                                <field name="eloir_vege" placeholder="Előírás vége dátum"/>
+                                <field name="esedekes" placeholder="A hónap melyik napján esedékes"/>
+                                <field name="osszeg"/>
+                            </group>
+                            <group>
+                                <field name="eloirfajta" placeholder="Az előírás fajtája"/>
+                                <field name="alapterulet"/>
+                                <field name="vizora"/>
+                                <button name="button_kozos_ktg_beir" string="Közös ktg.beírás"
+                                        type="object" groups="base.group_erp_manager"/>
+
+
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="tarh_lako_havijel_tree_view">
+            <field name="name">tarh.lako.havijel.tree</field>
+            <field name="model">tarh.lako.havijel</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="tree_string" edit="false">
+                    <field name="kezdatum" select="1"/>
+                    <field name="vegdatum" select="1"/>
+                    <field name="tulaj" select="1"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="tarh_lakoeloir_havi_form_view">
+            <field name="name">tarh.lakoeloir.havi.form</field>
+            <field name="model">tarh.lakoeloir.havi</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="form_string" version="7.0">
+                    <sheet string="Idoszaki eloirasok lakok reszere">
+                        <group>
+                            <field name="tarsashaz" options="{'no_create' : True}" placeholder="Társasház választása"
+                                   select="1"/>
+                            <field name="lako" options="{'no_create' : True}" domain="[('parent_id','=', tarsashaz)]"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="eloirfajta" placeholder="Az előírás fajtája"/>
+                                <field name="ev" placeholder="Előírás éve"/>
+                                <field name="honap" placeholder="A hónap"/>
+                                <field name="osszeg"/>
+                            </group>
+                            <group>
+
+                                <field name="eloir_datum"/>
+                                <button name="havi_eloir_rogzit"
+                                        string="Minden ház,minden lakó előírás beállítása ÉV, HÓ-ban"
+                                        type="object"/>
+                                <button name="havi_eloir_rogzit2"
+                                        string="Csak Tulajdonos előírásainak rögzítése ÉV, HÓ-ban"
+                                        type="object"/>
+                                <button name="havi_eloir_rogzit3"
+                                        string="Csak a Társasház előírásainak rögzítése ÉV, HÓ-ban"
+                                        type="object"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="tarh_lakaselad_form_view">
+            <field name="name">tarh.lakaselad.form</field>
+            <field name="model">tarh.lakaselad</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="form_string" version="7.0">
+                    <sheet string="Tulajdonoscsere rogzitese">
+                        <group>
+                            <field name="tarsashaz" options="{'no_create' : True}" placeholder="Társasház választása"
+                                   domain="[('name','ilike','társash')]" select="1"/>
+                            <field name="elado" options="{'no_create' : True}" domain="[('parent_id','=', tarsashaz)]"/>
+                            <field name="uj_tulajdonos" placeholder="Az új tulajdonos neve"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="eladas_datum" placeholder="Eladás dátuma"/>
+                                <field name="vetel_datum" placeholder="Használatbavétel dátuma"/>
+                                <field name="email" placeholder="Vevő email"/>
+                                <field name="telefon" placeholder="Vevő telefon"/>
+                                <field name="mobile" placeholder="Vevő mobiltelefon"/>
+                                <field name="nyitott" placeholder="Módosítható avagy sem"/>
+
+                            </group>
+                            <group>
+                                <button name="lakaselad_rogzit" string="Eladás rögzítése"
+                                        type="object"
+                                        confirm="A vevő részére a vétel dátumára 0-ás nyitóegyenleget veszek fel! Biztosan rögzíted?"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="tarh_lakaselad_tree_view">
+            <field name="name">tarh.lakaselad.tree</field>
+            <field name="model">tarh.lakaselad</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="tree_string" create="false" delete="false" edit="false">
+                    <field name="tarsashaz" select="1"/>
+                    <field name="elado" select="1"/>
+                    <field name="uj_tulajdonos" select="1"/>
+                    <field name="eladas_datum" select="1"/>
+                    <field name="vetel_datum"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="tarh_tranzakcio_tree_view">
+            <field name="name">tarh.tranzakcio.tree</field>
+            <field name="model">tarh.tranzakcio</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Tranzakcio fajtak" editable="top">
+                    <field name="name" select="1"/>
+                    <field name="jovairas" select="1"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="tarh_lako_nyito_search_view" model="ir.ui.view">
+            <field name="name">tarh.lako-nyito.search</field>
+            <field name="model">tarh.lako.nyito</field>
+            <field name="arch" type="xml">
+                <search string="tarh_lako_nyito">
+                    <field name="tarh_lako"/>
+                    <field name="tarsashaz"/>
+                    <separator/>
+                    <group expand="0" string="Csoportosítás...">
+                        <filter string="Társasházak" domain="[]"
+                                context="{'group_by':'tarsashaz'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+
+        <record id="tarh_bankbiz_search_view" model="ir.ui.view">
+            <field name="name">tarh.bankbiz.search</field>
+            <field name="model">tarh.bankbiz</field>
+            <field name="arch" type="xml">
+                <search string="tarh_bankbiz">
+                    <field name="th_szamlatul"/>
+                    <field name="kivonatszam"/>
+                    <field name="biz_datum"/>
+                    <separator/>
+                    <group expand="0" string="Csoportosítás...">
+                        <filter string="Társasházak" domain="[]"
+                                context="{'group_by':'th_szamlatul'}"/>
+                        <filter string="Időszak" domain="[]" context="{'group_by':'biz_datum'}"/>
+                        <filter string="Bankszámla" domain="[]"
+                                context="{'group_by':'bankszamla_thaz'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="my_report_search_view" model="ir.ui.view">
+            <field name="name">my.report.search</field>
+            <field name="model">my.report</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                    <field name="partner"
+                           filter_domain="['|',('partner','ilike',self),('megjegyzes','ilike',self)]"/>
+                    <field name="th_szamlatul" string="Társasház"/>
+                    <field name="tarh_tranzakcio" string="Tranzakciok"
+                           filter_domain="[('tarh_tranzakcio','ilike',self)]"/>
+                    <field name="megjegyzes" string="Megjegyzés"/>
+                    <field name="kivonatszam" string="Bankbizonylat száma"/>
+                    <separator/>
+                    <group expand="0" string="Csoportosítás...">
+                        <filter string="Társasházak" domain="[]"
+                                context="{'group_by':'th_szamlatul'}"/>
+                        <filter string="Partnerek" domain="[]" context="{'group_by':'partner'}"/>
+                        <filter string="Tranzakciók" domain="[]"
+                                context="{'group_by':'tarh_tranzakcio'}"/>
+                        <filter string="Időszak" domain="[]" context="{'group_by':'erteknap'}"/>
+                        <filter string="Bankszámla" domain="[]"
+                                context="{'group_by':'bankszamla_thaz'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!--
+                <record id="tarh_haz_havijel_search_view" model="ir.ui.view">
+                    <field name="name">tarh.haz.havijel.search</field>
+                    <field name="model">tarh.haz.havijel</field>
+                    <field name="arch" type="xml">
+                        <search string="Search">
+                            <field name="tarh_tranzakcio" string="Tranzakciok"
+                                filter_domain="[('tarh_tranzakcio','ilike',self)]" />
+                            <separator />
+                            <group expand="0" string="Csoportosítás...">
+                                <filter string="Társasházak" domain="[]"
+                                    context="{'group_by':'th_szamlatul'}" />
+                                <filter string="Tranzakciók" domain="[]"
+                                    context="{'group_by':'tarh_tranzakcio'}" />
+                                <filter string="Bankszámla" domain="[]"
+                                    context="{'group_by':'bankszamla_thaz'}" />
+                            </group>
+                        </search>
+                    </field>
+                </record>
+        -->
+
+
+        <record id="tarh_eloiras_haz_search_view" model="ir.ui.view">
+            <field name="name">tarh.eloiras.haz.search</field>
+            <field name="model">tarh.eloiras.haz</field>
+            <field name="arch" type="xml">
+                <search string="tarh_eloiras_haz">
+                    <field name="konyvelt_haz" filter_domain="[('konyvelt_haz','ilike',self)]"/>
+                    <field name="eloirfajta"/>
+                    <separator/>
+                    <group expand="0" string="Csoportosítás...">
+                        <filter string="Társasházak" domain="[]"
+                                context="{'group_by':'konyvelt_haz'}"/>
+                        <filter string="Előírás fajta" domain="[]"
+                                context="{'group_by':'eloirfajta'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="tarh_eloiras_haz_tree_view">
+            <field name="name">tarh.eloiras.haz.tree</field>
+            <field name="model">tarh.eloiras.haz</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="tree_string">
+                    <field name="konyvelt_haz"/>
+                    <field name="eloirfajta"/>
+                    <field name="osszeg"/>
+                    <field name="terulet_aranyos"/>
+                    <field name="eloir_kezd"/>
+                    <field name="eloir_vege"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="tarh_lakoeloir_havi_tree_view">
+            <field name="name">tarh.lakoeloir.havi.tree</field>
+            <field name="model">tarh.lakoeloir.havi</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="tree_string">
+                    <field name="lako"/>
+                    <field name="eloirfajta"/>
+                    <field name="eloir_datum"/>
+                    <field name="osszeg"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="tarh_lakoeloir_havi_search_view" model="ir.ui.view">
+            <field name="name">tarh.lakoeloir.havi.search</field>
+            <field name="model">tarh.lakoeloir.havi</field>
+            <field name="arch" type="xml">
+                <search string="tarh_lakoleoir_havi">
+                    <field name="lako"/>
+                    <field name="tarsashaz"/>
+                    <field name="eloirfajta"/>
+                    <field name="eloir_datum"/>
+                    <separator/>
+                    <group expand="0" string="Csoportosítás...">
+                        <filter string="Társasházak" domain="[]"
+                                context="{'group_by':'tarsashaz'}"/>
+                        <filter string="Tulajdonosok" domain="[]" context="{'group_by':'lako'}"/>
+                        <filter string="Előírás fajta" domain="[]"
+                                context="{'group_by':'eloirfajta'}"/>
+                        <filter string="Időszak" domain="[]"
+                                context="{'group_by':'eloir_datum'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="tarh_eloiras_lako_tree_view">
+            <field name="name">tarh.eloiras.lako.tree</field>
+            <field name="model">tarh.eloiras.lako</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="tree_string">
+                    <field name="tarsashaz" invisible="1" select="1"/>
+                    <field name="lako"/>
+                    <field name="eloirfajta"/>
+                    <field name="eloir_kezd"/>
+                    <field name="eloir_vege"/>
+                    <field name="alapterulet"/>
+                    <field name="osszeg"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="tarh_eloiras_lako_search_view" model="ir.ui.view">
+            <field name="name">tarh.eloiras.lako.search</field>
+            <field name="model">tarh.eloiras.lako</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                    <field name="lako" string="Tulajdonos"/>
+                    <field name="tarsashaz" string="Társasház"/>
+                    <field name="eloirfajta" string="Előírás"/>
+                    <separator/>
+                    <group expand="0" string="Csoportosítás...">
+                        <filter string="Társasházak" domain="[]"
+                                context="{'group_by':'tarsashaz'}"/>
+                        <filter string="Tulajdonos" domain="[]" context="{'group_by':'lako'}"/>
+                        <filter string="Előírás fajta" domain="[]"
+                                context="{'group_by':'eloirfajta'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!--
+        beszúrás 2015.06.14-én
+                <field name="name" position="after">
+                    <field name="partner_phone"/>
+</field>
+
+        -->
+
+
+        <record id="telefonhivasbol_feladat" model="ir.ui.view">
+            <field name="name">telefonhivasbol.feladat</field>
+            <field name="model">crm.phonecall</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="crm.crm_case_inbound_phone_tree_view"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//button[@name='action_button_convert2opportunity']" position="replace">
+                    <button string="Alakítás feladattá"
+                            name="feladat"
+                            type="object"
+                            icon="gtk-index"/>
+                </xpath>
+            </field>
+
+        </record>
+
+        <!--
+        A következő azért kell, hogy az adminon kívü a sima júzer is lássa tree nézetben a date_start mezőt!
+        mert egyébként az van ott hogy:
+        <field name="date_end" groups="base.group_no_one"/>
+        -->
+
+
+        <record id="tarh_project_task_tree_view" model="ir.ui.view">
+            <field name="name">tarh.project.task.tree</field>
+            <field name="model">project.task</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="project.view_task_tree2"/>
+            <field name="arch" type="xml">
+                <field name="date_start" position="replace">
+                    <field name="date_start"/>
+                </field>
+            </field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="action_my_report_tree">
+            <field name="name">my_report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">my.report</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="my_report_tree_view"/>
+        </record>
+
+        <!--
+                <record model="ir.actions.act_window" id="action_tarh_haz_havijel_tree">
+                    <field name="name">tarh_haz_havijel</field>
+                    <field name="type">ir.actions.act_window</field>
+                    <field name="res_model">tarh.haz.havijel</field>
+                    <field name="view_type">form</field>
+                    <field name="view_mode">tree,form</field>
+                    <field name="view_id" ref="tarh_haz_havijel_tree_view" />
+                </record>
+        -->
+        <record model="ir.actions.act_window" id="action_tarh_lako_havijel_form">
+            <field name="name">tarh_lako_havijel</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.lako.havijel</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_lako_havijel_form_view"/>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_tarh_lako_havijel_tree">
+            <field name="name">tarh_lako_havijel</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.lako.havijel</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_lako_havijel_tree_view"/>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="action_tarh_bszamla_nyito_tree">
+            <field name="name">tarh_bszamla_nyito</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.bszamla.nyito</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_bszamla_nyito_tree_view"/>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_tarh_lako_nyito_tree">
+            <field name="name">tarh_lako_nyito</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.lako.nyito</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_lako_nyito_tree_view"/>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_tarh_bankbiz_form">
+            <field name="name">tarh_bankbiz</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.bankbiz</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_bankbiz_form_view"/>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_tarh_bankbiz_tree">
+            <field name="name">tarh_bankbiz</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.bankbiz</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_bankbiz_tree_view"/>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_tarh_tranzakcio_tree">
+            <field name="name">tarh_tranzakcio</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.tranzakcio</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_tranzakcio_tree_view"/>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="action_tarh_lakoeloir_havi_tree">
+            <field name="name">tarh_lakoeloir_havi</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.lakoeloir.havi</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_lakoeloir_havi_tree_view"/>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_tarh_lakaselad_form">
+            <field name="name">tarh_lakaselad</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.lakaselad</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_lakaselad_form_view"/>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_tarh_eloiras_haz_tree">
+            <field name="name">tarh_eloiras_haz</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.eloiras.haz</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_eloiras_haz_tree_view"/>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_tarh_eloiras_lako_tree">
+            <field name="name">tarh_eloiras_lako</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.eloiras.lako</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_eloiras_lako_tree_view"/>
+        </record>
+        <!-- <record id="warning_form" model="ir.ui.view"> <field name="name">warning.form</field>
+            <field name="model">warning</field> <field eval="20" name="priority" /> <field
+            name="arch" type="xml"> <form string="Warning" version="7.0"> <field name="message"
+            nolabel="1" /> <footer> <button string="OK" class="oe_highlight" special="cancel"
+            /> </footer> </form> </field> </record> <record model="ir.actions.act_window"
+            id="action_warning"> <field name="name">Warning</field> <field name="res_model">warning</field>
+            <field name="view_type">form</field> <field name="view_mode">form</field>
+            <field name="view_id" ref="warning_form" /> <field name="target">new</field>
+            </record> -->
+
+
+        <menuitem name="Társasház Könyvelés" id="konyvel_menu"
+                  sequence="100"/>
+
+        <menuitem name="Könyvelés" parent="konyvel_menu" id="konyvel_menu2"
+                  sequence="10"/>
+
+        <menuitem name="Bankbizonylatok" parent="konyvel_menu2" id="konyvel_menu4_sub"
+                  action="action_tarh_bankbiz_tree"/>
+        <menuitem name="Tulajdonoscsere rögzítése" sequence="30"
+                  parent="konyvel_menu2" id="konyvel_lakoelad1_sub" action="action_tarh_lakaselad_form"/>
+
+
+        <menuitem name="Társasház jelentések, lekérdezések" parent="konyvel_menu"
+                  id="konyvel_lekerdezesek" sequence="20"/>
+
+        <menuitem name="Társasház időszaki forgalom" parent="konyvel_lekerdezesek"
+                  id="konyvel_beallitasok4_2sub" action="action_tarh_havijel_haz_tree_view" sequence="10"/>
+
+        <menuitem name="Tranzakciók lekérdezése" parent="konyvel_lekerdezesek"
+                  id="konyvel_beallitasok4_1sub" action="action_my_report_tree" sequence="70"/>
+
+
+        <menuitem name="Folyószámla, értesítő, lakólekérdezések" parent="konyvel_menu" id="konyvel_folyoszamla"
+                  sequence="30"/>
+
+        <menuitem name="Egyes tulajdonosok egyenlege" parent="konyvel_folyoszamla"
+                  id="konyvel_beallitasok4_4sub" action="action_tarh_lako_havijel_form" sequence="10"/>
+
+        <menuitem name="Házak tulajdonosainak egyenlege" parent="konyvel_folyoszamla"
+                  id="konyvel_beallitasok4_3sub" action="action_tarh_haz_lakoegy_tree_view" sequence="20"/>
+
+
+        <menuitem name="Beállítások" parent="konyvel_menu" id="konyvel_beallitasok"
+                  sequence="50"/>
+
+        <menuitem name="Társasház havi előírásai" sequence="10"
+                  parent="konyvel_beallitasok" id="konyvel_beallitasok3_sub" action="action_tarh_eloiras_haz_tree"/>
+
+        <menuitem name="Tulajdonosok havi előírásai" sequence="20"
+                  parent="konyvel_beallitasok" id="konyvel_beallitasok7_sub" action="action_tarh_eloiras_lako_tree"/>
+
+        <menuitem name="Konkrét előírások rögzítése" sequence="30"
+                  parent="konyvel_beallitasok" id="konyvel_beallitasok8_sub" action="action_tarh_lakoeloir_havi_tree"/>
+
+        <menuitem name="Bankszámla nyitóegyenlegek" sequence="40"
+                  parent="konyvel_beallitasok" id="konyvel_beallitasok5_sub" action="action_tarh_bszamla_nyito_tree"/>
+
+        <menuitem name="Tulajdonosok nyitóegyenlegek" sequence="50"
+                  parent="konyvel_beallitasok" id="konyvel_beallitasok6_sub" action="action_tarh_lako_nyito_tree"/>
+
+        <menuitem name="Tranzakció fajták" sequence="60"
+                  parent="konyvel_beallitasok" id="konyvel_beallitasok9_sub" action="action_tarh_tranzakcio_tree"/>
+
+
+    </data>
+</openerp>
+        <!--
+        ezzel itt szívtam vagy fél napot, hogy felhozza az aktív meg a nem aktív partnereket is.
+        De nem teccet nekik!
+        domain="['|',('is_company','=',True),'&amp;',('parent_id','=',parent.th_szamlatul),'|',('active','=', True),('active','=',False)]"
+        -->

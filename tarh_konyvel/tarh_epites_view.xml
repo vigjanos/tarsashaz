@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="tarh_epites_view" model="ir.ui.view">
+            <field name="name">tarh.epites.view</field>
+            <field name="model">tarh.epites</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <h1>
+                            <label string="Társasház egy tranzakciófajta lekérdezése"/>
+                        </h1>
+                        <group>
+                            <group>
+                                <field name="kezdatum"/>
+                                <field name="vegdatum"/>
+                            </group>
+                            <group>
+                                <field name="tarsashaz" options="{'no_create' : True}"/>
+                                <field name="lek_tranzakcio"/>
+                            </group>
+                            <button string="Lekérdez" type="object" name="lekerdez"/>
+                        </group>
+                        <notebook>
+                            <page string="Ez a sor eleme">
+                                <field name="sor_id">
+                                    <form string="">
+                                        <group>
+                                            <group>
+                                                <field name="erteknap"/>
+                                                <field name="kivonatszam"/>
+                                            </group>
+                                            <group>
+                                                <field name="partner"/>
+                                                <field name="osszeg"/>
+                                            </group>
+                                            <group>
+                                                <field name="megjegyzes"/>
+                                            </group>
+                                        </group>
+                                    </form>
+
+
+                                    <tree string="ezek az elemek">
+                                        <field name="erteknap"/>
+                                        <field name="kivonatszam"/>
+                                        <field name="partner"/>
+                                        <field name="osszeg"/>
+                                        <field name="megjegyzes"/>
+                                    </tree>
+
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="tarh_epites_tree_view">
+            <field name="name">tarh.epites.tree</field>
+            <field name="model">tarh.epites</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="tree_string">
+                    <field name="kezdatum"/>
+                    <field name="vegdatum"/>
+                    <field name="tarsashaz"/>
+                    <field name="lek_tranzakcio"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="tarh_epites_action" model="ir.actions.act_window">
+            <field name="name">tarh_epites</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.epites</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_epites_view"/>
+
+        </record>
+
+
+        <menuitem id="tarh_epites_menu" name="Időszaki tranzakció lekérdezés" parent="konyvel_lekerdezesek"
+                  action="tarh_epites_action" sequence="50"/>
+
+
+    </data>
+</openerp>
