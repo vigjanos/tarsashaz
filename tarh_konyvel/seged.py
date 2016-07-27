@@ -42,8 +42,9 @@ def lakoegyenleg2 (self, cr, uid, lako, datum):
         Ha nincs a lakóhoz nyitóegyenleg felvéve, akkor [0,0,0,-1] -et ad vissza'''
     lako_partner = self.pool.get('res.partner').browse(cr,uid,lako,context=None)
     if lako_partner.alb_eladas:
-        datum = str_to_date(lako_partner.alb_eladas)
-        # ezt majd at kell irni, mi van akkor, ha korabbi a datum mint az eladas datuma!
+        if str_to_date(lako_partner.alb_eladas) < datum:
+            datum = str_to_date(lako_partner.alb_eladas)
+        # ha elobb eladtak az ingatlant, mint a kerdezett datum, akkor a datum az eladas datuma lesz
     sum_eloiras = 0
     sum_jovairas = 0
     _nyito_osszeg = 0
@@ -193,6 +194,13 @@ def eloirasok (self, cr, uid, tulajdonos, kezdatum, vegdatum):
     return eredmeny
 
 def eloirasok2 (self, cr, uid, tulajdonos, kezdatum, vegdatum):
+    '''
+    Ez az eljárás megadja az időpontok között, hogy a tulajdonos részére milyen befizetéseket írtunk elő fajtánként
+    Egy listát adun vissza string,integer elemekkel
+    '''
+    _tarh_eloiras_lako = self.pool.get('tarh.eloiras.lako')
+    _eloiras_fajta = self.pool.get('eloiras.fajta')
+
 
     return
 

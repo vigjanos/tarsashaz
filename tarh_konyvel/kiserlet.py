@@ -14,6 +14,7 @@ class kiserlet(osv.osv):
     def _egyenleg_szamol(self,cr,uid,ids,field_name,arg,context=None):
         sajat_id=self.browse(cr,uid,ids,context).id
         tulaj=self.browse(cr,uid,ids,context=None).tulajdonos.id
+        datum_kezd=str_to_date(self.browse(cr,uid,ids,context=None).kezdet)
         datum=str_to_date(self.browse(cr,uid,ids,context=None).befejezes)
         lekerdezes=lakoegyenleg2(self,cr,uid,tulaj,datum)
         res={}
