@@ -193,20 +193,48 @@ def eloirasok (self, cr, uid, tulajdonos, kezdatum, vegdatum):
     eredmeny = cr.fetchall()
     return eredmeny
 
+
 def eloirasok2 (self, cr, uid, tulajdonos, kezdatum, vegdatum):
     '''
     Ez az eljárás megadja az időpontok között, hogy a tulajdonos részére milyen befizetéseket írtunk elő fajtánként
-    Egy listát adun vissza string,integer elemekkel
+    Egy listát adunk vissza string(előírás neve),integer(előírás összesen) elemekkel
     '''
+    lako_partner = self.pool.get('res.partner').browse(cr,uid,tulajdonos,context=None)
+    if lako_partner.alb_eladas:
+        if str_to_date(lako_partner.alb_eladas) < vegdatum:
+            vegdatum = str_to_date(lako_partner.alb_eladas)
+        # ha elobb eladtak az ingatlant, mint a kerdezett vegdatum, akkor a vegdatum az eladas datuma lesz
     _tarh_eloiras_lako = self.pool.get('tarh.eloiras.lako')
     _eloiras_fajta = self.pool.get('eloiras.fajta')
+    lako_eloir_id = _tarh_eloiras_lako.search(cr, uid, [('lako', '=', tulajdonos)], context=None)
+    lako_eloirasai = _tarh_eloiras_lako.browse(cr, uid, lako_eloir_id, context=None)
+    eloiras_list = []
+    befizetes_list = []
 
+    '''Itt kezdődik az előírások kigyűjtése'''
 
-    return
+    for egy_eloiras in lako_eloirasai:
+        ev = kezdatum.year
+        honap = kezdatum.month
+        sum_eloiras=0
+        while not (ev == vegdatum.year and honap == vegdatum.month):
+            if date(ev, honap, 1) >= str_to_date(egy_eloiras.eloir_kezd) and honap_utolsonap(
+                    date(ev, honap, 1)) <= str_to_date(egy_eloiras.eloir_vege) and vegdatum >= date(ev, honap,
+                                                                                                 egy_eloiras.esedekes):
+                eloiras_list.append(
+                    (date(ev, honap, egy_eloiras.esedekes), egy_eloiras.eloirfajta.name, egy_eloiras.osszeg))
+                sum_eloiras = sum_eloiras + egy_eloiras.osszeg
+            ujdate = add_month(ev, honap)
+            ev = ujdate[0]
+            honap = ujdate[1]
+        eloiras_list.append((date(ev, honap, egy_eloiras.esedekes), egy_eloiras.eloirfajta.name, egy_eloiras.osszeg))
+        sum_eloiras = sum_eloiras + egy_eloiras.osszeg
+        osszeg=[100]
+    return osszeg
 
 def havi_fizetendo2 (self, cr,uid, tulajdonos, datum ):
     '''
-    meg kell csinálni, hogy a vissztérő érték egy lista, és két integer legyen
+    meg kell csinálni, hogy a visszatérő érték egy lista, és két integer legyen
     a listában adjuk vissza a előírások (nevét,összegét), összeget rendkívülivel és ügyvédivel, és
     a nélkül is
     '''

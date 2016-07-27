@@ -15,8 +15,9 @@ class kiserlet(osv.osv):
         sajat_id=self.browse(cr,uid,ids,context).id
         tulaj=self.browse(cr,uid,ids,context=None).tulajdonos.id
         datum_kezd=str_to_date(self.browse(cr,uid,ids,context=None).kezdet)
-        datum=str_to_date(self.browse(cr,uid,ids,context=None).befejezes)
-        lekerdezes=lakoegyenleg2(self,cr,uid,tulaj,datum)
+        datum_veg=str_to_date(self.browse(cr,uid,ids,context=None).befejezes)
+        #lekerdezes=lakoegyenleg2(self,cr,uid,tulaj,datum)
+        lekerdezes=eloirasok2(self,cr,uid,tulaj,datum_kezd,datum_veg)
         res={}
         res[sajat_id]=lekerdezes[0]
         return res
