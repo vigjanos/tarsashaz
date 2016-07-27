@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="tarh_tartozok_form_view">
+            <field name="name">tarh.tartozok.form</field>
+            <field name="model">tarh.tartozok</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="form_string">
+                    <sheet string="Tartozok">
+                        <h1>
+                            <label string="Összes tartozó lekérdezése"/>
+                        </h1>
+                        <group>
+                            <field name="egy_datum" select="1"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="min_tartozas"/>
+                                <field name="min_honap"/>
+                                <field name="max_honap"/>
+                                <field name="lekerdate"/>
+                            </group>
+                            <button name="tartozok" string="Lekérdezés" type="object" groups="base.group_erp_manager"/>
+
+                        </group>
+                        <notebook>
+                            <page string="Időszaki forgalom">
+                                <field name="sor_id">
+                                    <tree string="Tranzakciók elemei">
+                                        <field name="tarsashaz"/>
+                                        <field name="tulajdonos"/>
+                                        <field name="havi_eloiras"/>
+                                        <field name="egyenleg"/>
+                                        <field name="felszolitasok"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="tarh_tartozok_tree_view">
+            <field name="name">tarh.tartozok.tree</field>
+            <field name="model">tarh.tartozok</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="tree_string">
+                    <field name="egy_datum"/>
+                    <field name="lekerdate"/>
+                    <field name="min_tartozas"/>
+                    <field name="min_honap"/>
+                    <field name="max_honap"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_tarh_tartozok_tree">
+            <field name="name">tarh.tartozok</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.tartozok</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_tartozok_tree_view"/>
+        </record>
+
+        <menuitem name="Összes tartozó lekérdezése" parent="konyvel_folyoszamla"
+                  id="tartozok_lekerdezese" action="action_tarh_tartozok_tree" sequence="30"/>
+
+        <report id="tartozok_lekerdez"
+                model="tarh.tartozok"
+                string="képernyőre"
+                name="tarh_konyvel.tartozok_lekerdez1"
+                file="tarh_konyvel.tarh_tartozok"
+                report_type="qweb-html"/>
+
+        <report id="tartozok_lekerdez2"
+                model="tarh.tartozok"
+                string="pdf-be mentés"
+                name="tarh_konyvel.tartozok_lekerdez1"
+                file="tarh_konyvel.tarh_tartozok"
+                report_type="qweb-pdf" />
+
+        <template id="tartozok_lekerdez1">
+            <t t-call="report.external_layout">
+                <t t-call="report.html_container">
+                    <div class="page">
+                        <div class="row mt32 mb32 col-xs-10 col-xs-offset-1">
+                            <h4 align="center">
+                                Tulajdonosok listája, akik
+                                <span t-field="docs[0].min_tartozas"
+                                      t-field-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                -nál magasabb összegű, és
+                                <span t-field="docs[0].min_honap"/>
+                                hónapot meghaladó
+                                <t t-if = "docs[0].max_honap > docs[0].min_honap">, de <span t-field="docs[0].max_honap"/> hónapnál kisebb</t>
+                                mértékű közös költség elmaradással rendelkeznek <span t-field="docs[0].egy_datum"/>. napján
+                            </h4>
+                        </div>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr style="font-size:18px;">
+                                    <th class="text-center">
+                                        <strong>Társasház</strong>
+                                    </th>
+                                    <th class="text-center">
+                                        <strong>Tulajdonos</strong>
+                                    </th>
+                                    <th class="text-center">
+                                        <strong>Havi előírás</strong>
+                                    </th>
+                                    <th class="text-center">
+                                        <strong>Egyenleg</strong>
+                                    </th>
+                                    <th class="text-center">
+                                        <strong>Felsz.:</strong>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="docs.sor_id" t-as="sor">
+                                    <td style="padding:0 5 1 5">
+                                        <span t-field="sor.tarsashaz"/>
+                                    </td>
+                                    <td style="padding:0 5 1 5">
+                                        <span t-field="sor.tulajdonos.name"/>
+                                    </td>
+                                    <td class="text-right" style="padding:0 5 0 5">
+                                        <span t-field="sor.havi_eloiras"
+                                              t-field-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                    </td>
+                                    <td class="text-right" style="padding:0 5 0 5">
+                                        <span t-field="sor.egyenleg"
+                                              t-field-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                    </td>
+                                    <td class="text-center" style="padding:0 5 0 5">
+                                        <span t-field="sor.felszolitasok"
+                                                />
+                                    </td>
+
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                </t>
+            </t>
+
+        </template>
+
+
+    </data>
+</openerp>
+

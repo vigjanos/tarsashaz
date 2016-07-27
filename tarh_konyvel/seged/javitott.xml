@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<t t-name="tarh_konyvel.report_session1">
+	<t t-call="report.external_layout">
+		<t t-call="report.html_container">
+
+			<div class="page">
+				<table class="table table-condensed">
+					<thead>
+						<tr>
+							<th> Tranzakció</th>
+							<th> Jóváírás</th>
+							<th> Terhelés</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr t-foreach="docs" t-as="o">
+							<td><span t-field="o.tarh_tranzakcio"/></td>
+							<td class="text-left"><span t-field="o.jovairas" /></td>
+							<td class="text-left"><span t-field="o.terheles" /></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</t>
+	</t>
+
+</t>
+	

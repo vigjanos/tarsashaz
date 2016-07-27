@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<report id="report_session" 
+		    model="res.partner" 
+		    string="nyomtat"
+			name="tarh_konyvel.report_session1" 
+			file="tarh_konyvel.report2"
+			report_type="qweb-html" />
+
+		<template id="report_session1">
+			<t t-call="report.external_layout">  <!-- Ez hiányzik!!! -->>
+				<t t-call="report.html_container">
+					
+						<h2>
+							Hello hallo
+						</h2>
+					
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+

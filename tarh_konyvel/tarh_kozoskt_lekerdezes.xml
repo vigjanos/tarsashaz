@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <report id="kozosk_lekerdez"
+                model="tarh.kozoskt.lekerdez"
+                string="képernyőre"
+                name="tarh_konyvel.kozosk_lekerdez1"
+                file="tarh_konyvel.tarh_kozoskt_lekerdez"
+                report_type="qweb-html" />
+
+        <report id="kozosk_lekerdez2"
+                model="tarh.kozoskt.lekerdez"
+                string="pdf-be küldve"
+                name="tarh_konyvel.kozosk_lekerdez1"
+                file="tarh_konyvel.tarh_kozoskt_lekerdez"
+                report_type="qweb-pdf" />
+
+        <!--
+        <report id="kozosk_lekerdez3"
+                model="tarh.kozoskt.lekerdez"
+                string="dátumtól képernyőre"
+                name="tarh_konyvel.kozosk_lekerdez1_1"
+                file="tarh_konyvel.tarh_kozoskt_lekerdez"
+                report_type="qweb-html" />
+
+        <report id="kozosk_lekerdez4"
+                model="tarh.kozoskt.lekerdez"
+                string="dátumtól pdf-be"
+                name="tarh_konyvel.kozosk_lekerdez1_1"
+                file="tarh_konyvel.tarh_kozoskt_lekerdez"
+                report_type="qweb-pdf" />
+
+        -->
+
+        <template id="kozosk_lekerdez1">
+            <t t-foreach="docs.tulaj_id" t-as="tulaj">
+                <t t-call="report.external_layout">
+                    <t t-call="report.html_container">
+                        <div class="page">
+                            <style>
+                                .bottom-three {
+                                margin-top: 2cm;
+                                margin-bottom: 2cm;
+                                }
+                            </style>
+                            <style>
+                                .alul1 {
+                                margin-bottom: 1cm;
+                                }
+                            </style>
+
+                            <div class="row">
+                                <div class="col-xs-7">
+                                    <h4>
+                                        <span t-field="tulaj.tulajdonos.parent_id.name"/> <br />
+                                        <span t-field="tulaj.tulajdonos.city"/> <span t-field="tulaj.tulajdonos.parent_id.zip"/> <br />
+                                        <span t-field="tulaj.tulajdonos.alb_szam"/>. albetét <span t-field="tulaj.tulajdonos.street2"/> <br />
+                                    </h4>
+                                </div>
+
+                                <div class="col-xs-5">
+                                    <table class="table table-condensed" style="font-size:16px;">
+                                        <tbody>
+                                            <tr>
+                                                <td style="padding:0 5 1 5">
+                                                    Alapterület:
+                                                </td>
+                                                <td style="padding:0 5 1 5" class="text-right">
+                                                    <span t-field="tulaj.tulajdonos.alapterulet"/> nm
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:0 5 1 5">
+                                                    Tulajdoni hányad:
+                                                </td>
+                                                <td style="padding:0 5 1 5" class="text-right">
+                                                    <span t-field="tulaj.tulajdonos.tulhanyad"/>/<span t-field="tulaj.tulajdonos.th_oszto"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:0 5 1 5">
+                                                    Vízóra:
+                                                </td>
+                                                <td style="padding:0 5 1 5" class="text-right">
+                                                    <span t-field="tulaj.tulajdonos.vizora"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <h2 class="alul1" align="center">
+                                Értesítés
+                            </h2>
+                            <div class="row">
+                                <div class="col-xs-7 col-xs-offset-2">
+                                    <h3 class="alul1">
+                                        Tisztelt <span t-field="tulaj.tulajdonos.name"/>! <br />
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-10 col-xs-offset-1">
+                                    <div class="alul1" align="justify"  style="font-size:18px;">
+                                        Tájékoztatjuk, hogy a <spant t-field="docs[0].tarsashaz.name"/> vonatkozó közgyűlési határozata alapján Önnek <span t-field="docs[0].eloir_datum"/> naptól, a következő
+                                        <strong>havonta esedékes</strong> fizetési kötelezettségei vannak a társasházzal szemben:
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-xs-6 col-xs-offset-3">
+                                    <table class="table table-bordered">
+                                        <t t-set="osszesen" t-value="0"/>
+                                        <thead>
+                                            <tr style="font-size:18px;">
+                                                <th class="text-center">
+                                                    <strong>Előírások</strong>
+                                                </th>
+                                                <th class="text-center">
+                                                    <strong>Összeg</strong>
+                                                </th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <t t-foreach="tulaj.eloiras_id" t-as="eloir">
+                                                <tr style="font-size:18px;">
+                                                    <td style="padding:0 5 1 5">
+                                                        <span t-field="eloir.eloiras"/>
+                                                    </td>
+                                                    <td style="padding:0 5 1 5" class="text-right">
+                                                        <span t-field="eloir.osszeg"
+                                                              t-field-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}' />
+                                                        <t t-set="osszesen" t-value="osszesen + eloir.osszeg"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                            <tr style="font-size:18px;">
+                                                <td>
+                                                    <strong>
+                                                        Havi fizetendő összeg:
+                                                    </strong>
+                                                </td>
+                                                <td class="text-right">
+                                                    <strong>
+                                                        <t t-esc="osszesen" t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row" style="font-size:18px;">
+                                <div class="col-xs-10 col-xs-offset-1">
+                                    <div class="bottom-three" align="justify">
+                                        Felhívjuk a szíves figyelmét, hogy a fizetési kötelezettségek összege lakossági
+                                        folyószámláról a társasház <strong><spant t-field="docs[0].tarsashaz.uzemeltetesi"/></strong> számú üzemeltetési folyószámlájára is utalható.
+                                        Kérjük, hogy amennyiben a kötelezettségeiket csekken kívánják teljesíteni, úgy ezt lehetőleg
+                                        valamelyik <spant t-field="docs[0].bank"/> fiókban tegyék, mivel a postai feladás további költséget jelent a Társasház számára!
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" style="font-size:18px;">
+                                <div class="col-xs-10 col-xs-offset-4">
+                                    <div class="alul1" align="justify">
+                                        Köszönettel:
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" style="font-size:18px;">
+                                <div class="col-xs-4 col-xs-offset-6">
+                                    <div align="center">
+                                        Újlipótvárosi Lakásszerviz Kft<br />
+                                        Közös Képviselet
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+
+        <template id="kozosk_lekerdez1_1">
+            <t t-foreach="docs.tulaj_id" t-as="tulaj">
+                <t t-call="report.external_layout">
+                    <t t-call="report.html_container">
+                        <div class="page">
+                            <style>
+                                .bottom-three {
+                                margin-top: 2cm;
+                                margin-bottom: 2cm;
+                                }
+                            </style>
+                            <style>
+                                .alul1 {
+                                margin-bottom: 1cm;
+                                }
+                            </style>
+
+                            <div class="row">
+                                <div class="col-xs-7">
+                                    <h4>
+                                        <span t-field="tulaj.tulajdonos.parent_id.name"/> <br />
+                                        <span t-field="tulaj.tulajdonos.city"/> <span t-field="tulaj.tulajdonos.parent_id.zip"/> <br />
+                                        <span t-field="tulaj.tulajdonos.alb_szam"/>. albetét <span t-field="tulaj.tulajdonos.street2"/> <br />
+                                    </h4>
+                                </div>
+
+                                <div class="col-xs-5">
+                                    <table class="table table-condensed" style="font-size:16px;">
+                                        <tbody>
+                                            <tr>
+                                                <td style="padding:0 5 1 5">
+                                                    Alapterület:
+                                                </td>
+                                                <td style="padding:0 5 1 5" class="text-right">
+                                                    <span t-field="tulaj.tulajdonos.alapterulet"/> nm
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:0 5 1 5">
+                                                    Tulajdoni hányad:
+                                                </td>
+                                                <td style="padding:0 5 1 5" class="text-right">
+                                                    <span t-field="tulaj.tulajdonos.tulhanyad"/>/<span t-field="tulaj.tulajdonos.th_oszto"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:0 5 1 5">
+                                                    Vízóra:
+                                                </td>
+                                                <td style="padding:0 5 1 5" class="text-right">
+                                                    <span t-field="tulaj.tulajdonos.vizora"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <h2 class="alul1" align="center">
+                                Értesítés
+                            </h2>
+                            <div class="row">
+                                <div class="col-xs-7 col-xs-offset-2">
+                                    <h3 class="alul1">
+                                        Tisztelt <span t-field="tulaj.tulajdonos.name"/>! <br />
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-10 col-xs-offset-1">
+                                    <div class="alul1" align="justify"  style="font-size:18px;">
+                                        Tájékoztatjuk Önt, hogy a társasház korábbi közgyűlésén határozat született a fűtési díj évenkénti 
+                                        korrekciójáról. Ennek figyelembevételével <span t-field="docs[0].eloir_datum"/> napjától Önnek a következő
+                                        havi fizetési kötelezettségei vannak a társasházzal szemben:
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-xs-6 col-xs-offset-3">
+                                    <table class="table table-bordered">
+                                        <t t-set="osszesen" t-value="0"/>
+                                        <thead>
+                                            <tr style="font-size:18px;">
+                                                <th class="text-center">
+                                                    <strong>Előírások</strong>
+                                                </th>
+                                                <th class="text-center">
+                                                    <strong>Összeg</strong>
+                                                </th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <t t-foreach="tulaj.eloiras_id" t-as="eloir">
+                                                <tr style="font-size:18px;">
+                                                    <td style="padding:0 5 1 5">
+                                                        <span t-field="eloir.eloiras"/>
+                                                    </td>
+                                                    <td style="padding:0 5 1 5" class="text-right">
+                                                        <span t-field="eloir.osszeg"
+                                                              t-field-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}' />
+                                                        <t t-set="osszesen" t-value="osszesen + eloir.osszeg"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                            <tr style="font-size:18px;">
+                                                <td>
+                                                    <strong>
+                                                        Havi fizetendő összeg:
+                                                    </strong>
+                                                </td>
+                                                <td class="text-right">
+                                                    <strong>
+                                                        <t t-esc="osszesen" t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row" style="font-size:18px;">
+                                <div class="col-xs-10 col-xs-offset-1">
+                                    <div class="bottom-three" align="justify">
+                                        Felhívjuk a szíves figyelmét, hogy a fizetési kötelezettségek összege lakossági
+                                        folyószámláról a <spant t-field="docs[0].bankszamla"/> folyószámlájára is utalható. Kérjük, hogy amennyiben a kötelezettségeiket
+                                        csekken kívánják teljesíteni, úgy ezt lehetőleg valamelyik <spant t-field="docs[0].bank"/> fiókban tegyék, mivel a postai feladás további
+                                        költséget jelent a Társasház számára!
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" style="font-size:18px;">
+                                <div class="col-xs-10 col-xs-offset-4">
+                                    <div class="alul1" align="justify">
+                                        Köszönettel:
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" style="font-size:18px;">
+                                <div class="col-xs-4 col-xs-offset-6">
+                                    <div align="center">
+                                        Újlipótvárosi Lakásszerviz Kft<br />
+                                        Közös Képviselet
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+
+
+        <!--
+
+                <template id="kozosk_lekerdez1">
+                    <t t-foreach="docs.tulaj_id" t-as="tulaj">
+                        <t t-call="report.external_layout">
+                            <t t-call="report.html_container">
+                                <div class="page">
+                                    <style>
+                                        .bottom-three {
+                                        margin-top: 2cm;
+                                        margin-bottom: 2cm;
+                                        }
+                                    </style>
+                                    <style>
+                                        .alul1 {
+                                        margin-bottom: 1cm;
+                                        }
+                                    </style>
+
+                                    <div class="row">
+                                        <div class="col-xs-8 col-xs-offset-1">
+                                            <h4>
+                                                <span t-field="tulaj.tulajdonos.parent_id.name"/> <br />
+                                                <span t-field="tulaj.tulajdonos.city"/> <span t-field="tulaj.tulajdonos.parent_id.zip"/> <br />
+                                                <span t-field="tulaj.tulajdonos.alb_szam"/>. albetét <span t-field="tulaj.tulajdonos.street2"/> <br />
+                                            </h4>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="col-xs-4 col-xs-offset-1">
+                                            <table class="table table-condensed">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            Alapterület:
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <span t-field="tulaj.tulajdonos.alapterulet"/> nm
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Tulajdoni hányad:
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <span t-field="tulaj.tulajdonos.tulhanyad"/>/<span t-field="tulaj.tulajdonos.th_oszto"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Vízóra:
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <span t-field="tulaj.tulajdonos.vizora"/>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <h3 align="center">
+                                        Értesítés
+                                    </h3>
+                                    <div class="row">
+                                        <div class="col-xs-7 col-xs-offset-1">
+                                            <h4 class="bottom-three">
+                                                Tisztelt <span t-field="tulaj.tulajdonos.name"/>! <br />
+                                            </h4>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-10 col-xs-offset-1">
+                                            <p class="alul1" align="justify">
+                                                Tájékoztatjuk, hogy rendelkezésre álló adataink alapján Önnek <span t-field="docs[0].eloir_datum"/>-n havonta a következő
+                                                fizetési kötelezettségei vannak a társasházzal szemben:
+                                            </p>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="col-xs-6 col-xs-offset-1">
+                                            <table class="table table-bordered">
+                                                <t t-set="osszesen" t-value="0"/>
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center">
+                                                            <strong>Előírások</strong>
+                                                        </th>
+                                                        <th class="text-center">
+                                                            <strong>Összeg</strong>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    <t t-foreach="tulaj.eloiras_id" t-as="eloir">
+                                                        <tr>
+                                                            <td style="padding:0 5 1 5">
+                                                                <span t-field="eloir.eloiras"/>
+                                                            </td>
+                                                            <td style="padding:0 5 1 5" class="text-right">
+                                                                <span t-field="eloir.osszeg"
+                                                                      t-field-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}' />
+                                                                <t t-set="osszesen" t-value="osszesen + eloir.osszeg"/>
+                                                            </td>
+                                                        </tr>
+                                                    </t>
+                                                    <tr>
+                                                        <td>
+                                                            <strong>
+                                                                Fizetendő havonta:
+                                                            </strong>
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <strong>
+                                                                <t t-esc="osszesen" t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                                            </strong>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-10 col-xs-offset-1">
+                                            <p class="bottom-three" align="justify">
+                                                Felhívjuk a szíves figyelmét, hogy a fizetési kötelezettségek összege lakossági
+                                                folyószámláról a <spant t-field="docs[0].bankszamla"/> folyószámlájára utalható. Kérjük, hogy csekkes befizetés esetén
+                                                az összeget lehetőleg az <spant t-field="docs[0].bank"/>nál adja fel, mert a postai feladás további költséget
+                                                jelent a Társasház számára!
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </t>
+                    </t>
+                </template>
+
+                -->
+
+    </data>
+</openerp>

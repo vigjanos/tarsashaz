@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="belso_penzmozgatas" model="ir.actions.server">
+            <field name="name">Belso penzmozgas</field>
+            <field eval="'tarh.bankbiz'" name="model_id"/>
+        </record>
+
+    </data>
+</openerp>

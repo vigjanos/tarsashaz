@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="tarh_kozoskt_lekerdez_view" model="ir.ui.view">
+            <field name="name">tarh.kozoskt.lekerdez.view</field>
+            <field name="model">tarh.kozoskt.lekerdez</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <h1>
+                            <label string="Társasház lakóinak előírásai"/>
+                        </h1>
+                        <group>
+                            <field name="eloir_datum"/>
+                            <field name="tarsashaz" options="{'no_create' : True}" domain="[('is_company','=',True),('name','ilike','%rsash%')]" on_change="onchange_tarsashaz(tarsashaz)"/>
+                            <field name="bankszamla" invisible="1"/>
+                            <field name="bank" invisible="1"/>
+                            <button string="Lekérdez" type="object" name="lekerdez"/>
+                        </group>
+                        <notebook>
+                            <page string="Ez a sor eleme">
+                                <field name="tulaj_id">
+                                    <form string="">
+                                        <group>
+                                            <field name="tulajdonos"/>
+                                        </group>
+                                        <notebook>
+                                            <page string="megint valami">
+                                                <field name="eloiras_id">
+                                                    <form string="">
+                                                        <group>
+                                                            <field name="eloiras"/>
+                                                            <field name="osszeg"/>
+                                                        </group>
+                                                        <tree string="fa mutatás">
+                                                            <field name="eloiras"/>
+                                                            <field name="osszeg"/>
+                                                            <field name="tul_id"/>
+                                                        </tree>
+                                                    </form>
+                                                </field>
+                                            </page>
+                                        </notebook>
+                                    </form>
+
+                                    <tree string="ezek az elemek">
+                                        <field name="tulajdonos"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="tarh_kozoskt_lekerdez_view_tree" model="ir.ui.view">
+            <field name="name">tarh.kozoskt.lekerdez.view.tree</field>
+            <field name="model">tarh.kozoskt.lekerdez</field>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="tarsashaz"/>
+                    <field name="eloir_datum"/>
+                </tree>
+            </field>
+        </record>
+
+
+
+        <record id="tarh_kozoskt_lekerdez_action" model="ir.actions.act_window">
+            <field name="name">tarh_kozoskt_lekerdez</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.kozoskt.lekerdez</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_kozoskt_lekerdez_view" />
+
+        </record>
+
+
+        <menuitem id="kozos_ktg_lista" name="Közös költségek lista" parent="konyvel_folyoszamla"
+                  action="tarh_kozoskt_lekerdez_action" sequence="50"/>
+
+
+
+
+
+    </data>
+</openerp>
