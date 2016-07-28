@@ -78,7 +78,7 @@ class tarh_lako_eves(osv.osv):
 
                 # idáig a nyítórekord, nézzük az idõszak alatti összes elõírásokat!
 
-                kotelezettsegek = seged.eloirasok(self, cr, uid, tulajdonos, kezdatum, vegdatum)
+                kotelezettsegek = seged.eloirasok2(self, cr, uid, tulajdonos, kezdatum, vegdatum)
                 for kotelezettseg in kotelezettsegek:
                     beirando = {}
                     beirando['eloiras_e'] = True

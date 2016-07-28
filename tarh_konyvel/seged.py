@@ -40,11 +40,11 @@ def lakoegyenleg2 (self, cr, uid, lako, datum):
         óta, ezt az eredményt listában adjuk vissza: egyenleg, osszes_eloiras, osszes_jovairas, osszeg a dátum
         hónapjaban az előírások a rendkívüli nélküli előíras formában.
         Ha nincs a lakóhoz nyitóegyenleg felvéve, akkor [0,0,0,-1] -et ad vissza'''
-    lako_partner = self.pool.get('res.partner').browse(cr,uid,lako,context=None)
+    lako_partner = self.pool.get('res.partner').browse(cr, uid, lako, context=None)
     if lako_partner.alb_eladas:
         if str_to_date(lako_partner.alb_eladas) < datum:
             datum = str_to_date(lako_partner.alb_eladas)
-        # ha elobb eladtak az ingatlant, mint a kerdezett datum, akkor a datum az eladas datuma lesz
+            # ha elobb eladtak az ingatlant, mint a kerdezett datum, akkor a datum az eladas datuma lesz
     sum_eloiras = 0
     sum_jovairas = 0
     _nyito_osszeg = 0
@@ -56,7 +56,7 @@ def lakoegyenleg2 (self, cr, uid, lako, datum):
         _nyito_datum = str_to_date(nyito_dok.egyenleg_datuma)
         _nyito_osszeg = nyito_dok.egyenleg
         if datum < _nyito_datum:  # a lekerdezes datuma korabbi mint a nyitoegyenleg datuma
-            eredmeny = [_nyito_osszeg,0,0,0]
+            eredmeny = [_nyito_osszeg, 0, 0, 0]
             return
 
         nyito_egyenleg = _nyito_osszeg
@@ -78,7 +78,8 @@ def lakoegyenleg2 (self, cr, uid, lako, datum):
                 if date(ev, honap, 1) >= str_to_date(egy_eloiras.eloir_kezd) and honap_utolsonap(
                         date(ev, honap, 1)) <= str_to_date(egy_eloiras.eloir_vege) and datum >= date(ev, honap,
                                                                                                      egy_eloiras.esedekes):
-                    eloiras_list.append((date(ev,honap,egy_eloiras.esedekes),egy_eloiras.eloirfajta.name,egy_eloiras.osszeg))
+                    eloiras_list.append(
+                        (date(ev, honap, egy_eloiras.esedekes), egy_eloiras.eloirfajta.name, egy_eloiras.osszeg))
                     sum_eloiras = sum_eloiras + egy_eloiras.osszeg
 
         '''Itt kezdődik a befizetések kigyűjtése'''
@@ -88,13 +89,11 @@ def lakoegyenleg2 (self, cr, uid, lako, datum):
         befizetesek = _my_report.browse(cr, uid, my_report_lista, context=None)
         for befizetes in befizetesek:
             sum_jovairas = sum_jovairas + befizetes.jovairas - befizetes.terheles
-            befizetes_list.append((str_to_date(befizetes.erteknap),befizetes.tarh_tranzakcio.name,befizetes.jovairas-befizetes.terheles))
+            befizetes_list.append((str_to_date(befizetes.erteknap), befizetes.tarh_tranzakcio.name,
+                                   befizetes.jovairas - befizetes.terheles))
         egyenleg = nyito_egyenleg + sum_jovairas - sum_eloiras
 
-        havi_fiz = havi_fizetendo2(self,cr,uid,lako,datum)
-
-
-
+        havi_fiz = havi_fizetendo2(self, cr, uid, lako, datum)
 
         eredmeny = [egyenleg, sum_eloiras, sum_jovairas, havi_fiz, eloiras_list, befizetes_list]
         return eredmeny
@@ -188,9 +187,10 @@ def eloirasok (self, cr, uid, tulajdonos, kezdatum, vegdatum):
     tulaj = str(tulajdonos)
     conn_string = "select eloiras_fajta.name, sum(osszeg) from tarh_lakoeloir_havi join eloiras_fajta" \
                   " on eloirfajta = eloiras_fajta.id where lako = " + tulaj + " and eloir_datum " \
-                                                                              "between '" + kezdatum + "' and '" + vegdatum + "' group by eloiras_fajta.name"
+                                                                              "between '" + str(kezdatum) + "' and '" + str(vegdatum) + "' group by eloiras_fajta.name"
     cr.execute(conn_string)
     eredmeny = cr.fetchall()
+    eredmeny[0]=100
     return eredmeny
 
 
@@ -199,40 +199,77 @@ def eloirasok2 (self, cr, uid, tulajdonos, kezdatum, vegdatum):
     Ez az eljárás megadja az időpontok között, hogy a tulajdonos részére milyen befizetéseket írtunk elő fajtánként
     Egy listát adunk vissza string(előírás neve),integer(előírás összesen) elemekkel
     '''
-    lako_partner = self.pool.get('res.partner').browse(cr,uid,tulajdonos,context=None)
+    kezdatum=str_to_date(kezdatum)
+    vegdatum= str_to_date(vegdatum)
+    lako_partner = self.pool.get('res.partner').browse(cr, uid, tulajdonos, context=None)
     if lako_partner.alb_eladas:
         if str_to_date(lako_partner.alb_eladas) < vegdatum:
             vegdatum = str_to_date(lako_partner.alb_eladas)
-        # ha elobb eladtak az ingatlant, mint a kerdezett vegdatum, akkor a vegdatum az eladas datuma lesz
+            # ha elobb eladtak az ingatlant, mint a kerdezett vegdatum, akkor a vegdatum az eladas datuma lesz
+    if lako_partner.alb_vetel:
+        if str_to_date(lako_partner.alb_vetel) > kezdatum:
+            kezdatum = str_to_date(lako_partner.alb_vetel)
+            # ha a kezdeti datum korabbi mint az ingatlan veteli datuma, akkor a kezdodatum a vetel datuma lesz
     _tarh_eloiras_lako = self.pool.get('tarh.eloiras.lako')
     _eloiras_fajta = self.pool.get('eloiras.fajta')
     lako_eloir_id = _tarh_eloiras_lako.search(cr, uid, [('lako', '=', tulajdonos)], context=None)
     lako_eloirasai = _tarh_eloiras_lako.browse(cr, uid, lako_eloir_id, context=None)
     eloiras_list = []
     befizetes_list = []
+    b=len(eloiras_list)
+
 
     '''Itt kezdődik az előírások kigyűjtése'''
 
     for egy_eloiras in lako_eloirasai:
         ev = kezdatum.year
         honap = kezdatum.month
-        sum_eloiras=0
-        while not (ev == vegdatum.year and honap == vegdatum.month):
-            if date(ev, honap, 1) >= str_to_date(egy_eloiras.eloir_kezd) and honap_utolsonap(
-                    date(ev, honap, 1)) <= str_to_date(egy_eloiras.eloir_vege) and vegdatum >= date(ev, honap,
-                                                                                                 egy_eloiras.esedekes):
-                eloiras_list.append(
-                    (date(ev, honap, egy_eloiras.esedekes), egy_eloiras.eloirfajta.name, egy_eloiras.osszeg))
+        leker_datum = kezdatum
+        sum_eloiras = 0
+        while (leker_datum <= vegdatum):
+            #print leker_datum.year, leker_datum.month, egy_eloiras.esedekes
+            #ha a datumhoz nem passzol a nap pl. februar 30-ra akarnank allitani
+            if honap_utolsonap(date(leker_datum.year,leker_datum.month,1)).day > egy_eloiras.esedekes:
+                havi_esedekesseg = date(leker_datum.year, leker_datum.month, egy_eloiras.esedekes)
+            else:
+                havi_esedekesseg = honap_utolsonap(date(leker_datum.year,leker_datum.month,1))
+            if leker_datum >= str_to_date(egy_eloiras.eloir_kezd) and leker_datum <= str_to_date(
+                    egy_eloiras.eloir_vege) and kezdatum <= havi_esedekesseg and vegdatum >= havi_esedekesseg:
+                #print havi_esedekesseg, egy_eloiras.eloirfajta.name, egy_eloiras.osszeg
                 sum_eloiras = sum_eloiras + egy_eloiras.osszeg
-            ujdate = add_month(ev, honap)
-            ev = ujdate[0]
-            honap = ujdate[1]
-        eloiras_list.append((date(ev, honap, egy_eloiras.esedekes), egy_eloiras.eloirfajta.name, egy_eloiras.osszeg))
-        sum_eloiras = sum_eloiras + egy_eloiras.osszeg
-        osszeg=[100]
-    return osszeg
+            novelt_datum = add_month(leker_datum.year,leker_datum.month)
+            leker_datum = date(novelt_datum[0],novelt_datum[1],1)
+        if sum_eloiras != 0:
+            eloiras_list.append([egy_eloiras.eloirfajta.name,sum_eloiras])
 
-def havi_fizetendo2 (self, cr,uid, tulajdonos, datum ):
+
+    ''' A következő huncutság azért kell, hogy az egyfajta előírásokat összeadja, és ne külön szerepeljenek, ha
+    valamelyik előírásban váltás volt.    Nem túl elegáns a kód, de reméljük jó lesz!
+    '''
+    kimeno_list=[]
+    eloiras_list.sort()
+    rogzitjuk=False
+    for akt_eloir in eloiras_list:
+        my2_hossz=len(kimeno_list)
+        if my2_hossz == 0:
+            kimeno_list.append([akt_eloir[0], akt_eloir[1]])
+        else:
+            for my2 in kimeno_list:
+                rogzitjuk=False
+                if akt_eloir[0] == my2[0]:
+                    my2[1]=akt_eloir[1]+my2[1]
+                else:
+                    rogzitjuk=True
+        if rogzitjuk:
+            kimeno_list.append([akt_eloir[0], akt_eloir[1]])
+
+
+    #eloiras_list[0]=100
+    #return eloiras_list
+    return kimeno_list
+
+
+def havi_fizetendo2 (self, cr, uid, tulajdonos, datum):
     '''
     meg kell csinálni, hogy a visszatérő érték egy lista, és két integer legyen
     a listában adjuk vissza a előírások (nevét,összegét), összeget rendkívülivel és ügyvédivel, és
@@ -242,14 +279,12 @@ def havi_fizetendo2 (self, cr,uid, tulajdonos, datum ):
     _eloiras_fajta = self.pool.get('eloiras.fajta')
     lako_eloir_id = _tarh_eloiras_lako.search(cr, uid, [('lako', '=', tulajdonos)], context=None)
     lako_eloirasai = _tarh_eloiras_lako.browse(cr, uid, lako_eloir_id, context=None)
-    eloirasai=0
+    eloirasai = 0
     for egy_eloiras in lako_eloirasai:
         if datum >= str_to_date(egy_eloiras.eloir_kezd) and datum <= str_to_date(egy_eloiras.eloir_vege):
             if 'Rendk' not in egy_eloiras.eloirfajta.name and 'gyv' not in egy_eloiras.eloirfajta.name:
                 eloirasai = eloirasai + egy_eloiras.osszeg
     return eloirasai
-
-
 
 
 def havi_fizetendo (self, cr, uid, tulajdonos, datum):

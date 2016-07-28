@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from openerp.osv import osv, fields
-from seged import *
+from tarh_konyvel.seged import *
 
 class tul_hanyad(osv.osv):
     _inherit = 'res.partner'
@@ -12,7 +12,7 @@ class tul_hanyad(osv.osv):
         if talalt_id:
             sajat_id=self.browse(cr,uid,ids,context).id
             datum=date.today()
-            lekerdezes=lakoegyenleg(self,cr,uid,sajat_id,datum)
+            lekerdezes=lakoegyenleg2(self,cr,uid,sajat_id,datum)
             res={}
             res[sajat_id]=lekerdezes[0]
             return res
