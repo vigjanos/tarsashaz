@@ -127,7 +127,8 @@
             <t t-foreach="docs.sor_id" t-as="sor">
                 <t t-set="minimal" t-value="docs[0].min_tartozas * -1"/>
                 <t t-if="sor.zaroegyenleg &lt; minimal">
-                    <t t-if="sor.zaroegyenleg*-1/sor.havi_eloiras >= docs[0].min_honap">
+                    <t t-if="sor.havi_eloiras!=0">
+                        <t t-if="sor.zaroegyenleg*-1/sor.havi_eloiras >= docs[0].min_honap">
                         <t t-call="report.external_layout">
                             <t t-call="report.html_container">
                                 <div class="page">
@@ -314,6 +315,7 @@
                                 </div>
                             </t>
                         </t>
+                    </t>
                     </t>
                 </t>
             </t>
