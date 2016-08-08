@@ -3,6 +3,7 @@ __author__ = 'vigjani'
 
 from openerp.osv import osv, fields
 from datetime import date, timedelta
+from collections import defaultdict
 
 
 def str_to_date (str_date):
@@ -215,8 +216,6 @@ def eloirasok2 (self, cr, uid, tulajdonos, kezdatum, vegdatum):
     lako_eloir_id = _tarh_eloiras_lako.search(cr, uid, [('lako', '=', tulajdonos)], context=None)
     lako_eloirasai = _tarh_eloiras_lako.browse(cr, uid, lako_eloir_id, context=None)
     eloiras_list = []
-    befizetes_list = []
-    b=len(eloiras_list)
 
 
     '''Itt kezdődik az előírások kigyűjtése'''
@@ -245,7 +244,9 @@ def eloirasok2 (self, cr, uid, tulajdonos, kezdatum, vegdatum):
 
     ''' A következő huncutság azért kell, hogy az egyfajta előírásokat összeadja, és ne külön szerepeljenek, ha
     valamelyik előírásban váltás volt.    Nem túl elegáns a kód, de reméljük jó lesz!
-    '''
+
+    Ez a régi verzió:
+
     kimeno_list=[]
     eloiras_list.sort()
     rogzitjuk=False
@@ -262,7 +263,16 @@ def eloirasok2 (self, cr, uid, tulajdonos, kezdatum, vegdatum):
                     rogzitjuk=True
         if rogzitjuk:
             kimeno_list.append([akt_eloir[0], akt_eloir[1]])
+    '''
 
+
+    '''
+    Itt az új verzió !!!
+    '''
+    kimeno_list = defaultdict(int)
+    for eloiras, value in eloiras_list:
+        kimeno_list[eloiras] += value
+    kimeno_list = kimeno_list.items()
 
     #eloiras_list[0]=100
     #return eloiras_list
