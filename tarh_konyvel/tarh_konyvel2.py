@@ -266,8 +266,10 @@ class tarh_haz_lakoegy(osv.osv):
                 else:
                     alb_eladas=date(2050,12,31)
                 if alb_vetel <= _vegdatum and alb_eladas >= _vegdatum:
-                    kezdoadat=lakoegyenleg(lako, _kezdatum)
-                    vegadat=lakoegyenleg(lako, _vegdatum)
+                    #kezdoadat=lakoegyenleg2(self,cr,uid, lako, _kezdatum)
+                    #vegadat=lakoegyenleg2(self,cr,uid, lako, _vegdatum)
+                    kezdoadat = lakoegyenleg( lako, _kezdatum)
+                    vegadat = lakoegyenleg( lako, _vegdatum)
                     #print lako
                     kiirando={}
                     kiirando['tulaj']=lako_partner.name

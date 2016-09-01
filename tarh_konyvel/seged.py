@@ -4,6 +4,7 @@ __author__ = 'vigjani'
 from openerp.osv import osv, fields
 from datetime import date, timedelta
 from collections import defaultdict
+import time
 
 
 def str_to_date (str_date):
@@ -97,6 +98,7 @@ def lakoegyenleg2 (self, cr, uid, lako, datum):
         havi_fiz = havi_fizetendo2(self, cr, uid, lako, datum)
 
         eredmeny = [egyenleg, sum_eloiras, sum_jovairas, havi_fiz, eloiras_list, befizetes_list]
+#        eredmeny[0]=100
         return eredmeny
 
 
@@ -333,4 +335,7 @@ def utolso_konyvelt_datum (self, cr, uid, tarsashaz):
                    where th_szamlatul=" + tarsashaz + " order by erteknap desc limit 1"
     cr.execute(conn_string)
     eredmeny = cr.fetchone()
-    return eredmeny[0]
+    if eredmeny:
+        return eredmeny[0]
+    else:
+        return (time.strftime("%Y-%m-%d"))  # ha nincs meg konyvelt befizetes, akkor a mai datummal terunk vissza
