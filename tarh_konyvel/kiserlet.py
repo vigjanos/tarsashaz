@@ -3,43 +3,77 @@
 Created on 2015.05.23'''
 __author__ = 'vigjani'
 
-from openerp import osv,fields
+from openerp import osv, fields
 from seged import *
-
-
+import unicodedata
 
 
 class kiserlet(osv.osv):
 
-    def _egyenleg_szamol(self,cr,uid,ids,field_name,arg,context=None):
-        sajat_id=self.browse(cr,uid,ids,context).id
-        tulaj=self.browse(cr,uid,ids,context=None).tulajdonos.id
-        datum_kezd=str_to_date(self.browse(cr,uid,ids,context=None).kezdet)
-        datum_veg=str_to_date(self.browse(cr,uid,ids,context=None).befejezes)
-        #lekerdezes=lakoegyenleg2(self,cr,uid,tulaj,datum)
-        lekerdezes=lakoegyenleg2(self,cr,uid,tulaj,datum_kezd)
-        res={}
-        res[sajat_id]=lekerdezes[0]
+    def _egyenleg_szamol (self, cr, uid, ids, field_name, arg, context=None):
+        sajat_id = self.browse(cr, uid, ids, context).id
+        tulaj = self.browse(cr, uid, ids, context=None).tulajdonos.id
+        datum_kezd = str_to_date(self.browse(cr, uid, ids, context=None).kezdet)
+        datum_veg = str_to_date(self.browse(cr, uid, ids, context=None).befejezes)
+        # lekerdezes=lakoegyenleg2(self,cr,uid,tulaj,datum)
+        lekerdezes = lakoegyenleg3(self, cr, uid, tulaj, datum_kezd)
+        res = {}
+        res[sajat_id] = lekerdezes[0]
         return res
 
-    def gomb_nyomas(self, cr, uid, ids, context=None):
-        '''tulaj=self.browse(cr,uid,ids,context=None).tulajdonos.id
-        datum=self.browse(cr,uid,ids,context=None).kezdet
+    def gomb_nyomas (self, cr, uid, ids, context=None):
+        # tulaj=self.browse(cr,uid,ids,context=None).tulajdonos.id
+        datum = self.browse(cr, uid, ids, context=None).kezdet
+        # print tulaj
+        # print datum
+        _res_partner = self.pool.get('res.partner')
+        aktiv_tulajok = _res_partner.search(cr, uid,
+                                            [('parent_id.name', 'ilike', 'rsash'), ('is_company', '=', False), '|',
+                                             ('active', '=', False), ('active', '=', True)], context=None)
 
-        print tulaj
-        print datum'''
+        #aktiv_tulajok = _res_partner.search(cr,uid,[('parent_id.name','ilike','rsash')],context=None)
+
+        '''
+        for tulajok in aktiv_tulajok:
+            tulaj = _res_partner.browse(cr,uid,tulajok,context=None)
+            if tulaj.active == False:
+                print tulaj.name
+        '''
+
+
+        f = open('/home/vigjani/valamisemmi_uj.txt', 'w')
+        for tulajdonos in aktiv_tulajok:
+            regi_egyenleg = lakoegyenleg(self, cr, uid, tulajdonos, datum, )[0]
+            uj_egyenleg = lakoegyenleg3(self, cr, uid, tulajdonos, datum, )[0]
+            if regi_egyenleg != uj_egyenleg:
+                nev = _res_partner.browse(cr, uid, tulajdonos, context=None).name
+                tarsashaz = _res_partner.browse(cr, uid, tulajdonos, context=None).parent_id.name
+                if _res_partner.browse(cr, uid, tulajdonos, context=None).active:
+                    aktiv = 'Aktív'
+                else:
+                    aktiv = 'Eladott'
+                valami = unicodedata.normalize('NFKD', tarsashaz).encode('ascii', 'ignore') +'  '+ unicodedata.normalize('NFKD', nev).encode('ascii', 'ignore')
+                regi_egyenleg = str(regi_egyenleg)
+                uj_egyenleg = str(uj_egyenleg)
+                osszefuz = valami + ' Régi: ' + regi_egyenleg + ' Új: ' + uj_egyenleg +  '  ' + aktiv + '\n'
+                f.write(osszefuz)
+        f.close()
+
+
+
         return True
 
-    _name='tarh.kiserlet'
+    _name = 'tarh.kiserlet'
     _columns = {
-        'tulajdonos': fields.many2one('res.partner', 'Tulajdonos', help='', domain="[('parent_id.name','ilike','rsash')]"),
-        'kezdet':fields.date('Kezdeti időpont'),
-        'befejezes':fields.date('Befejezési időpont'),
-        'egyenleg':fields.function(_egyenleg_szamol,string='Egyenleg',type='integer', store=False, help=''),
-
-
+        'tulajdonos': fields.many2one('res.partner', 'Tulajdonos', help='',
+                                      domain="[('parent_id.name','ilike','rsash')]"),
+        'kezdet': fields.date('Kezdeti időpont'),
+        'befejezes': fields.date('Befejezési időpont'),
+        'egyenleg': fields.function(_egyenleg_szamol, string='Egyenleg', type='integer', store=False, help=''),
 
     }
+
+
 kiserlet()
 
 ''' store= {

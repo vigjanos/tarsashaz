@@ -29,6 +29,7 @@
             'tarh_lako_eves_nyomtat.xml',
             'tarh_epites_view.xml',
             'tarh_epites_nyomtat.xml',
+            'tarh_egyszeribeir_view.xml',
             ],
     'installable': True,
   

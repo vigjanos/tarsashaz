@@ -784,7 +784,7 @@ class tarh_lakoeloir_havi(osv.osv):
     '''
     Ebben az osztályban tároljuk a tulajdonosok tényleges havi elõírásait.
     Figyeli, hogy él e még az elõírás (nem adták-e el a lakást) 
-    
+    Ezt meg kell szüntetni!!!!  csak a tarh_eloiras_lako marad!
     '''
     _name = 'tarh.lakoeloir.havi'
     _columns = {
@@ -1302,7 +1302,7 @@ class tarh_lako_havijel(osv.osv):
         'sor_id': fields.one2many('tarh.lako.havijel.sor', 'havijel_id', 'kapocs2'),
     }
     _defaults = {
-        'kezdatum': '2015-01-01',
+        'kezdatum': '2016-01-01',
         'vegdatum': fields.date.context_today,
         'lekerdatum': fields.date.context_today,
     }

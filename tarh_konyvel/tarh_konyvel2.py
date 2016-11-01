@@ -26,26 +26,8 @@ class tarh_havijel_haz(osv.osv):
             szeletelt=str_date.split("-")
             return(date( int(szeletelt[0]),int(szeletelt[1]),int(szeletelt[2])))
         
-        
-        def egyenleg(bankszamla,datum):
-            '''Kiolvassuk, hogy milyen nyitóérték és dátum van eltárolva a bankszámlához'''
-            bszamla_nyito=self.pool.get('tarh.bszamla.nyito').search(cr,uid,[('tarh_bszamla','=',bankszamla)],context=None)
-            if bszamla_nyito:
-                nyito_ertek=self.pool.get('tarh.bszamla.nyito').browse(cr,uid,bszamla_nyito[0],context=None).egyenleg
-                nyito_datum=str_to_date(self.pool.get('tarh.bszamla.nyito').browse(cr,uid,bszamla_nyito[0],context=None).egyenleg_datuma)
-            else:
-                nyito_ertek=0
-            '''megkeressük azokat a bejegyzéseket a tarh_bankbiz táblában amelyeknél biz_datum nagyobb mint a nyito_datum, ÉS
-            kisebb vagy egyenlõ mint a datum ÉS a bankszamla_thaz = bankszamla'''
-            osszesen=nyito_ertek
-            ref_bankbiz=self.pool.get('tarh.bankbiz')
-            talalt_elemek=ref_bankbiz.search(cr,uid,[('bankszamla_thaz','=',bankszamla),('biz_datum','>',nyito_datum),('biz_datum','<=',datum)],context=None)
-            if talalt_elemek: #ha talalt megfelelot
-                for elem in talalt_elemek:
-                    rec_elem=ref_bankbiz.browse(cr,uid,elem,context=None)
-                    osszesen = osszesen + rec_elem.sum_jovairas - rec_elem.sum_terheles 
-            return(osszesen)
-        
+
+
         
         sajat_id=self.browse(cr, uid, ids, context=None).id
         _kezdatum=self.browse(cr,uid,ids,context=None).kezdatum
@@ -65,7 +47,7 @@ class tarh_havijel_haz(osv.osv):
         bankszamlak=self.pool.get('res.partner.bank').search(cr,uid,[('partner_id','=',_szamlatul)],context=None)
         for bankszamla in bankszamlak:
             '''Megkeressük a kezdodatum idejen a nyitóegyenleget (-1 nap!!!) és beírjuk az elsõ sorba  '''
-            nyitoegyenleg=egyenleg(bankszamla, str_to_date(_kezdatum)-timedelta(days=1))
+            nyitoegyenleg=bankegyenleg(self, cr, uid, bankszamla, str_to_date(_kezdatum)-timedelta(days=1))
             kiirando={}
             kiirando['bankszamla_thaz']=bankszamla
             kiirando['tranzakcio']='szla_nyito'
@@ -98,7 +80,7 @@ class tarh_havijel_haz(osv.osv):
                     ref_jelentes_sor.create(cr,uid,kiirando,context=None)
             
             
-            zaroegyenleg=egyenleg(bankszamla, str_to_date(_vegdatum))
+            zaroegyenleg=bankegyenleg(self, cr, uid, bankszamla, str_to_date(_vegdatum))
             kiirando={}
             kiirando['bankszamla_thaz']=bankszamla
             kiirando['tranzakcio']='szla_zaro'
@@ -266,10 +248,10 @@ class tarh_haz_lakoegy(osv.osv):
                 else:
                     alb_eladas=date(2050,12,31)
                 if alb_vetel <= _vegdatum and alb_eladas >= _vegdatum:
-                    #kezdoadat=lakoegyenleg2(self,cr,uid, lako, _kezdatum)
-                    #vegadat=lakoegyenleg2(self,cr,uid, lako, _vegdatum)
-                    kezdoadat = lakoegyenleg( lako, _kezdatum)
-                    vegadat = lakoegyenleg( lako, _vegdatum)
+                    kezdoadat=lakoegyenleg3(self,cr,uid, lako, _kezdatum)
+                    vegadat=lakoegyenleg3(self,cr,uid, lako, _vegdatum)
+                    #kezdoadat = lakoegyenleg( lako, _kezdatum)
+                    #vegadat = lakoegyenleg( lako, _vegdatum)
                     #print lako
                     kiirando={}
                     kiirando['tulaj']=lako_partner.name

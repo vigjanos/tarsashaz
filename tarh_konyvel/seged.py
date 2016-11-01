@@ -37,15 +37,18 @@ def add_month (ev, honap):
     return (ev, honap)
 
 
-def lakoegyenleg2 (self, cr, uid, lako, datum):
+def lakoegyenleg3 (self, cr, uid, lako, datum):
     ''' kiszámolja, hogy a lako tulajdonosnak a datum időpontban mennyi az egyenlege a nyitóegyenleg felvitele
         óta, ezt az eredményt listában adjuk vissza: egyenleg, osszes_eloiras, osszes_jovairas, osszeg a dátum
         hónapjaban az előírások a rendkívüli nélküli előíras formában.
         Ha nincs a lakóhoz nyitóegyenleg felvéve, akkor [0,0,0,-1] -et ad vissza'''
+    if type(datum) != date:
+        datum = str_to_date(datum) # lehet, hogy majd ki kell szedni
+    datum_2 = datum
     lako_partner = self.pool.get('res.partner').browse(cr, uid, lako, context=None)
     if lako_partner.alb_eladas:
         if str_to_date(lako_partner.alb_eladas) < datum:
-            datum = str_to_date(lako_partner.alb_eladas)
+            datum_2 = str_to_date(lako_partner.alb_eladas)
             # ha elobb eladtak az ingatlant, mint a kerdezett datum, akkor a datum az eladas datuma lesz
     sum_eloiras = 0
     sum_jovairas = 0
@@ -57,9 +60,9 @@ def lakoegyenleg2 (self, cr, uid, lako, datum):
         nyito_dok = _tarh_lako_nyito.browse(cr, uid, talalt_id[0], context=None)
         _nyito_datum = str_to_date(nyito_dok.egyenleg_datuma)
         _nyito_osszeg = nyito_dok.egyenleg
-        if datum < _nyito_datum:  # a lekerdezes datuma korabbi mint a nyitoegyenleg datuma
+        if datum_2 < _nyito_datum:  # a lekerdezes datuma korabbi mint a nyitoegyenleg datuma csak eddig vesszuk az eloirasokat!
             eredmeny = [_nyito_osszeg, 0, 0, 0]
-            return
+            return(eredmeny)
 
         nyito_egyenleg = _nyito_osszeg
         _tarh_eloiras_lako = self.pool.get('tarh.eloiras.lako')
@@ -71,18 +74,31 @@ def lakoegyenleg2 (self, cr, uid, lako, datum):
         lako_eloirasai = _tarh_eloiras_lako.browse(cr, uid, lako_eloir_id, context=None)
         eloiras_list = []
         befizetes_list = []
+
+
         '''Itt kezdődik az előírások kigyűjtése'''
-        while not (ev == datum.year and honap == datum.month):
-            ujdate = add_month(ev, honap)
-            ev = ujdate[0]
-            honap = ujdate[1]
-            for egy_eloiras in lako_eloirasai:
-                if date(ev, honap, 1) >= str_to_date(egy_eloiras.eloir_kezd) and honap_utolsonap(
-                        date(ev, honap, 1)) <= str_to_date(egy_eloiras.eloir_vege) and datum >= date(ev, honap,
-                                                                                                     egy_eloiras.esedekes):
-                    eloiras_list.append(
-                        (date(ev, honap, egy_eloiras.esedekes), egy_eloiras.eloirfajta.name, egy_eloiras.osszeg))
+
+        for egy_eloiras in lako_eloirasai:
+            ev = _nyito_datum.year
+            honap = _nyito_datum.month
+            leker_datum = _nyito_datum
+
+            while (leker_datum <= datum):
+                #print leker_datum.year, leker_datum.month, egy_eloiras.esedekes
+                #ha a datumhoz nem passzol a nap pl. februar 30-ra akarnank allitani, ez csak akkor kell, ha valami
+                # buzi ugyvedi v. hasonlo 31-ere lenne eloirva
+                if honap_utolsonap(date(leker_datum.year,leker_datum.month,1)).day > egy_eloiras.esedekes:
+                    havi_esedekesseg = date(leker_datum.year, leker_datum.month, egy_eloiras.esedekes)
+                else:
+                    havi_esedekesseg = honap_utolsonap(date(leker_datum.year,leker_datum.month,1))
+                if leker_datum >= str_to_date(egy_eloiras.eloir_kezd) and leker_datum <= str_to_date(
+                        egy_eloiras.eloir_vege) and _nyito_datum <= havi_esedekesseg and datum >= havi_esedekesseg:
+                    #print havi_esedekesseg, egy_eloiras.eloirfajta.name, egy_eloiras.osszeg
                     sum_eloiras = sum_eloiras + egy_eloiras.osszeg
+                    eloiras_list.append((havi_esedekesseg,egy_eloiras.eloirfajta.name,egy_eloiras.osszeg))
+                novelt_datum = add_month(leker_datum.year,leker_datum.month)
+                leker_datum = date(novelt_datum[0],novelt_datum[1],1)
+
 
         '''Itt kezdődik a befizetések kigyűjtése'''
         my_report_lista = _my_report.search(cr, uid, [('partner', '=', lako), ('erteknap', '>', _nyito_datum),
@@ -107,12 +123,13 @@ def lakoegyenleg2 (self, cr, uid, lako, datum):
         return (eredmeny)
         # [egyenleg, oszes eloiras, osszes jovairas, havonta eloiras, eloirasok listaja, befizetesek listaja]
 
-
 def lakoegyenleg (self, cr, uid, lako, datum):
     ''' kiszámolja, hogy a lako tulajdonosnak a datum időpontban mennyi az egyenlege a nyitóegyenleg felvitele
         óta, ezt az eredményt listában adjuk vissza: egyenleg, osszes_eloiras, osszes_jovairas, osszeg a dátum
         hónapjaban az előírások a rendkívüli nélküli előíras formában.
         Ha nincs a lakóhoz nyitóegyenleg felvéve, akkor [0,0,0,-1] -et ad vissza'''
+    if type(datum) != date:
+        datum = str_to_date(datum) # lehet, hogy majd ki kell szedni
     sum_eloiras = 0
     sum_jovairas = 0
     _nyito_osszeg = 0
@@ -339,3 +356,29 @@ def utolso_konyvelt_datum (self, cr, uid, tarsashaz):
         return eredmeny[0]
     else:
         return (time.strftime("%Y-%m-%d"))  # ha nincs meg konyvelt befizetes, akkor a mai datummal terunk vissza
+
+def bankegyenleg(self,cr,uid,bankszamla,datum):
+    '''
+    A bankegyenleget ez az eljárás nem a bankbizonylatok összesen eltárolt adatai alapján számolja, hanem a sorok összegével
+    Kiolvassuk, hogy milyen nyitóérték és dátum van eltárolva a bankszámlához
+    '''
+    bszamla_nyito=self.pool.get('tarh.bszamla.nyito').search(cr,uid,[('tarh_bszamla','=',bankszamla)],context=None)
+    if bszamla_nyito:
+        nyito_ertek=self.pool.get('tarh.bszamla.nyito').browse(cr,uid,bszamla_nyito[0],context=None).egyenleg
+        nyito_datum=str_to_date(self.pool.get('tarh.bszamla.nyito').browse(cr,uid,bszamla_nyito[0],context=None).egyenleg_datuma)
+    else:
+        nyito_ertek=0
+    '''megkeressük azokat a bejegyzéseket a tarh_bankbiz táblában amelyeknél biz_datum nagyobb mint a nyito_datum, ÉS
+    kisebb vagy egyenlő mint a datum ÉS a bankszamla_thaz = bankszamla'''
+    osszesen=nyito_ertek
+    ref_bankbiz=self.pool.get('tarh.bankbiz')
+    ref_bankbiz_sor = self.pool.get('tarh.bankbiz.sor')
+    #talalt_elemek=ref_bankbiz.search(cr,uid,[('bankszamla_thaz','=',bankszamla),('biz_datum','>',nyito_datum),('biz_datum','<=',datum)],context=None)
+    talalt_elemek=ref_bankbiz.search(cr,uid,[('bankszamla_thaz','=',bankszamla)],context=None)
+    if talalt_elemek:#ha talalt megfelelo bankbizonylatot akkor vegigmegyunk a sorokon
+        talalt_sorok=ref_bankbiz_sor.search(cr,uid,[('bankbiz_id','in',talalt_elemek),('erteknap','>',nyito_datum),('erteknap','<=',datum)],context=0)
+        if talalt_sorok:
+            for sor in talalt_sorok:
+                rec_elem= ref_bankbiz_sor.browse(cr,uid,sor,context=None)
+                osszesen = osszesen + rec_elem.jovairas_ossz - rec_elem.terheles_ossz
+    return(osszesen)

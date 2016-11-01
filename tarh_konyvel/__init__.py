@@ -36,6 +36,7 @@ import tarh_tartozok
 import tarh_lako_eves
 import tarh_epites
 import tarh_belso_penz
+import tarh_egyszeribeir
 
 
 

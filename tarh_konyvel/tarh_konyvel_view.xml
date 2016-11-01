@@ -640,7 +640,7 @@
             <field name="name">tarh.lakoeloir.havi.search</field>
             <field name="model">tarh.lakoeloir.havi</field>
             <field name="arch" type="xml">
-                <search string="tarh_lakoleoir_havi">
+                <search string="tarh_lakoeloir_havi">
                     <field name="lako"/>
                     <field name="tarsashaz"/>
                     <field name="eloirfajta"/>

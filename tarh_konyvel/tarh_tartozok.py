@@ -54,7 +54,7 @@ class tarh_tartozok(osv.osv):
             for elad in eladtak:
                 tulajdonosok.remove(elad)
             for tulajdonos in tulajdonosok:
-                adatok = seged.lakoegyenleg(self, cr, uid, tulajdonos, egy_datum)
+                adatok = seged.lakoegyenleg3(self, cr, uid, tulajdonos, egy_datum)
                 if adatok[3]==0:
                     print 'itt a hiba ', tulajdonos
                 else:
@@ -76,7 +76,7 @@ class tarh_tartozok(osv.osv):
                             ref_tartozok_sor.create(cr, uid, kiirando, context=None)
                     else:
                         if adatok[0] < -1 * min_tartozas and (-1 * adatok[0] / adatok[3]) >= min_honap:
-                            szmlal = felsz.search_count(cr, uid, [('tulaj', '=', tulajdonos)], context=context)
+                            szmlal = felsz.search_count(cr, uid, [('tulaj', '=', tulajdonos),('felsz_status','<>','rend')], context=context)
                             kiirando = {}
                             kiirando['tarsashaz'] = tarsashaz
                             kiirando['tulajdonos'] = tulajdonos
