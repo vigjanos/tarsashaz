@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="tarh_egyszeribeir_form_view">
+            <field name="name">tarh.egyszeribeir.form</field>
+            <field name="model">tarh.egyszeribeir</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="form_string" version="7.0">
+                    <sheet string="Egyszeri eloirasok lakok reszere">
+                        <group>
+                            <field name="tarsashaz" options="{'no_create' : True}" placeholder="Társasház választása"
+                                   select="1"/>
+                            <field name="tulajdonos" options="{'no_create' : True}"
+                                   domain="[('parent_id','=', tarsashaz)]"/>
+
+                        </group>
+                        <group>
+                            <group>
+                                <field name="idopont" placeholder="Előírás időpontja"/>
+                                <field name="osszeg" placeholder="Előírás összege"/>
+                                <button name="rogzites" string="Rögzítés"
+                                        type="object"/>
+                            </group>
+                            <group>
+                                <field name="eloirfajta" placeholder="Előírás típusa"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="action_tarh_egyszeribeir_form">
+            <field name="name">tarh_egyszeribeir</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.egyszeribeir</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_egyszeribeir_form_view"/>
+        </record>
+
+        <menuitem name="Egyszeri előírások rögzítése" sequence="35"
+                  parent="konyvel_beallitasok" id="konyvel_beallitasok81_sub" action="action_tarh_egyszeribeir_form"/>
+
+
+    </data>
+</openerp>
