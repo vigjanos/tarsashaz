@@ -41,7 +41,7 @@ class kiserlet(osv.osv):
         '''
 
 
-        f = open('/home/vigjani/valamisemmi_uj.txt', 'w')
+        f = open('~/valamisemmi_uj.txt', 'w')
         for tulajdonos in aktiv_tulajok:
             regi_egyenleg = lakoegyenleg(self, cr, uid, tulajdonos, datum, )[0]
             uj_egyenleg = lakoegyenleg3(self, cr, uid, tulajdonos, datum, )[0]
