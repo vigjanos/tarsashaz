@@ -21,7 +21,7 @@ class kiserlet(osv.osv):
         res[sajat_id] = lekerdezes[0]
         return res
 
-    def gomb_nyomas (self, cr, uid, ids, context=None):
+    def gomb_nyomas_regi (self, cr, uid, ids, context=None):
         # tulaj=self.browse(cr,uid,ids,context=None).tulajdonos.id
         datum = self.browse(cr, uid, ids, context=None).kezdet
         # print tulaj
@@ -62,6 +62,21 @@ class kiserlet(osv.osv):
 
 
         return True
+
+    def gomb_nyomas (self, cr, uid, ids, context=None):
+        tulajdonos=self.browse(cr,uid,ids,context=None).tulajdonos.id
+        kezdodatum = self.browse(cr, uid, ids, context=None).kezdet
+        vegdatum = self.browse(cr, uid, ids, context=None).befejezes
+        kezdo_eloiras = lakoegyenleg3(self,cr,uid,tulajdonos,kezdodatum)[4]
+        kezdo_befizetes = lakoegyenleg3(self,cr,uid,tulajdonos,kezdodatum)[5]
+        befejezo_eloiras = lakoegyenleg3(self,cr,uid,tulajdonos,vegdatum)[4]
+        befejezo_befizetes = lakoegyenleg3(self,cr,uid,tulajdonos,vegdatum)[5]
+        nyitoegyenleg = lakoegyenleg3(self,cr,uid,tulajdonos,kezdodatum)[0]
+        zaro_egyenleg = lakoegyenleg3(self,cr,uid,tulajdonos,vegdatum)[0]
+        eloiras_lista = list(set(befejezo_eloiras)-set(kezdo_eloiras))
+        befizetes_lista = list(set(befejezo_befizetes)-set(kezdo_befizetes))
+        _res_partner = self.pool.get('res.partner')
+        return()
 
     _name = 'tarh.kiserlet'
     _columns = {

@@ -39,8 +39,11 @@ def add_month (ev, honap):
 
 def lakoegyenleg3 (self, cr, uid, lako, datum):
     ''' kiszámolja, hogy a lako tulajdonosnak a datum időpontban mennyi az egyenlege a nyitóegyenleg felvitele
-        óta, ezt az eredményt listában adjuk vissza: egyenleg, osszes_eloiras, osszes_jovairas, osszeg a dátum
-        hónapjaban az előírások a rendkívüli nélküli előíras formában.
+        óta, ezt az eredményt listában adjuk vissza: egyenleg, osszes_eloiras, osszes_jovairas, előírt osszeg a dátum
+        hónapjaban rendkívüli és ügyvédi díj nélküli előíras formában.
+        Visszaadja listában a
+        - előírások listáját (dátum, előírás, összeg) illetve a
+        - befizetéseklistáját (dátum, befizetés,összeg) formában
         Ha nincs a lakóhoz nyitóegyenleg felvéve, akkor [0,0,0,-1] -et ad vissza'''
     if type(datum) != date:
         datum = str_to_date(datum) # lehet, hogy majd ki kell szedni
