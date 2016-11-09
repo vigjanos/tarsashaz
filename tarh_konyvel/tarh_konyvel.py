@@ -1301,6 +1301,9 @@ class tarh_lako_havijel(osv.osv):
         'bankszamla': fields.char('Tarsahaz uzemeltetesi szamlaja'),
         'sor_id': fields.one2many('tarh.lako.havijel.sor', 'havijel_id', 'kapocs2'),
     }
+    mai_datum = fields.date.context_today
+    pass
+
     _defaults = {
         'kezdatum': '2016-01-01',
         'vegdatum': fields.date.context_today,
@@ -1469,6 +1472,9 @@ class tarh_lako_havijel(osv.osv):
         :return:
         '''
         eredmeny = {}
+        most = date.today()
+        kezdo_datum = date(most.year,most.month-6,1)
+        eredmeny['kezdatum'] = kezdo_datum
         if lako:
             nyito_datuma = kezdatum
             _tarh_lako_nyito = self.pool.get('tarh.lako.nyito')
@@ -1480,8 +1486,7 @@ class tarh_lako_havijel(osv.osv):
             if tarsashaz:
                 zarodatum= utolso_konyvelt_datum(self,cr,uid,tarsashaz)
                 eredmeny['tarsashaz'] = tarsashaz
-                if vegdatum > zarodatum:
-                    eredmeny['vegdatum'] = zarodatum
+                eredmeny['vegdatum'] = zarodatum
             if kezdatum < nyito_datuma:
                 eredmeny['kezdatum'] = nyito_datuma
 

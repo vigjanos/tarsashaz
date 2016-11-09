@@ -5,6 +5,8 @@
 
 from openerp.osv import fields, osv
 from seged import *
+from openerp.tools.translate import _
+from openerp import tools
 
 
 class tarh_egyszeribeir(osv.osv):
@@ -17,8 +19,11 @@ class tarh_egyszeribeir(osv.osv):
         'idopont': fields.date('Előírás időpontja', required=True),
         'eloirfajta': fields.many2one('eloiras.fajta', 'Eloiras tipusa', required=True),
         'osszeg': fields.integer('Előírás összege', required=True),
+        'lezart': fields.boolean()
     }
-
+    _defaults = {
+        'lezart':False,
+    }
     def rogzites (self, cr, uid, ids, context):
         idopont = str_to_date(self.browse(cr, uid, ids, context).idopont)
         if self.browse(cr, uid, ids, context).tulajdonos.vizora == 'v':
@@ -36,8 +41,21 @@ class tarh_egyszeribeir(osv.osv):
             'alapterulet': self.browse(cr, uid, ids, context).tulajdonos.alapterulet,
             'vizora': vizora
         }
-        sikeres = self.pool.get('tarh.eloiras.lako').create(cr,uid,eredmeny,context=None)
-        print sikeres
+        if self.browse(cr, uid, ids, context).lezart == False:
+            sikeres = self.pool.get('tarh.eloiras.lako').create(cr,uid,eredmeny,context=None)
+            if sikeres:
+                leazaras = {'lezart':True,
+                            'tarsashaz': eredmeny['tarsashaz'],
+                            'tulajdonos':eredmeny['lako'],
+                            'idopont': idopont,
+                            'eloirfajta': eredmeny['eloirfajta'],
+                            'osszeg': eredmeny['osszeg'],
+                            }
+                self.write(cr,uid,ids,leazaras,context=None)
+                pass
+
+        else:
+            raise osv.except_orm(_("Figyelem!!!"), _(" csak torolheto, nem modosithato!"))
         pass
 
 

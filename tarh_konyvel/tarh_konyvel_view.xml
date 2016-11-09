@@ -275,10 +275,10 @@
                             <label string="Albetétek egyenlegének lekérdezése"/>
                         </h1>
                         <group>
-                            <field name="kezdatum" select="1"/>
-                            <field name="vegdatum"/>
                             <field name="tulaj" options="{'no_create' : True}"
                                    on_change="onchange_tul(tulaj, kezdatum, vegdatum)"/>
+                            <field name="kezdatum" select="1"/>
+                            <field name="vegdatum"/>
                             <field name="tarsashaz" options="{'no_create' : True}" invisible="1"
                                    on_change="onchange_tarsashaz(tarsashaz)"/>
                             <field name="bankszamla" invisible="1"/>
