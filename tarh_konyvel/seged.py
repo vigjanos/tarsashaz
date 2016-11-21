@@ -385,3 +385,4 @@ def bankegyenleg(self,cr,uid,bankszamla,datum):
                 rec_elem= ref_bankbiz_sor.browse(cr,uid,sor,context=None)
                 osszesen = osszesen + rec_elem.jovairas_ossz - rec_elem.terheles_ossz
     return(osszesen)
+

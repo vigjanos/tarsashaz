@@ -51,11 +51,12 @@ class tarh_egyszeribeir(osv.osv):
                             'eloirfajta': eredmeny['eloirfajta'],
                             'osszeg': eredmeny['osszeg'],
                             }
-                self.write(cr,uid,ids,leazaras,context=None)
-                pass
+                self.write(cr,1,ids,leazaras,context=None)
 
         else:
-            raise osv.except_orm(_("Figyelem!!!"), _(" csak torolheto, nem modosithato!"))
+            # jogosultságnál szabályozom, hogy ne tudja a júzer szerkeszteni
+            raise osv.except_orm(_("Figyelem!!!"), _(" Le van zarva, nem modosithato!"))
+
         pass
 
 

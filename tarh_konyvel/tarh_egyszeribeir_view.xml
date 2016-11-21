@@ -32,17 +32,34 @@
         </record>
 
 
-        <record model="ir.actions.act_window" id="action_tarh_egyszeribeir_form">
+
+        <record id="tarh_egyszeribeir_tree_view" model="ir.ui.view">
+            <field name="name">tarh.egyszeribeir.tree</field>
+            <field name="model">tarh.egyszeribeir</field>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="tulajdonos"/>
+                    <field name="idopont"/>
+                    <field name="eloirfajta"/>
+                    <field name="osszeg"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_tarh_egyszeribeir_tree">
             <field name="name">tarh_egyszeribeir</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">tarh.egyszeribeir</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="view_id" ref="tarh_egyszeribeir_form_view"/>
+            <field name="view_id" ref="tarh_egyszeribeir_tree_view"/>
         </record>
 
+
+
+
         <menuitem name="Egyszeri előírások rögzítése" sequence="35"
-                  parent="konyvel_beallitasok" id="konyvel_beallitasok81_sub" action="action_tarh_egyszeribeir_form"/>
+                  parent="konyvel_beallitasok" id="konyvel_beallitasok81_sub" action="action_tarh_egyszeribeir_tree"/>
 
 
     </data>
