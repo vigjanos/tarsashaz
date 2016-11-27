@@ -19,11 +19,15 @@
                             <group>
                                 <field name="idopont" placeholder="Előírás időpontja"/>
                                 <field name="osszeg" placeholder="Előírás összege"/>
+                                <field name="eloirfajta" placeholder="Előírás típusa"/>
                                 <button name="rogzites" string="Rögzítés"
+                                        type="object"/>
+                                <button name="torles" string="Törlés"
                                         type="object"/>
                             </group>
                             <group>
-                                <field name="eloirfajta" placeholder="Előírás típusa"/>
+                                <field name="lezart" readonly="True"/>
+                                <field name="torolt" readonly="True"/>
                             </group>
                         </group>
                     </sheet>
@@ -32,13 +36,14 @@
         </record>
 
 
-
         <record id="tarh_egyszeribeir_tree_view" model="ir.ui.view">
             <field name="name">tarh.egyszeribeir.tree</field>
             <field name="model">tarh.egyszeribeir</field>
             <field name="arch" type="xml">
                 <tree string="">
                     <field name="tulajdonos"/>
+                    <field name="lezart"/>
+                    <field name="torolt"/>
                     <field name="idopont"/>
                     <field name="eloirfajta"/>
                     <field name="osszeg"/>
@@ -54,8 +59,6 @@
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="tarh_egyszeribeir_tree_view"/>
         </record>
-
-
 
 
         <menuitem name="Egyszeri előírások rögzítése" sequence="35"

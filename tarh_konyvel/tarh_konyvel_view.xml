@@ -458,7 +458,7 @@
                                 <field name="email" placeholder="Vevő email"/>
                                 <field name="telefon" placeholder="Vevő telefon"/>
                                 <field name="mobile" placeholder="Vevő mobiltelefon"/>
-                                <field name="nyitott" placeholder="Módosítható avagy sem"/>
+                                <field name="nyitott" placeholder="Módosítható avagy sem" readonly="True" />
 
                             </group>
                             <group>
