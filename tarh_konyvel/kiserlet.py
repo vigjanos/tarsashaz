@@ -63,7 +63,7 @@ class kiserlet(osv.osv):
 
         return True
 
-    def gomb_nyomas (self, cr, uid, ids, context=None):
+    def gomb_nyomas_regi2 (self, cr, uid, ids, context=None):
         tulajdonos=self.browse(cr,uid,ids,context=None).tulajdonos.id
         kezdodatum = self.browse(cr, uid, ids, context=None).kezdet
         vegdatum = self.browse(cr, uid, ids, context=None).befejezes
@@ -77,6 +77,19 @@ class kiserlet(osv.osv):
         befizetes_lista = list(set(befejezo_befizetes)-set(kezdo_befizetes))
         _res_partner = self.pool.get('res.partner')
         return()
+
+    def gomb_nyomas (self, cr, uid, ids, context=None):
+        _res_partner = self.pool.get('res.partner')
+        tarsashaz_idk = _res_partner.search(cr,uid,[('name','ilike','rsash'),
+                                                    ('active','=',True),
+                                                    ('is_company','=',True),
+                                                    ('customer','=',True)], context=None)
+        for i in tarsashaz_idk:
+            nev = _res_partner.browse(cr,uid,i,context=None).name
+            azon = _res_partner.browse(cr,uid,i,context=None).id
+            print utolso_konyvelt_datum(self,cr,uid,azon) + ' ; ' +nev
+        return ()
+
 
     _name = 'tarh.kiserlet'
     _columns = {

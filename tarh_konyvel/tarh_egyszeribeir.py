@@ -171,7 +171,7 @@ class tarh_egyszeribeir(osv.osv):
                 'params': {
                     'title': 'Figyelem!',
                     'text': 'A bejegyzés már törölve van, vagy még nincs lezárva!',
-                    'sticky': True
+                    'sticky': False
                 }
             }
 

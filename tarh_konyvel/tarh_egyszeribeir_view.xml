@@ -35,6 +35,26 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="tarh_egyszeribeir_search">
+            <field name="name">tarh.egyszeribeir.search</field>
+            <field name="model">tarh.egyszeribeir</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                    <field name="tarsashaz" string="Társasház"/>
+                    <field name="tulajdonos" string="Tulajdonos"/>
+                    <field name="eloirfajta" string="Előírás fajta"/>
+                    <separator/>
+                    <group expand="0" string="Csoportosítás...">
+                        <filter string="Társasházak" domain="[]"
+                                context="{'group_by':'tarsashaz'}"/>
+                        <filter string="Tulajdonosok" domain="[]"
+                                context="{'group_by':'tulajdonos'}"/>
+                        <filter string="Előírás fajta" domain="[]"
+                                context="{'group_by':'eloirfajta'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
 
         <record id="tarh_egyszeribeir_tree_view" model="ir.ui.view">
             <field name="name">tarh.egyszeribeir.tree</field>
