@@ -63,7 +63,7 @@ class kiserlet(osv.osv):
 
         return True
 
-    def gomb_nyomas_regi2 (self, cr, uid, ids, context=None):
+    def gomb_nyomas (self, cr, uid, ids, context=None):
         tulajdonos=self.browse(cr,uid,ids,context=None).tulajdonos.id
         kezdodatum = self.browse(cr, uid, ids, context=None).kezdet
         vegdatum = self.browse(cr, uid, ids, context=None).befejezes
@@ -78,7 +78,7 @@ class kiserlet(osv.osv):
         _res_partner = self.pool.get('res.partner')
         return()
 
-    def gomb_nyomas (self, cr, uid, ids, context=None):
+    def gomb_nyomas_regesregi (self, cr, uid, ids, context=None):
         _res_partner = self.pool.get('res.partner')
         tarsashaz_idk = _res_partner.search(cr,uid,[('name','ilike','rsash'),
                                                     ('active','=',True),

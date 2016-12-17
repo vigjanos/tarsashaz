@@ -37,7 +37,7 @@ import tarh_lako_eves
 import tarh_epites
 import tarh_belso_penz
 import tarh_egyszeribeir
-
+import tarh_havijelentes
 
 
 
