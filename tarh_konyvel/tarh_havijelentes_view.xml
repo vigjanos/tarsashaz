@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="tarh_havijel2" model="ir.ui.view">
+            <field name="name">tarh.havijel2</field>
+            <field name="model">tarh.lakohavijel2</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <field name="tulaj"/>
+                            <field name="kezdatum"/>
+                            <field name="vegdatum"/>
+                            <field name="lekerdatum"/>
+                            <field name="tarsashaz"/>
+                            <field name="bankszamla"/>
+
+                        </group>
+                        <group>
+                            <button string="Lekérdez" icon="" states="" type="object" name="lako_havijel_beir"/>
+                        </group>
+                        <notebook>
+                            <page string="Terhelések-Jóváírások:">
+                                <field name="sor_id">
+                                    <tree string="Tranzakciók elemei">
+                                        <field name="erteknap"/>
+                                        <field name="szoveg"/>
+                                        <field name="eloiras"/>
+                                        <field name="befizetes"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="tarh_havijel2_tree" model="ir.ui.view">
+            <field name="name">tarh_havijel2_tree</field>
+            <field name="model">tarh.lakohavijel2</field>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="tulaj"/>
+                    <field name="kezdatum"/>
+                    <field name="vegdatum"/>
+                    <field name="create_uid"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="havijel2_action" model="ir.actions.act_window">
+            <field name="name">havijel2_action</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.lakohavijel2</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form,tree</field>
+            <field name="view_id" ref="tarh_havijel2"/>
+
+
+        </record>
+
+        <!-- This Menu Item will appear in the Upper bar, That's why It needs NO parent or action -->
+        <menuitem id="tarh_konyvel2_root" name="Jelentések" sequence="1"/>
+
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="UNIQUE_ID_categ" name="Lakók jelentései" parent="tarh_konyvel2_root"
+                  sequence="50"/>
+
+        <!-- This Menu Item Must have a parent -->
+        <menuitem id="UNIQUE_ID2_categ" name="Havijelentés" parent="UNIQUE_ID_categ" action="havijel2_action"
+                  sequence="20"/>
+
+    </data>
+</openerp>
