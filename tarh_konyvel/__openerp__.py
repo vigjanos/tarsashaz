@@ -31,6 +31,7 @@
             'tarh_epites_nyomtat.xml',
             'tarh_egyszeribeir_view.xml',
             'tarh_havijelentes_view.xml',
+            'tarh_havijelentes2_report.xml',
             ],
     'installable': True,
   

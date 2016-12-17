@@ -29,6 +29,10 @@ class tarh_lakohavijel2(models.Model):
     def _onchange_tulaj(self):
         self.tarsashaz = self.tulaj.parent_id
         self.bankszamla = self.tulaj.parent_id.uzemeltetesi
+        most = date.today()
+        self.kezdatum = date(most.year, most.month - 6, 1)
+        if self.tarsashaz:
+            self.vegdatum = utolso_konyvelt_datum(self, self.env.cr, self.env.uid, self.tulaj.parent_id.id)
         return
 
     @api.multi
@@ -38,7 +42,7 @@ class tarh_lakohavijel2(models.Model):
         _vegdatum = self.vegdatum
         sajat_id = self.id
 
-        _nyito_record = self.env['tarh.lako.nyito'].search([('tarh_lako','=',_tulaj)])
+        _nyito_record = self.env['tarh.lako.nyito'].search([('tarh_lako', '=', _tulaj)])
 
         if _nyito_record:  # van nyitóegyenleg!
             # dátumok vizsgálata
@@ -51,12 +55,12 @@ class tarh_lakohavijel2(models.Model):
             kezdo_lekerdezes = lakoegyenleg3(self, self.env.cr, self.env.uid, _tulaj, _kezdatum)
             befejezo_lekerdezes = lakoegyenleg3(self, self.env.cr, self.env.uid, _tulaj, _vegdatum)
 
-            #ha már volt ezzel a táblával lekérdezés, akkor töröljük a sorokat
+            # ha már volt ezzel a táblával lekérdezés, akkor töröljük a sorokat
             _sor_hivatkozas = self.env['tarh.lakohavijel2.sor']
             torlendok = _sor_hivatkozas.search([('havijel_id', '=', sajat_id)])
             torlendok.unlink()
 
-            #előállítjuk az előírás és befizetés listákat
+            # előállítjuk az előírás és befizetés listákat
             kezdo_eloiras = kezdo_lekerdezes[4]
             kezdo_befizetes = kezdo_lekerdezes[5]
             befejezo_eloiras = befejezo_lekerdezes[4]
@@ -64,8 +68,6 @@ class tarh_lakohavijel2(models.Model):
             zaro_egyenleg = befejezo_lekerdezes[0]
             eloiras_lista = list(set(befejezo_eloiras) - set(kezdo_eloiras))
             befizetes_lista = list(set(befejezo_befizetes) - set(kezdo_befizetes))
-
-
 
             # először kiírjuk a nyitóegyenleget a sorba
             _sor_hivatkozas.create({
@@ -96,10 +98,10 @@ class tarh_lakohavijel2(models.Model):
                     'havijel_id': sajat_id
                 })
 
-            #rögzítjük a záróegyenleget
+            # rögzítjük a záróegyenleget
             _sor_hivatkozas.create({
                 'erteknap': _vegdatum,
-                'szoveg': 'Záróegyenleg',
+                'szoveg': 'Aktuális egyenleg',
                 'eloiras': 0,
                 'befizetes': zaro_egyenleg,
                 'havijel_id': sajat_id
@@ -107,7 +109,8 @@ class tarh_lakohavijel2(models.Model):
         else:
             raise exceptions.ValidationError(_("Figyelem!!! Nincs nyitóegyenlege a tulajdonosnak!"))
 
-    #todo     utolsó könyvelt dátumra beállítania végdatumot!
+            # todo     utolsó könyvelt dátumra beállítania végdatumot!
+
 
 class tarh_lakohavijel2_sor(models.Model):
     _name = 'tarh.lakohavijel2.sor'

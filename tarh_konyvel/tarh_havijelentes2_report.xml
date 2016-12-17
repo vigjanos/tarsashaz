@@ -2,43 +2,44 @@
 <openerp>
     <data>
 
-        <report id="report_lekerdez3"
-                model="tarh.lako.havijel"
+
+
+        <report id="report_havijelentes_lekerdez1"
+                model="tarh.lakohavijel2"
                 string="kiírás képernyőre"
-                name="tarh_konyvel.rep_lako_lekerd"
-                file="tarh_konyvel.lekerdez_lakoegy"
+                name="tarh_konyvel.rep_lako_lekerdez"
+                file="tarh_konyvel.tarh_havijelentes2_report"
                 report_type="qweb-html"/>
 
-        <report id="report_lekerdez4"
-                model="tarh.lako.havijel"
+        <report id="report_havijelentes_lekerdez2"
+                model="tarh.lakohavijel2"
                 string="nyomtatás pdf"
-                name="tarh_konyvel.rep_lako_lekerd"
-                file="tarh_konyvel.lekerdez_lakoegy"
+                name="tarh_konyvel.rep_lako_lekerdez"
+                file="tarh_konyvel.tarh_havijelentes2_report"
                 report_type="qweb-pdf"/>
 
-                <report id="felszol_kepviselet"
-                model="tarh.lako.havijel"
+        <report id="report_havijelentes_lekerdez3"
+                model="tarh.lakohavijel2"
                 string="képviseleti felszólítás pdf"
-                name="tarh_konyvel.rep_kepviseleti_felsz"
-                file="tarh_konyvel.lekerdez_lakoegy"
+                name="tarh_konyvel.rep_kepviseleti_felszolit"
+                file="tarh_konyvel.tarh_havijelentes2_report"
                 report_type="qweb-pdf"/>
 
-        <report id="felszol_lako_olajos"
-                model="tarh.lako.havijel"
+        <report id="report_havijelentes_lekerdez4"
+                model="tarh.lakohavijel2"
                 string="felszólító Olajos pdf"
-                name="tarh_konyvel.olajos_felsz_lako"
-                file="tarh_konyvel.lekerdez_lakoegy"
+                name="tarh_konyvel.olajos_felsz_lakoss"
+                file="tarh_konyvel.tarh_havijelentes2_report"
                 report_type="qweb-pdf"/>
 
-        <report id="felszol_lako_zvakan"
-                model="tarh.lako.havijel"
+        <report id="report_havijelentes_lekerdez5"
+                model="tarh.lakohavijel2"
                 string="felszólító Zvekán pdf"
-                name="tarh_konyvel.zvekan_felsz_lako"
-                file="tarh_konyvel.lekerdez_lakoegy"
+                name="tarh_konyvel.zvekan_felsz_lakoss"
+                file="tarh_konyvel.tarh_havijelentes2_report"
                 report_type="qweb-pdf"/>
 
-
-        <template id="rep_kepviseleti_felsz">
+        <template id="rep_kepviseleti_felszolit">
             <t t-call="report.external_layout">
                 <t t-call="report.html_container">
                     <div class="page">
@@ -150,7 +151,7 @@
         </template>
 
 
-        <template id="olajos_felsz_lako">
+        <template id="olajos_felsz_lakoss">
             <t t-call="tarh_konyvel.external_layout_olajos">
                 <t t-call="report.html_container">
                     <div class="page">
@@ -226,24 +227,32 @@
                         </div>
 
                         <div class="row mb16 col-xs-10 col-xs-offset-1 text-justify" style="font-size:16px;">
-                            Kérem Önt, hogy tartozását, valamint jelen ügyvédi fizetési felszólítás 5.000,- Ft ügyvédi díját levelem kézhezvételét
-                            követő 8 napon belül rendezni szíveskedjék a közös képviselet által biztosított csekk felhasználásával, vagy banki átutalással, a
+                            Kérem Önt, hogy tartozását, valamint jelen ügyvédi fizetési felszólítás 5.000,- Ft ügyvédi
+                            díját levelem kézhezvételét
+                            követő 8 napon belül rendezni szíveskedjék a közös képviselet által biztosított csekk
+                            felhasználásával, vagy banki átutalással, a Társasház
                             <span t-field="docs[0].bankszamla"/>
                             számú bankszámlájára, mert ellenkező esetben kénytelen leszek jogi úton érvényt szerezni
                             a Társasház követelésének.
                         </div>
                         <div class="row mt16 mb16 col-xs-10 col-xs-offset-1 text-justify" style="font-size:16px;">
-                            Megjegyzem, hogy amennyiben jelen ügyvédi felszólításom eredménytelen marad, úgy Irodánk <strong> fizetési meghagyást </strong> indít Önnel
-                            szemben, amely késedelmi kamat, illeték és további ügyvédi költség fizetési kötelezettségével is jár. Tájékoztatom,
-                            hogy a jogerős fizetési meghagyás, illetve a 2003. évi CXXXIII. társasházi törvény 30. és 31. §-a alapján kezdeményezni
-                            fogom ingatlanának <strong>jelzálogjoggal</strong> történő megterhelését, mely eljárás tetemes költsége szintén Önt fogja terhelni.
+                            Megjegyzem, hogy amennyiben jelen ügyvédi felszólításom eredménytelen marad, úgy Irodánk <strong>
+                            fizetési meghagyást
+                        </strong> indít Önnel
+                            szemben, amely késedelmi kamat, illeték és további ügyvédi költség fizetési
+                            kötelezettségével is jár. Tájékoztatom,
+                            hogy a jogerős fizetési meghagyás, illetve a 2003. évi CXXXIII. társasházi törvény 30. és
+                            31. §-a alapján kezdeményezni
+                            fogom ingatlanának <strong>jelzálogjoggal</strong> történő megterhelését, mely eljárás
+                            tetemes költsége szintén Önt fogja terhelni.
                         </div>
                         <div class="row mt16 mb32 col-xs-10 col-xs-offset-1 text-justify" style="font-size:16px;">
                             Amennyiben tartozását időközben rendezte, úgy szíves elnézését kérem a zavarásért!
                         </div>
 
                         <div class="row mb32 col-xs-8 col-xs-offset-1" style="font-size:16px;">
-                            Budapest, <span t-field="docs[0].lekerdatum"/>
+                            Budapest,
+                            <span t-field="docs[0].lekerdatum"/>
                         </div>
                         <div class="row mb32 col-xs-8 col-xs-offset-4" style="font-size:16px;">
                             Köszönettel:
@@ -264,7 +273,7 @@
         </template>
 
 
-        <template id="zvekan_felsz_lako">
+        <template id="zvekan_felsz_lakoss">
             <t t-call="tarh_konyvel.external_layout_zvekan">
                 <t t-call="report.html_container">
                     <div class="page">
@@ -340,24 +349,32 @@
                         </div>
 
                         <div class="row mb16 col-xs-10 col-xs-offset-1 text-justify" style="font-size:16px;">
-                            Kérem Önt, hogy tartozását, valamint jelen ügyvédi fizetési felszólítás 5.000,- Ft ügyvédi díját levelem kézhezvételét
-                            követő 8 napon belül rendezni szíveskedjék a közös képviselet által biztosított csekk felhasználásával, vagy banki átutalással, a
+                            Kérem Önt, hogy tartozását, valamint jelen ügyvédi fizetési felszólítás 5.000,- Ft ügyvédi
+                            díját levelem kézhezvételét
+                            követő 8 napon belül rendezni szíveskedjék a közös képviselet által biztosított csekk
+                            felhasználásával, vagy banki átutalással, a Társasház
                             <span t-field="docs[0].bankszamla"/>
                             bankszámlájára, mert ellenkező esetben kénytelen leszek jogi úton érvényt szerezni
                             a Társasház követelésének.
                         </div>
                         <div class="row mt16 mb16 col-xs-10 col-xs-offset-1 text-justify" style="font-size:16px;">
-                            Megjegyzem, hogy amennyiben jelen ügyvédi felszólításom eredménytelen marad, úgy Irodánk <strong> fizetési meghagyást </strong> indít Önnel
-                            szemben, amely késedelmi kamat, illeték és további ügyvédi költség fizetési kötelezettségével is jár. Tájékoztatom,
-                            hogy a jogerős fizetési meghagyás, illetve a 2003. évi CXXXIII. társasházi törvény 30. és 31. §-a alapján kezdeményezni
-                            fogom ingatlanának <strong>jelzálogjoggal</strong> történő megterhelését, mely eljárás tetemes költsége szintén Önt fogja terhelni.
+                            Megjegyzem, hogy amennyiben jelen ügyvédi felszólításom eredménytelen marad, úgy Irodánk <strong>
+                            fizetési meghagyást
+                        </strong> indít Önnel
+                            szemben, amely késedelmi kamat, illeték és további ügyvédi költség fizetési
+                            kötelezettségével is jár. Tájékoztatom,
+                            hogy a jogerős fizetési meghagyás, illetve a 2003. évi CXXXIII. társasházi törvény 30. és
+                            31. §-a alapján kezdeményezni
+                            fogom ingatlanának <strong>jelzálogjoggal</strong> történő megterhelését, mely eljárás
+                            tetemes költsége szintén Önt fogja terhelni.
                         </div>
                         <div class="row mt16 mb32 col-xs-10 col-xs-offset-1 text-justify" style="font-size:16px;">
                             Amennyiben tartozását időközben rendezte, úgy szíves elnézését kérem a zavarásért!
                         </div>
 
                         <div class="row mb32 col-xs-8 col-xs-offset-1" style="font-size:16px;">
-                            Budapest, <span t-field="docs[0].lekerdatum"/>
+                            Budapest,
+                            <span t-field="docs[0].lekerdatum"/>
                         </div>
                         <div class="row mb32 col-xs-8 col-xs-offset-4" style="font-size:16px;">
                             Köszönettel:
@@ -377,7 +394,7 @@
         </template>
 
 
-        <template id="rep_lako_lekerd">
+        <template id="rep_lako_lekerdez">
             <t t-call="report.external_layout">
                 <t t-call="report.html_container">
                     <div class="page">
@@ -539,7 +556,10 @@
                             <t t-if="aktualegy >= 0">
                                 <center>
                                     <strong>
-                                        Kérjük befizetéseiket a Társasház <span t-field="docs[0].bankszamla"/>
+                                        Kérjük befizetéseiket a Társasház
+
+                                        <span t-field="docs[0].bankszamla"/>
+
                                         számú bankszámlájára szíveskedjenek teljesíteni!
                                     </strong>
                                 </center>
@@ -555,7 +575,9 @@
                                         <span t-esc="aktualegy*-1"
                                               t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
                                         tartozás mutatkozik!
-                                        Kérjük a tartozás befizetéséről a Társasház <span t-field="docs[0].bankszamla"/>
+                                        Kérjük a tartozás befizetéséről a Társasház
+                                        <span t-field="docs[0].bankszamla"/>
+
                                         számú bankszámlájára mielőbb szíveskedjenek intézkedni!
                                     </strong>
                                 </center>
