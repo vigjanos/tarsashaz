@@ -216,7 +216,7 @@ def eloirasok (self, cr, uid, tulajdonos, kezdatum, vegdatum):
                                                                               "between '" + str(kezdatum) + "' and '" + str(vegdatum) + "' group by eloiras_fajta.name"
     cr.execute(conn_string)
     eredmeny = cr.fetchall()
-    eredmeny[0]=100
+    #eredmeny[0]=100
     return eredmeny
 
 
