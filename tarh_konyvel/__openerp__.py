@@ -32,6 +32,7 @@
             'tarh_egyszeribeir_view.xml',
             'tarh_havijelentes_view.xml',
             'tarh_havijelentes2_report.xml',
+            'tarh_rendkivuli_lekerdez2.xml',
             ],
     'installable': True,
   

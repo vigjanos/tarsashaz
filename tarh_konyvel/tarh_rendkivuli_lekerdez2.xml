@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="tarh_rendkivuli_lekerdez2_form" model="ir.ui.view">
+            <field name="name">tarh_rendkivuli_lekerdez2_form</field>
+            <field name="model">tarh.rendkivuli.lekerdez2</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <h1>
+                            <label string="Rendkívüli előírások - befizetések"/>
+                        </h1>
+                        <group>
+                            <group colspan="4">
+                                <field name="tarsashaz"/>
+                                <field name="kezdatum"/>
+                            </group>
+                            <group>
+                                <field name="vegdatum"/>
+                            </group>
+                            <group>
+                                <button string="Lekérdezés" type="object" name="lekerdez"/>
+                            </group>
+                            <notebook colspan="3">
+                                <page string="Rendkívüli egyenlegek:">
+                                    <field name="sor_id"/>
+                                </page>
+                            </notebook>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="tarh_rendkivuli_lekerdez2_tree" model="ir.ui.view">
+            <field name="name">tarh_rendkivuli_lekerdez2_tree</field>
+            <field name="model">tarh.rendkivuli.lekerdez2</field>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="tarsashaz"/>
+                    <field name="kezdatum"/>
+                    <field name="vegdatum"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="tarh_rendkivuli_lekerdez2_sor_tree" model="ir.ui.view">
+            <field name="name">tarh_rendkivuli_lekerdez2_sor_tree</field>
+            <field name="model">tarh.rendkivuli.lekerdez2.sor</field>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="alb_szam"/>
+                    <field name="tulajdonos"/>
+                    <field name="eloiras"/>
+                    <field name="befizetes"/>
+                    <field name="egyenleg"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="tarh_rendkivuli_lekerdez2_action" model="ir.actions.act_window">
+            <field name="name">tarh_rendkivuli_lekerdez2_action</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.rendkivuli.lekerdez2</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_rendkivuli_lekerdez2_form"/>
+        </record>
+
+        <menuitem id="UNIQUE_ID2_categ2" name="Rendkívűlik" parent="UNIQUE_ID_categ"
+                  action="tarh_rendkivuli_lekerdez2_action"
+                  sequence="25"/>
+
+    </data>
+</openerp>
