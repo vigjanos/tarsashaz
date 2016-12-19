@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <report id="rendkivuli_lekerdezes1"
+                model="tarh.rendkivuli.lekerdez2"
+                string="képernyőre"
+                name="tarh_konyvel.rendkivuli_lekerdezes1_rep"
+                file="tarh_konyvel.tarh_rendkivuli_lekerdez2_report"
+                report_type="qweb-html" />
+
+        <report id="rendkivuli_lekerdezes2"
+                model="tarh.rendkivuli.lekerdez2"
+                string="pdf-be küldve"
+                name="tarh_konyvel.rendkivuli_lekerdezes1_rep"
+                file="tarh_konyvel.tarh_rendkivuli_lekerdez2_report"
+                report_type="qweb-pdf" />
+
+        <template id="rendkivuli_lekerdezes1_rep">
+            <t t-call="report.external_layout">
+                <t t-call="report.html_container">
+                    <div class="page">
+                        <style>
+                            .alul1 {
+                            margin-bottom: 1cm;
+                            }
+                        </style>
+                        <div class="row">
+                            <div class="col-xs-10 col-xs-offset-1">
+                                <h4 class="alul1" align="center">
+                                    A <span t-field="docs[0].tarsashaz.name"/> rendkívüli befizetés előírásai és a tulajdonosok
+                                    befizetései <span t-field="docs[0].kezdatum"/> és <span t-field="docs[0].vegdatum"/> között
+                                </h4>
+                            </div>
+                        </div>
+                        <table class="table table-condensed" style="font-size:16px;">
+                            <thead>
+                                <tr style="font-size:16px;">
+                                    <th class="text-center">
+                                        <strong>Alb.szám</strong>
+                                    </th>
+                                    <th class="text-center">
+                                        <strong>Emelet</strong>
+                                    </th>
+                                    <th class="text-center">
+                                        <strong>Tulajdonos</strong>
+                                    </th>
+                                    <th class="text-center">
+                                        <strong>Előírás</strong>
+                                    </th>
+                                    <th class="text-center">
+                                        <strong>Befizetés</strong>
+                                    </th>
+                                    <th class="text-center">
+                                        <strong>Egyenleg</strong>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="sum_eloiras" t-value="0"/>
+                                <t t-set="sum_befizetes" t-value="0"/>
+                                <t t-set="sum_egyenleg" t-value="0"/>
+                                <t t-foreach="docs.sor_id" t-as="sor">
+                                    <tr style="font-size:16px;">
+                                        <td style="padding:0 5 1 5" class="text-center">
+                                            <span t-field="sor.tulajdonos.alb_szam"/>
+                                        </td>
+                                        <td style="padding:0 5 1 5"  class="text-center">
+                                            <span t-field="sor.tulajdonos.street2"/>
+                                        </td>
+                                        <td style="padding:0 5 1 5">
+                                            <span t-field="sor.tulajdonos.name"/>
+                                        </td>
+
+                                        <td style="padding:0 5 1 5" class="text-right">
+                                            <span t-field="sor.eloiras"
+                                                  t-field-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}' />
+                                            <t t-set="sum_eloiras" t-value="sum_eloiras + sor.eloiras"/>
+                                        </td>
+                                        <td style="padding:0 5 1 5" class="text-right">
+                                            <span t-field="sor.befizetes"
+                                                  t-field-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}' />
+                                            <t t-set="sum_befizetes" t-value="sum_befizetes + sor.befizetes"/>
+                                        </td>
+                                        <td style="padding:0 5 1 5" class="text-right">
+                                            <span t-field="sor.egyenleg"
+                                                  t-field-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}' />
+                                            <t t-set="sum_egyenleg" t-value="sum_egyenleg + sor.egyenleg"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <tr style="font-size:16px;">
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <strong>Összesen:</strong>
+                                    </td>
+                                    <td class="text-right">
+                                        <strong>
+                                            <span t-esc="sum_eloiras"
+                                                  t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}' />
+                                        </strong>
+                                    </td>
+                                    <td class="text-right">
+                                        <strong>
+                                            <span t-esc="sum_befizetes"
+                                                  t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}' />
+                                        </strong>
+
+                                    </td>
+                                    <td class="text-right">
+                                        <strong>
+                                            <span t-esc="sum_egyenleg"
+                                                  t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}' />
+                                        </strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </t>
+            </t>
+
+
+        </template>
+
+    </data>
+</openerp>

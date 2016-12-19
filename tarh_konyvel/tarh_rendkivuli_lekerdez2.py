@@ -59,7 +59,7 @@ class tarh_rendkivuli_lekerdez2(models.Model):
             eloiras_lista = list(set(befejezo_eloiras) - set(kezdo_eloiras))
             befizetes_lista = list(set(befejezo_befizetes) - set(kezdo_befizetes))
             for eloiras in eloiras_lista:
-                if 'endk' in eloiras[1]:
+                if 'endkívüli'.decode('utf-8') in eloiras[1]:
                     sum_eloiras = sum_eloiras + eloiras[2]
             for befizetes in befizetes_lista:
                 if 'endk' in befizetes[1]:
