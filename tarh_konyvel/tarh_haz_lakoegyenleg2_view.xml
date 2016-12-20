@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="tarh_haz_lakoegyenleg2_view" model="ir.ui.view">
+            <field name="name">tarh_haz_lakoegyenleg2_view</field>
+            <field name="model">tarh.haz.lakoegyenleg2</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <field name="kezdatum"/>
+                            <field name="vegdatum"/>
+                            <field name="tarsashaz"/>
+                            <field name="lekerdate"/>
+                            <field name="min_tartozas"/>
+                            <field name="min_honap"/>
+                        </group>
+                        <notebook colspan="4">
+                            <page string="Tulajdonosok egyenlegei">
+                                <field name="sor_id"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="tarh_haz_lakoegyenleg2_tree" model="ir.ui.view">
+            <field name="name">tarh_haz_lakoegyenleg2_tree</field>
+            <field name="model">tarh.haz.lakoegyenleg2.sor</field>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="albetet"/>
+                    <field name="cim"/>
+                    <field name="tulajdonos"/>
+                    <field name="kezdoegyenleg"/>
+                    <field name="eloirasok"/>
+                    <field name="befizetesek"/>
+                    <field name="zaroegyenleg"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="tarh_haz_lakoegyenleg2_action" model="ir.actions.act_window">
+            <field name="name">tarh_haz_lakoegyenleg2_action</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.haz.lakoegyenleg2</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tarh_haz_lakoegyenleg2_view"/>
+        </record>
+
+        <menuitem id="UNIQUE_ID2_categ3" name="Ház tulaj egyenlegek" parent="UNIQUE_ID_categ"
+                  action="tarh_haz_lakoegyenleg2_action" sequence="27"/>
+
+    </data>
+</openerp>

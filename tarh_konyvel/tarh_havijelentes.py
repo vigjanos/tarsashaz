@@ -119,6 +119,6 @@ class tarh_lakohavijel2_sor(models.Model):
     szoveg = fields.Char('Előírás', size=64)
     eloiras = fields.Integer('Előírás')
     befizetes = fields.Integer('Befizetés')
-    havijel_id = fields.Many2one('tarh.lakoahvijel2', ondelete='cascade', select=True, readonly=True)
+    havijel_id = fields.Many2one('tarh.lakohavijel2', ondelete='cascade', select=True, readonly=True)
 
     _order = 'erteknap, id'
