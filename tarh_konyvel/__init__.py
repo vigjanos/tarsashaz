@@ -39,7 +39,7 @@ import tarh_belso_penz
 import tarh_egyszeribeir
 import tarh_havijelentes
 import tarh_rendkivuli_lekerdez2
-import tarh_haz_lakoegyenleg2
+
 
 
 

@@ -161,6 +161,7 @@ class tarh_haz_lakoegy(osv.osv):
             return(date( int(szeletelt[0]),int(szeletelt[1]),int(szeletelt[2])))
 
         
+        '''
         def lakoegyenleg(_lako,datum):
             #kiszamolja,hogy a _lako tulajdonosnak a datum idopontban mennyi az egyenlege
             #ezt az eredmeny listaban adjuk vissza: nyito, osszes eloiras, osszes jovairas, datum honapjaban a
@@ -206,14 +207,16 @@ class tarh_haz_lakoegy(osv.osv):
                 _nyito_datum_date=str_to_date(_nyito_datum)
                 if datum < _nyito_datum_date:
                     datum=_nyito_datum_date
-                    '''eredmeny=[datum,_nyito_osszeg,'']
+                    eredmeny=[datum,_nyito_osszeg,'']
             else: # nincs nyitoegyenleg rögzitve
-                eredmeny=[datum,0,'Nincs a lakóhoz nyitóegyenleg rögzítve!!!']'''
+                eredmeny=[datum,0,'Nincs a lakóhoz nyitóegyenleg rögzítve!!!']
                 
                 eredmeny=[_nyito_osszeg, sum_eloiras, sum_jovairas, havi_eloiras]
                 return(eredmeny)
         
-        
+        '''
+
+
         sajat_id=self.browse(cr, uid, ids, context=None).id
         _kezdatum=str_to_date(self.browse(cr,uid,ids,context=None).kezdatum)
         _vegdatum=str_to_date(self.browse(cr,uid,ids,context=None).vegdatum)
