@@ -129,6 +129,67 @@ def lakoegyenleg3 (self, cr, uid, lako, datum):
         return (eredmeny)
         # [egyenleg, oszes eloiras, osszes jovairas, havonta eloiras, eloirasok listaja, befizetesek listaja]
 
+def lakoegyenleg (self, cr, uid, lako, datum):
+    ''' kiszámolja, hogy a lako tulajdonosnak a datum időpontban mennyi az egyenlege a nyitóegyenleg felvitele
+        óta, ezt az eredményt listában adjuk vissza: egyenleg, osszes_eloiras, osszes_jovairas, osszeg a dátum
+        hónapjaban az előírások a rendkívüli nélküli előíras formában.
+        Ha nincs a lakóhoz nyitóegyenleg felvéve, akkor [0,0,0,-1] -et ad vissza'''
+    if type(datum) != date:
+        datum = str_to_date(datum) # lehet, hogy majd ki kell szedni
+    sum_eloiras = 0
+    sum_jovairas = 0
+    _nyito_osszeg = 0
+    havi_eloiras = 0
+    _tarh_lako_nyito = self.pool.get('tarh.lako.nyito')
+    talalt_id = _tarh_lako_nyito.search(cr, uid, [('tarh_lako', '=', lako)], context=None)
+    if talalt_id:  # ha van nyitoegyenleg rogzitve
+        nyito_dok = _tarh_lako_nyito.browse(cr, uid, talalt_id[0], context=None)
+        _nyito_datum = nyito_dok.egyenleg_datuma
+        _nyito_osszeg = nyito_dok.egyenleg
+        egyenleg = _nyito_osszeg
+        _tarh_lakoeloir_havi = self.pool.get('tarh.lakoeloir.havi')
+        _eloiras_fajta = self.pool.get('eloiras.fajta')
+        _my_report = self.pool.get('my.report')
+        tarh_lakoeloir_havi_lista = _tarh_lakoeloir_havi.search(cr, uid, [('lako', '=', lako),
+                                                                          ('eloir_datum', '>', _nyito_datum),
+                                                                          ('eloir_datum', '<=', datum)],
+                                                                context=None)  # datum szures kell bele!
+        my_report_lista = _my_report.search(cr, uid, [('partner', '=', lako), ('erteknap', '>', _nyito_datum),
+                                                      ('erteknap', '<=', datum)],
+                                            context=None)  # datum szures kell bele!
+        eloirasok = _tarh_lakoeloir_havi.browse(cr, uid, tarh_lakoeloir_havi_lista, context=None)
+
+        # innen kezdodik a havi eloirasok kigyujtese
+        aktualis_havi_eloir_lista = _tarh_lakoeloir_havi.search(cr, uid, [('lako', '=', lako), ('ev', '=', datum.year),
+                                                                          ('honap', '=', datum.month)], context=None)
+        aktualis_havi_eloiras = _tarh_lakoeloir_havi.browse(cr, uid, aktualis_havi_eloir_lista, context=None)
+        for havi_eloir in aktualis_havi_eloiras:
+            eloirasfajta = havi_eloir.eloirfajta.id
+            eloir_list = _eloiras_fajta.search(cr, uid, [('id', '=', eloirasfajta)], context=None)
+            eloir_neve = _eloiras_fajta.browse(cr, uid, eloir_list[0], context=None).name
+            eloir_osszege = havi_eloir.osszeg
+            if 'Rendk' not in eloir_neve and 'gyv' not in eloir_neve:
+                havi_eloiras = havi_eloiras + eloir_osszege
+
+        befizetesek = _my_report.browse(cr, uid, my_report_lista, context=None)
+        for befizetes in befizetesek:
+            egyenleg = egyenleg + befizetes.jovairas - befizetes.terheles
+            sum_jovairas = sum_jovairas + befizetes.jovairas - befizetes.terheles
+        for eloiras in eloirasok:
+            egyenleg = egyenleg - eloiras.osszeg
+            sum_eloiras = sum_eloiras + eloiras.osszeg
+            # ha a lekerdezesi datum korabbi mint a nyitoegyenleg datuma, akkor a kezdeti datum a nyitoegyenleg datuma lesz
+        _nyito_datum_date = str_to_date(_nyito_datum)
+        if datum < _nyito_datum_date:
+            datum = _nyito_datum_date
+
+        eredmeny = [egyenleg, sum_eloiras, sum_jovairas, havi_eloiras]
+        return (eredmeny)
+    else:  # ha nincs nyitoegyenleg
+        eredmeny = [0, 0, 0, -1]
+        return (eredmeny)
+        # [egyenleg, oszes eloiras, osszes jovairas, havonta eloiras]
+
 
 def lakolista (self, cr, uid, datum, tarsashaz):
     '''
@@ -144,6 +205,19 @@ def lakolista (self, cr, uid, datum, tarsashaz):
         tulajdonosok.remove(eladva)  # eltavolitjuk a a tulajdonosok listajabol az eladottakat
     return (tulajdonosok)  # visszaterunk a tulajdonosok listajaval a datum idopontban
 
+
+def eloirasok (self, cr, uid, tulajdonos, kezdatum, vegdatum):
+    '''
+    Ez az eljárás megadja az időpontok között, hogy a tulajdonos részére milyen befizetéseket írtunk elő fajtánként
+    '''
+    tulaj = str(tulajdonos)
+    conn_string = "select eloiras_fajta.name, sum(osszeg) from tarh_lakoeloir_havi join eloiras_fajta" \
+                  " on eloirfajta = eloiras_fajta.id where lako = " + tulaj + " and eloir_datum " \
+                                                                              "between '" + str(kezdatum) + "' and '" + str(vegdatum) + "' group by eloiras_fajta.name"
+    cr.execute(conn_string)
+    eredmeny = cr.fetchall()
+    #eredmeny[0]=100
+    return eredmeny
 
 
 def eloirasok2 (self, cr, uid, tulajdonos, kezdatum, vegdatum):
@@ -247,6 +321,27 @@ def havi_fizetendo2 (self, cr, uid, tulajdonos, datum):
                 eloirasai = eloirasai + egy_eloiras.osszeg
     return eloirasai
 
+
+def havi_fizetendo (self, cr, uid, tulajdonos, datum):
+    '''
+    Megadja, hogy az illető tulajdonosnak a datum hónapjában mennyi volt összesen az előrása
+    rendkívüli és ügyvédi díj előírása nélkül
+    '''
+    _tarh_lakoeloir_havi = self.pool.get('tarh.lakoeloir.havi')
+    _eloiras_fajta = self.pool.get('eloiras.fajta')
+    aktualis_havi_eloir_lista = _tarh_lakoeloir_havi.search(cr, uid,
+                                                            [('lako', '=', tulajdonos), ('ev', '=', datum.year),
+                                                             ('honap', '=', datum.month)], context=None)
+    aktualis_havi_eloiras = _tarh_lakoeloir_havi.browse(cr, uid, aktualis_havi_eloir_lista, context=None)
+    havi_eloiras = 0
+    for havi_eloir in aktualis_havi_eloiras:
+        eloirasfajta = havi_eloir.eloirfajta.id
+        eloir_list = _eloiras_fajta.search(cr, uid, [('id', '=', eloirasfajta)], context=None)
+        eloir_neve = _eloiras_fajta.browse(cr, uid, eloir_list[0], context=None).name
+        eloir_osszege = havi_eloir.osszeg
+        if ('Rendk' not in eloir_neve and 'gyv' not in eloir_neve):
+            havi_eloiras = havi_eloiras + eloir_osszege
+    return (havi_eloiras)
 
 
 def utolso_konyvelt_datum (self, cr, uid, tarsashaz):

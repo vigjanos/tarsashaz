@@ -69,7 +69,7 @@ class tarh_lako_eves(osv.osv):
                     nyitorekord['datum'] = kezdatum
                 # ha az idõszak alatt vette a tulajdont, akkor a nyitóegyenleg dátumat rögzitjük, egyébkent az idõszak
                 # kezdetét
-                nyitoegyenleg = seged.lakoegyenleg(self, cr, uid, tulajdonos, seged.str_to_date(kezdatum))[0]
+                nyitoegyenleg = seged.lakoegyenleg3(self, cr, uid, tulajdonos, seged.str_to_date(kezdatum))[0]
                 nyitorekord['eloiras_e'] = False
                 nyitorekord['szoveg'] = 'Nyitóegyenleg:'
                 nyitorekord['osszeg'] = nyitoegyenleg
@@ -78,8 +78,8 @@ class tarh_lako_eves(osv.osv):
 
                 # idáig a nyítórekord, nézzük az idõszak alatti összes elõírásokat!
 
-                #kotelezettsegek = seged.eloirasok2(self, cr, uid, tulajdonos, kezdatum, vegdatum)
-                kotelezettsegek = seged.eloirasok(self, cr, uid, tulajdonos, kezdatum, vegdatum)
+                kotelezettsegek = seged.eloirasok2(self, cr, uid, tulajdonos, kezdatum, vegdatum)
+                #kotelezettsegek = seged.eloirasok(self, cr, uid, tulajdonos, kezdatum, vegdatum)
                 for kotelezettseg in kotelezettsegek:
                     beirando = {}
                     beirando['eloiras_e'] = True

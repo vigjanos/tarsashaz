@@ -3,6 +3,7 @@
 Created on 2015.02.13.
 
 @author: vigjani
+megtisztítva a tarh_lakoeloir_havi használattól!
 '''
 from openerp.osv import osv, fields
 from datetime import date,time,datetime,timedelta

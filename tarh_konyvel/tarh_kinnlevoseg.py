@@ -18,7 +18,7 @@ class tarh_felszol(osv.osv):
         if talalt_id:
             sajat_id = self.browse(cr, uid, ids, context).id
             datum = date.today()
-            lekerdezes = seged.lakoegyenleg(self, cr, uid, lako, datum)
+            lekerdezes = seged.lakoegyenleg3(self, cr, uid, lako, datum)
             res = {}
             res[sajat_id] = lekerdezes[0]
             return res
@@ -28,7 +28,7 @@ class tarh_felszol(osv.osv):
         datum = date.today()
         sajat_id = self.browse(cr, uid, ids, context).id
         res = {}
-        res[sajat_id] = seged.havi_fizetendo(self,cr,uid,lako,datum)
+        res[sajat_id] = seged.havi_fizetendo2(self,cr,uid,lako,datum)
         return res
 
     def _last_konyvelt_nap(self,cr,uid,ids,field_name,arg,context=None):
