@@ -14,7 +14,9 @@
                             <!--  <button string="gomb" icon="" states="" type="object" name="gomb_nyomas"/> -->
                             <button icon="fa-pencil-square-o" states="" type="object" name="gomb_nyomas"
                                     class="oe_stat_button">
-                                 <field name="egyenleg" widget="statinfo"/>
+                                <!--
+                                <field name="egyenleg" widget="statinfo"/>
+                                -->
 
                             </button>
                         </group>

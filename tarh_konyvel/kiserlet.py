@@ -3,12 +3,22 @@
 Created on 2015.05.23'''
 __author__ = 'vigjani'
 
-from openerp import osv, fields
-from seged import *
+from openerp import models, fields, api, exceptions, _
+from seged3 import tulajegyenleg, str_to_date
 import unicodedata
 
 
-class kiserlet(osv.osv):
+class kiserlet(models.Model):
+    _name = 'tarh.kiserlet'
+
+    tulajdonos = fields.Many2one('res.partner', String='Tulajdonos', domain="[('parent_id.name','ilike','rsash')]")
+    kezdet = fields.Date('Kezdeti időpont')
+    befejezes = fields.Date('Befejezési időpont')
+
+        #'egyenleg': fields.function(_egyenleg_szamol, string='Egyenleg', type='integer', store=False, help=''),
+
+
+
 
     def _egyenleg_szamol (self, cr, uid, ids, field_name, arg, context=None):
         sajat_id = self.browse(cr, uid, ids, context).id
@@ -63,7 +73,14 @@ class kiserlet(osv.osv):
 
         return True
 
-    def gomb_nyomas (self, cr, uid, ids, context=None):
+    @api.multi
+    def gomb_nyomas(self):
+        tulajdonos = self.tulajdonos.id
+        kezdodatum = self.kezdet
+        egyenleg= tulajegyenleg(self,tulajdonos,kezdodatum)
+        return
+
+    def gomb_nyomasmegregebbi (self, cr, uid, ids, context=None):
         tulajdonos=self.browse(cr,uid,ids,context=None).tulajdonos.id
         kezdodatum = self.browse(cr, uid, ids, context=None).kezdet
         vegdatum = self.browse(cr, uid, ids, context=None).befejezes
@@ -91,18 +108,8 @@ class kiserlet(osv.osv):
         return ()
 
 
-    _name = 'tarh.kiserlet'
-    _columns = {
-        'tulajdonos': fields.many2one('res.partner', 'Tulajdonos', help='',
-                                      domain="[('parent_id.name','ilike','rsash')]"),
-        'kezdet': fields.date('Kezdeti időpont'),
-        'befejezes': fields.date('Befejezési időpont'),
-        'egyenleg': fields.function(_egyenleg_szamol, string='Egyenleg', type='integer', store=False, help=''),
 
-    }
-
-
-kiserlet()
+#kiserlet()
 
 ''' store= {
            'tarh.kiserlet': (lambda self, cr, uid, ids, c={}: ids, ['tulajdonos'], 10),
