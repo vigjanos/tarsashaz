@@ -4,6 +4,7 @@ create by vigjanos on 2016.12.15.
 '''
 
 from seged import *
+from seged3 import tulajegyenleg
 import openerp
 from openerp import models, fields, api, exceptions, _
 
@@ -52,8 +53,10 @@ class tarh_lakohavijel2(models.Model):
             if _vegdatum < _nyito_record[0].egyenleg_datuma:
                 raise exceptions.ValidationError(_("Az időszakban még nem volt tulajdonban az ingatlant!"))
 
-            kezdo_lekerdezes = lakoegyenleg3(self, self.env.cr, self.env.uid, _tulaj, _kezdatum)
-            befejezo_lekerdezes = lakoegyenleg3(self, self.env.cr, self.env.uid, _tulaj, _vegdatum)
+            #kezdo_lekerdezes = lakoegyenleg3(self, self.env.cr, self.env.uid, _tulaj, _kezdatum)
+            #befejezo_lekerdezes = lakoegyenleg3(self, self.env.cr, self.env.uid, _tulaj, _vegdatum)
+            kezdo_lekerdezes = tulajegyenleg(self,_tulaj,_kezdatum)
+            befejezo_lekerdezes = tulajegyenleg(self,_tulaj,_vegdatum)
 
             # ha már volt ezzel a táblával lekérdezés, akkor töröljük a sorokat
             _sor_hivatkozas = self.env['tarh.lakohavijel2.sor']
