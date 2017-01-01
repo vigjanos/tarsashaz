@@ -14,6 +14,9 @@
                             <field name="lekerdate"/>
                             <field name="min_tartozas"/>
                             <field name="min_honap"/>
+                            <group>
+                                <button string="Lekérdezés" type="object" name="lekerdez"/>
+                            </group>
                         </group>
                         <notebook colspan="4">
                             <page string="Tulajdonosok egyenlegei">
@@ -32,7 +35,7 @@
                 <tree string="">
                     <field name="albetet"/>
                     <field name="cim"/>
-                    <field name="tulajdonos"/>
+                    <field name="tulaj"/>
                     <field name="kezdoegyenleg"/>
                     <field name="eloirasok"/>
                     <field name="befizetesek"/>
@@ -50,7 +53,7 @@
             <field name="view_id" ref="tarh_haz_lakoegyenleg2_view"/>
         </record>
 
-        <menuitem id="UNIQUE_ID2_categ3" name="Ház tulaj egyenlegek" parent="UNIQUE_ID_categ"
+        <menuitem id="UNIQUE_ID2_categ3" name="Ház tulajdonosi egyenlegek" parent="UNIQUE_ID_categ"
                   action="tarh_haz_lakoegyenleg2_action" sequence="27"/>
 
     </data>

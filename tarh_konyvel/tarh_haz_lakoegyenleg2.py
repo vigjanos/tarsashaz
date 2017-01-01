@@ -4,6 +4,7 @@
 '''
 
 from seged import *
+from seged3 import lakolista, tulajegyenleg
 from openerp import models, fields, api, _
 
 
@@ -26,7 +27,7 @@ class tarh_haz_lakoegyenleg2(models.Model):
     sor_id = fields.One2many('tarh.haz.lakoegyenleg2.sor', 'lakoegy_id')
 
     @api.onchange('tarsashaz')
-    def _onchange_tarsashaz (self):
+    def _onchange_tarsashaz(self):
         tarsashaz = self.tarsashaz
         if self.tarsashaz:
             self.vegdatum = utolso_konyvelt_datum(self, self.env.cr, self.env.uid, self.tarsashaz.id)
@@ -40,23 +41,44 @@ class tarh_haz_lakoegyenleg2(models.Model):
         _lekerdate = self.lekerdate
 
         _sor_hivatkozas = self.env['tarh.haz.lakoegyenleg2.sor']
+        _res_partner_hivatkozas = self.env['res.partner']
         _sajat_id = self.id
 
         # ha már volt ezzel a táblával lekérdezés, akkor töröljük a sorokat
-        torlendok = _sor_hivatkozas.search([('lekerdezes_id', '=', _sajat_id)])
+        torlendok = _sor_hivatkozas.search([('lakoegy_id', '=', _sajat_id)])
         torlendok.unlink()
 
+        tulajlista = lakolista(self, _vegdatum, _tarsashaz)
+        for tulaj in tulajlista:
+            tulajdonos = _res_partner_hivatkozas.search([('id', '=', tulaj)])
+            tulajertek_kezd = tulajegyenleg(self, tulaj, _kezdatum)
+            tulajertek_veg = tulajegyenleg(self, tulaj, _vegdatum)
+
+            _sor_hivatkozas.create({
+                'tulaj': tulajdonos.name,
+                'tulajdonos': tulajdonos.id,
+                'cim': tulajdonos.street2,
+                'kezdoegyenleg': tulajertek_kezd[0],
+                'eloirasok': tulajertek_veg[1] - tulajertek_kezd[1],
+                'befizetesek': tulajertek_veg[2] - tulajertek_kezd[2],
+                'zaroegyenleg': tulajertek_veg[0],
+                'albetet': tulajdonos.alb_szam,
+                'havi_eloiras': tulajertek_veg[3],
+                'lakoegy_id': _sajat_id
+            })
+        return
 
 class tarh_haz_lakoegyenleg2_sor(models.Model):
     _name = 'tarh.haz.lakoegyenleg2.sor'
 
-    tulajdonos = fields.Many2one("res.partner", string="Tulajdonos")
+    tulaj = fields.Char(string="Tulajdonos", size=128)
+    tulajdonos = fields.Many2one("res.partner")
     cim = fields.Char('Emelet', size=32)
     kezdoegyenleg = fields.Integer('Nyitó egyenleg')
     eloirasok = fields.Integer('Előírások')
     befizetesek = fields.Integer('Befizetések')
     zaroegyenleg = fields.Integer('Aktuális egyenleg')
-    albetet = fields.Integer('Alb.száma')
+    albetet = fields.Integer('Alb.sz.')
     havi_eloiras = fields.Integer('Havonta előírás')
     lakoegy_id = fields.Many2one('tarh.haz.lakoegyenleg2', ondelete='cascade', readonly=True, string='Szöveg')
 

@@ -162,7 +162,7 @@ def tulajegyenleg(self, lako, datum):
 
         havi_fiz = havi_fizetendo2(self, lako, datum)
 
-        eredmeny = [egyenleg, sum_eloiras, sum_jovairas, havi_fiz, eloiras_list, befizetes_list]
+        eredmeny = [egyenleg, sum_eloiras + kesedelmi_kamat, sum_jovairas, havi_fiz, eloiras_list, befizetes_list]
 
         return (eredmeny)
 

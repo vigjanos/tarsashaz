@@ -1473,7 +1473,7 @@ class tarh_lako_havijel(osv.osv):
         '''
         eredmeny = {}
         most = date.today()
-        kezdo_datum = date(most.year,most.month-6,1)
+        kezdo_datum = date(most.year-1,most.month,1)
         eredmeny['kezdatum'] = kezdo_datum
         if lako:
             nyito_datuma = kezdatum

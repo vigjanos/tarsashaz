@@ -34,6 +34,7 @@
             'tarh_havijelentes2_report.xml',
             'tarh_rendkivuli_lekerdez2.xml',
             'tarh_rendkivuli_lekerdez2_report.xml',
+            'tarh_haz_lakoegyenleg2_view.xml',
 
             ],
     'installable': True,

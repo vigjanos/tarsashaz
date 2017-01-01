@@ -31,7 +31,7 @@ class tarh_lakohavijel2(models.Model):
         self.tarsashaz = self.tulaj.parent_id
         self.bankszamla = self.tulaj.parent_id.uzemeltetesi
         most = date.today()
-        self.kezdatum = date(most.year, most.month - 6, 1)
+        self.kezdatum = date(most.year-1, most.month, 1)
         if self.tarsashaz:
             self.vegdatum = utolso_konyvelt_datum(self, self.env.cr, self.env.uid, self.tulaj.parent_id.id)
         return
