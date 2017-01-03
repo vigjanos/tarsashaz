@@ -3,8 +3,8 @@
  Created by vigjani on 2016.12.20..
 '''
 
-from seged import *
-from seged3 import lakolista, tulajegyenleg
+# from seged import *
+from seged3 import lakolista, tulajegyenleg, utolso_konyvelt_datum
 from openerp import models, fields, api, _
 
 
@@ -30,7 +30,7 @@ class tarh_haz_lakoegyenleg2(models.Model):
     def _onchange_tarsashaz(self):
         tarsashaz = self.tarsashaz
         if self.tarsashaz:
-            self.vegdatum = utolso_konyvelt_datum(self, self.env.cr, self.env.uid, self.tarsashaz.id)
+            self.vegdatum = utolso_konyvelt_datum(self, self.tarsashaz.id)
         return
 
     @api.multi

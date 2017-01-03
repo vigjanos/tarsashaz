@@ -14,8 +14,6 @@
                             <group colspan="4">
                                 <field name="tarsashaz"/>
                                 <field name="kezdatum"/>
-                            </group>
-                            <group>
                                 <field name="vegdatum"/>
                             </group>
                             <group>

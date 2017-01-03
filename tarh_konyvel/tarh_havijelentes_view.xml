@@ -12,8 +12,8 @@
                             <field name="kezdatum"/>
                             <field name="vegdatum"/>
                             <field name="lekerdatum"/>
-                            <field name="tarsashaz"/>
-                            <field name="bankszamla"/>
+                            <field name="tarsashaz" invisible="1" />
+                            <field name="bankszamla" invisible="1"/>
 
                         </group>
                         <group>
@@ -61,7 +61,7 @@
         </record>
 
         <!-- This Menu Item will appear in the Upper bar, That's why It needs NO parent or action -->
-        <menuitem id="tarh_konyvel2_root" name="Jelentések" sequence="1"/>
+        <menuitem id="tarh_konyvel2_root" name="Társasház jelentések" sequence="105"/>
 
         <!-- This Menu Item must have a parent and an action -->
         <menuitem id="UNIQUE_ID_categ" name="Lakók jelentései" parent="tarh_konyvel2_root"

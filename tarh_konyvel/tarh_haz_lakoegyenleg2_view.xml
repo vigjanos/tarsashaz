@@ -8,12 +8,14 @@
                 <form string="">
                     <sheet>
                         <group>
-                            <field name="kezdatum"/>
-                            <field name="vegdatum"/>
-                            <field name="tarsashaz"/>
-                            <field name="lekerdate"/>
-                            <field name="min_tartozas"/>
-                            <field name="min_honap"/>
+                            <group colspan="4">
+                                <field name="tarsashaz"/>
+                                <field name="kezdatum"/>
+                                <field name="vegdatum"/>
+                                <field name="lekerdate"/>
+                                <field name="min_tartozas"/>
+                                <field name="min_honap"/>
+                            </group>
                             <group>
                                 <button string="Lekérdezés" type="object" name="lekerdez"/>
                             </group>
@@ -25,6 +27,21 @@
                         </notebook>
                     </sheet>
                 </form>
+            </field>
+        </record>
+
+
+        <record id="view_tarh_haz_lakoegyenleg2_tree" model="ir.ui.view">
+            <field name="name">tarh_haz_lakoegyenleg2_view_tree</field>
+            <field name="model">tarh.haz.lakoegyenleg2</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="tarsashaz"/>
+                    <field name="kezdatum"/>
+                    <field name="vegdatum"/>
+                    <field name="create_uid"/>
+                </tree>
             </field>
         </record>
 

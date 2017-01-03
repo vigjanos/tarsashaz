@@ -210,3 +210,22 @@ def havi_fizetendo2 (self, tulajdonos, datum):
             if 'Rendk' not in egy_eloiras.eloirfajta.name and 'gyv' not in egy_eloiras.eloirfajta.name:
                 eloirasai = eloirasai + egy_eloiras.osszeg
     return eloirasai
+
+
+def utolso_konyvelt_datum (self, tarsashaz):
+    '''
+    a társasház utolsó könyvelt dátumát kérdezi le.
+    :param self:
+    :param tarsashaz: társasház kódja int
+    :return: a legutolsó lekönyvelt nap   date
+    '''
+    tarsashaz = str(tarsashaz)
+    cur = self.env.cr
+    conn_string = "select erteknap from tarh_bankbiz_sor join tarh_bankbiz on tarh_bankbiz.id=bankbiz_id \
+                   where th_szamlatul=" + tarsashaz + " order by erteknap desc limit 1"
+    cur.execute(conn_string)
+    eredmeny = cur.fetchone()
+    if eredmeny:
+        return eredmeny[0]
+    else:
+        return (time.strftime("%Y-%m-%d"))  # ha nincs meg konyvelt befizetes, akkor a mai datummal terunk vissza

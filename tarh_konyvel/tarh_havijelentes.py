@@ -3,11 +3,10 @@
 create by vigjanos on 2016.12.15.
 '''
 
-from seged import *
-from seged3 import tulajegyenleg
-import openerp
+# from seged import *
+from seged3 import tulajegyenleg, utolso_konyvelt_datum
 from openerp import models, fields, api, exceptions, _
-
+from datetime import date
 
 # from openerp.exceptions import AccessError, Warning
 
@@ -33,7 +32,7 @@ class tarh_lakohavijel2(models.Model):
         most = date.today()
         self.kezdatum = date(most.year-1, most.month, 1)
         if self.tarsashaz:
-            self.vegdatum = utolso_konyvelt_datum(self, self.env.cr, self.env.uid, self.tulaj.parent_id.id)
+            self.vegdatum = utolso_konyvelt_datum(self, self.tulaj.parent_id.id)
         return
 
     @api.multi
