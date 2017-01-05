@@ -1,21 +1,24 @@
 # -*- coding: utf-8 -*-
+from openerp import models, fields, api, _
 from openerp.osv import osv, fields
-from openerp.addons.tarh_konyvel.seged import *
+#from openerp.addons.tarh_konyvel.seged import *
+from openerp.addons.tarh_konyvel.seged3 import tulajegyenleg
+from datetime import date
 
 
 class tul_hanyad(osv.osv):
     _inherit = 'res.partner'
 
-    def _egyenleg_szamol (self, cr, uid, ids, field_name, arg, context=None):
-        lako = self.browse(cr, uid, ids, context).id
-        _tarh_lako_nyito = self.pool.get('tarh.lako.nyito')
-        talalt_id = _tarh_lako_nyito.search(cr, uid, [('tarh_lako', '=', lako)], context=None)
+    @api.multi
+    def _egyenleg_szamol (self, field_name, arg, context=None):
+        lako = self.id
+        _tarh_lako_nyito = self.env['tarh.lako.nyito']
+        talalt_id = _tarh_lako_nyito.search([('tarh_lako', '=', lako)])
         if talalt_id:
-            sajat_id = self.browse(cr, uid, ids, context).id
             datum = date.today()
-            lekerdezes = lakoegyenleg3(self, cr, uid, sajat_id, datum)
+            lekerdezes = tulajegyenleg(self, lako, datum)
             res = {}
-            res[sajat_id] = lekerdezes[0]
+            res[lako] = lekerdezes[0]
             return res
 
     def _felszolit_szamol (self, cr, uid, ids, field_name, arg, context=None):

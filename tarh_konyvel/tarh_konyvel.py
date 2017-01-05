@@ -1201,7 +1201,8 @@ class my_report(osv.osv):
     _name = "my.report"
     _auto = False
     _columns = {
-        'th_szamlatul': fields.many2one('res.partner', 'Tarsashaz', readonly=True),
+        'th_szamlatul': fields.many2one('res.partner', 'Tarsashaz', readonly=True,\
+                                        domain="[('is_company','=', True),('name','ilike','rsash')]"),
         'erteknap': fields.date('Konyveles napja', readonly=True),
         'partner': fields.many2one('res.partner', 'partner', readonly=True),
         'jovairas': fields.integer('Jovairas', readonly=True),

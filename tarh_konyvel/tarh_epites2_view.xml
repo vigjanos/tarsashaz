@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_tarh_epites2_form" model="ir.ui.view">
+            <field name="name">tarh.epites2.form</field>
+            <field name="model">tarh.epites2</field>
+            <field name="type">form</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group colspan="4">
+                            <field name="tarsashaz" domain="[('name','ilike','rsash')]"/>
+                            <field name="kezdatum"/>
+                            <field name="vegdatum"/>
+                            <field name="lek_tranzakcio"/>
+                        </group>
+                        <group>
+                            <button string="Lekérdez" type="object" name="lekerdez"/>
+                        </group>
+
+                        <field name="sor_id" string="lekérdezés">
+                            <tree string="Elemek">
+                                <field name="erteknap"/>
+                                <field name="kivonatszam"/>
+                                <field name="partner"/>
+                                <field name="osszeg"/>
+                                <field name="megjegyzes"/>
+                            </tree>
+                        </field>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_tarh_epites2_tree" model="ir.ui.view">
+            <field name="name">tarh.epites2.tree</field>
+            <field name="model">tarh.epites2</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="tarsashaz"/>
+                    <field name="kezdatum"/>
+                    <field name="vegdatum"/>
+                    <field name="lek_tranzakcio"/>
+                    <field name="create_uid"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="tarh_epites2_action" model="ir.actions.act_window">
+            <field name="name">tarh_epites2</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.epites2</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_tarh_epites2_form"/>
+        </record>
+
+        <menuitem id="UNIQUE_ID2_categ4" name="Tranzakció lekérdezés" parent="UNIQUE_ID_categ"
+                  action="tarh_epites2_action" sequence="32"/>
+    </data>
+</openerp>

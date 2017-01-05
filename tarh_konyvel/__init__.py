@@ -40,8 +40,6 @@ import tarh_egyszeribeir
 import tarh_havijelentes
 import tarh_rendkivuli_lekerdez2
 import tarh_haz_lakoegyenleg2
-
-
-
+import tarh_epites2
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

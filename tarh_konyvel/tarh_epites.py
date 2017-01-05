@@ -17,12 +17,11 @@ class tarh_epites(osv.osv):
         'vegdatum': fields.date('Zaro datum', required=True, ),
         'lek_tranzakcio': fields.many2one('tarh.tranzakcio', 'Kiválasztott tranzakció'),
         'sor_id': fields.one2many('tarh.epites.sor', 'tarsashaz_id', 'kapocs2', required=False, ),
-
     }
 
     _defaults = {
-        'kezdatum': '2015-01-01',
-        'vegdatum': '2015-12-31',
+        'kezdatum': '2016-01-01',
+        'vegdatum': '2016-12-31',
     }
 
     def lekerdez (self, cr, uid, ids, context=None):

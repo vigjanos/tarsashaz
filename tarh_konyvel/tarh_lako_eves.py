@@ -18,8 +18,8 @@ class tarh_lako_eves(osv.osv):
         'tulaj_id': fields.one2many('tarh.lako.eves.tulaj', 'tarsashaz_id', 'kapocs2', required=False, ),
     }
     _defaults = {
-        'kezdatum':'2015-01-01',
-        'vegdatum':'2015-12-31',
+        'kezdatum':'2016-01-01',
+        'vegdatum':'2016-12-31',
     }
 
     def onchange_tarsashaz(self,cr,uid,ids,tarsashaz,context=None):

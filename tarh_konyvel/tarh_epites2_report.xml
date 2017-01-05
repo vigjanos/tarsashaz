@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <report id="epites2_lekerdez1"
+                model="tarh.epites2"
+                string="képernyőre"
+                name="tarh_konyvel.epites_lekerdez2_tmpl"
+                file="tarh_konyvel.tarh_epites2_report"
+                report_type="qweb-html"/>
+
+        <report id="epites2_lekerdez2"
+                model="tarh.epites2"
+                string="pdf-be"
+                name="tarh_konyvel.epites_lekerdez2_tmpl"
+                file="tarh_konyvel.tarh_epites2_report"
+                report_type="qweb-pdf"/>
+
+        <template id="epites_lekerdez2_tmpl">
+            <t t-call="report.external_layout">
+                <t t-call="report.html_container">
+                    <th width="20%">
+                        <strong>Összeg</strong>
+                    </th>
+                    <div class="page">
+                        <div class="row col-xs-10 col-xs-offset-1 text-center mb32">
+                            <h3>
+                                <span t-field="docs[0].tarsashaz.name"/>
+                                <br/>
+                                <span t-field="docs[0].kezdatum"/>
+                                és
+                                <span t-field="docs[0].vegdatum"/>
+                                közötti
+                                <br/>
+                                <span t-field="docs[0].lek_tranzakcio.name"/>
+                                részletezése
+                            </h3>
+
+
+                        </div>
+                        <div class="row col-xs-12">
+                            <table class="table table-bordered" width="100%" border="3">
+                                <thead>
+                                    <tr>
+                                        <th width="11%">
+                                            <strong>Dátum</strong>
+                                        </th>
+                                        <th width="10%">
+                                            <strong>Kiv.szám</strong>
+                                        </th>
+                                        <th width="25%">
+                                            <strong>Partner</strong>
+                                        </th>
+                                        <th class="text-center" width="12%">
+                                            <strong>Összeg</strong>
+                                        </th>
+                                        <th width="42%">
+                                            <strong>Megjegyzés</strong>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="docs.sor_id" t-as="sor">
+                                        <tr>
+                                            <td style="padding:0 5 1 5">
+                                                <span t-field="sor.erteknap"/>
+                                            </td>
+                                            <td style="padding:0 5 1 5">
+                                                <span t-field="sor.kivonatszam"/>
+                                            </td>
+                                            <td style="padding:0 5 1 5">
+                                                <span t-field="sor.partner.name"/>
+                                            </td>
+                                            <td class="text-right" style="padding:0 5 0 5">
+                                                <span t-field="sor.osszeg"
+                                                      t-field-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                            </td>
+                                            <td style="padding:0 5 1 5">
+                                                <span t-field="sor.megjegyzes"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+
+                            </table>
+                        </div>
+                        <div class="row col-xs-12 text-right mt32">
+                            Nyomtatva: <span t-esc="time.strftime('%x')"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+
+
+        </template>
+
+    </data>
+</openerp>
