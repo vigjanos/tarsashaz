@@ -1,4 +1,4 @@
-# -*- coding: ISO-8859-2 -*-
+# -*- coding: utf-8 -*-
 '''
 Created on 2014.06.02.
 
@@ -173,8 +173,8 @@ class tarh_bankbiz(osv.osv):
         return {'value': eredmeny}
 
 
-'''TODO meg kell csinálni, hogy ha változik a dátum és már van sor rögzítve akkor az ehhez a bankbiz-hoz tartozó
-összes sor elemének a erteknap-ját állítsa (kérdés, hogy el van e az már mentve --> TESZT)'''
+'''TODO meg kell csinÃ¡lni, hogy ha vÃ¡ltozik a dÃ¡tum Ã©s mÃ¡r van sor rÃ¶gzÃ­tve akkor az ehhez a bankbiz-hoz tartozÃ³
+Ã¶sszes sor elemÃ©nek a erteknap-jÃ¡t Ã¡llÃ­tsa (kÃ©rdÃ©s, hogy el van e az mÃ¡r mentve --> TESZT)'''
 
 tarh_bankbiz()
 
@@ -207,17 +207,17 @@ class tarh_bankbiz_sor(osv.osv):
         ref_tarh_lakoeloir_havi = self.pool.get('tarh.lakoeloir.havi')
         erteknap = self.browse(cr, uid, ids, context=None).erteknap
 
-        ''' Meg kell azt is nézni, hogy a lako_id lakója-e a tarsashaz_id-nek:
-        Ha nem akkor visszatérünk a return-al
+        ''' Meg kell azt is nÃ©zni, hogy a lako_id lakÃ³ja-e a tarsashaz_id-nek:
+        Ha nem akkor visszatÃ©rÃ¼nk a return-al
         '''
         lako_parent = ref_res_partner.browse(cr, uid, lako_id, context=None).parent_id.id
 
         if lako_parent and lako_parent == tarsashaz_id:
-            print "lakója!"
+            print "lakÃ³ja!"
 
             if postai:
-                '''Ha bejelölték a csekkes befizetést, akkor meg kell nézni, hogy a háznak van-e elõírása erre az idõszakra
-                csekkes befizetésre, ezt a tarh_eloiras_haz táblában rögzítettük. 
+                '''Ha bejelÃ¶ltÃ©k a csekkes befizetÃ©st, akkor meg kell nÃ©zni, hogy a hÃ¡znak van-e elÅ‘Ã­rÃ¡sa erre az idÅ‘szakra
+                csekkes befizetÃ©sre, ezt a tarh_eloiras_haz tÃ¡blÃ¡ban rÃ¶gzÃ­tettÃ¼k. 
                 '''
                 lista_tarh_eloiras_haz = ref_tarh_eloiras_haz.search(cr, uid, [('eloir_kezd', '<=', erteknap),
                                                                                ('eloir_vege', '>=', erteknap),
@@ -227,7 +227,7 @@ class tarh_bankbiz_sor(osv.osv):
                 if lista_tarh_eloiras_haz:
                     eloiras_szama = ref_tarh_eloiras_haz.browse(cr, uid, lista_tarh_eloiras_haz[0],
                                                                 context=None).eloirfajta.id
-                    '''Hurrá van elõírás a csekkre, nézzük meg, hogy nem rögzítettünk-e még erre a napra a tarh_lakoeloir_havi táblában!
+                    '''HurrÃ¡ van elÅ‘Ã­rÃ¡s a csekkre, nÃ©zzÃ¼k meg, hogy nem rÃ¶gzÃ­tettÃ¼nk-e mÃ©g erre a napra a tarh_lakoeloir_havi tÃ¡blÃ¡ban!
                     '''
                     van_mar_eloirva = ref_tarh_lakoeloir_havi.search(cr, uid, [('eloir_datum', '=', erteknap),
                                                                                ('eloirfajta', '=', eloiras_szama),
@@ -235,7 +235,7 @@ class tarh_bankbiz_sor(osv.osv):
                     if van_mar_eloirva:
                         return
                     else:
-                        '''nincs még erre a napra ennek a lakónak csekkbefizetési elõírás, akkor rögzítsünk egyet!'''
+                        '''nincs mÃ©g erre a napra ennek a lakÃ³nak csekkbefizetÃ©si elÅ‘Ã­rÃ¡s, akkor rÃ¶gzÃ­tsÃ¼nk egyet!'''
                         szeletelt = erteknap.split("-")
                         kiirando = {}
                         kiirando['ev'] = szeletelt[0]
@@ -272,9 +272,9 @@ class tarh_bankbiz_sor(osv.osv):
             eredmeny['jovairas'] = True
         else:
             eredmeny['jovairas'] = False
-        '''Ha a felhasználó visszaváltoztat valami másra, és az nem kozos koltsegre valtozott akkor nullazzuk a jovairast es toroljuk az eloirast'''
+        '''Ha a felhasznÃ¡lÃ³ visszavÃ¡ltoztat valami mÃ¡sra, Ã©s az nem kozos koltsegre valtozott akkor nullazzuk a jovairast es toroljuk az eloirast'''
         valtozott = self.pool.get('tarh.tranzakcio').search(cr, uid, [
-            ('name', '=', ('Közös költség befizetés').decode('ISO-8859-2'))], context=context)[0]
+            ('name', '=', 'KÃ¶zÃ¶s kÃ¶ltsÃ©g befizetÃ©s')], context=context)[0]
         if valtozott != tranzakcio_id:
             eredmeny['jovairas_ossz'] = 0
             # eredmeny['eloiras'] = ''
@@ -282,9 +282,9 @@ class tarh_bankbiz_sor(osv.osv):
         return {'value': eredmeny}
 
     '''
-    A lakó kiválasztása után a tarh.eloiras.lako táblából kikeresi a lakó éppen aktuális elõírásait, és megjegyzésben
-    feldobja az adatrögzítõnek.
-    A bankbizonylat dátumát alapértelmezésben beállítja a sor dátumához.
+    A lakÃ³ kivÃ¡lasztÃ¡sa utÃ¡n a tarh.eloiras.lako tÃ¡blÃ¡bÃ³l kikeresi a lakÃ³ Ã©ppen aktuÃ¡lis elÅ‘Ã­rÃ¡sait, Ã©s megjegyzÃ©sben
+    feldobja az adatrÃ¶gzÃ­tÅ‘nek.
+    A bankbizonylat dÃ¡tumÃ¡t alapÃ©rtelmezÃ©sben beÃ¡llÃ­tja a sor dÃ¡tumÃ¡hoz.
     '''
 
     def onchange_partneruj (self, cr, uid, ids, biz_datum, tulajdonos, context=None):
@@ -310,9 +310,9 @@ class tarh_bankbiz_sor(osv.osv):
                     ret_ossz = ret_ossz + ossz_eloir
                 for szamlalo in range(0, len(_szoveg_eloir)):
                     retStr = retStr + _szoveg_eloir[szamlalo] + ' ' + str(int(_osszeg_eloir[szamlalo])) + '\n'
-                retStr = retStr + ('Összesen: ').decode('ISO-8859-2') + str(int(ret_ossz))
+                retStr = retStr + 'Ã–sszesen: ' + str(int(ret_ossz))
                 '''
-                TODO meg kell nézni az elõírás dátumát, hozzáigazítani a bizonylat dátumához KÉSZ!!!
+                TODO meg kell nÃ©zni az elÅ‘Ã­rÃ¡s dÃ¡tumÃ¡t, hozzÃ¡igazÃ­tani a bizonylat dÃ¡tumÃ¡hoz KÃ‰SZ!!!
                 '''
 
 
@@ -322,7 +322,7 @@ class tarh_bankbiz_sor(osv.osv):
                     '''ha van eloirt osszeg azaz a ret_ossz nem nulla, akkor a tarh_tranzakcio t beallitjuk kozos koltsegre,'''
                     _tranz_szam = self.pool.get('tarh.tranzakcio')
                     kozos_ktg_szama = _tranz_szam.search(cr, uid, [
-                        ('name', '=', ('Közös költség befizetés').decode('ISO-8859-2'))], context=context)
+                        ('name', '=', 'KÃ¶zÃ¶s kÃ¶ltsÃ©g befizetÃ©s')], context=context)
                     eredmeny['tarh_tranzakcio'] = kozos_ktg_szama[0]
                     eredmeny['jovairas_ossz'] = ret_ossz
 
@@ -401,8 +401,8 @@ eloiras_fajta()
 
 
 class tarh_eloiras_haz(osv.osv):
-    '''Ebben a táblában tároljuk az egyes házakra a közgyûlésen hozott elõírásokat, a m2-re esõ közös költséget,
-       egy fõre jutó szemétdíjat, stb'''
+    '''Ebben a tÃ¡blÃ¡ban tÃ¡roljuk az egyes hÃ¡zakra a kÃ¶zgyÅ±lÃ©sen hozott elÅ‘Ã­rÃ¡sokat, a m2-re esÅ‘ kÃ¶zÃ¶s kÃ¶ltsÃ©get,
+       egy fÅ‘re jutÃ³ szemÃ©tdÃ­jat, stb'''
     _name = "tarh.eloiras.haz"
     _columns = {
         'konyvelt_haz': fields.many2one('res.partner', 'Tarsashaz', domain="[('is_company','=', True)]"),
@@ -425,14 +425,14 @@ class tarh_eloiras_haz(osv.osv):
 tarh_eloiras_haz()
 
 
-# Ebben tároljuk
+# Ebben tÃ¡roljuk
 class tarh_eloiras_lako(osv.osv):
-    '''ebben a táblában tároljuk a tarh_eloiras_haz táblából számítva, hogy az egyes lakásokban vízórától, m2-tõl,
-       lakószámtól függõen mennyi a havi befizetendõ összeg, mettõl meddig érvényes az elõírás'''
+    '''ebben a tÃ¡blÃ¡ban tÃ¡roljuk a tarh_eloiras_haz tÃ¡blÃ¡bÃ³l szÃ¡mÃ­tva, hogy az egyes lakÃ¡sokban vÃ­zÃ³rÃ¡tÃ³l, m2-tÅ‘l,
+       lakÃ³szÃ¡mtÃ³l fÃ¼ggÅ‘en mennyi a havi befizetendÅ‘ Ã¶sszeg, mettÅ‘l meddig Ã©rvÃ©nyes az elÅ‘Ã­rÃ¡s'''
     _name = "tarh.eloiras.lako"
     _columns = {
         'tarsashaz': fields.many2one('res.partner', 'Tarsashaz', domain="[('is_company','=', True)]", required=True),
-        'lako': fields.many2one('res.partner', 'Tulajdonos'),  # view-ben majd szûrni kell!
+        'lako': fields.many2one('res.partner', 'Tulajdonos'),  # view-ben majd szÅ±rni kell!
         'eloirfajta': fields.many2one('eloiras.fajta', 'Eloiras fajta'),
         'eloir_kezd': fields.date('Eloiras kezdete', required=True),
         'eloir_vege': fields.date('Eloiras vege'),
@@ -462,9 +462,9 @@ class tarh_eloiras_lako(osv.osv):
         return {'value': eredmeny}
 
     '''
-    Az alábbi eljárás a tarh.eloiras.haz-ba beírt elõírásokat lakónként berögzíti a tarh.eloiras.lako adattáblába
-    figyelembe véve, hogy van-e vízórája, avagy nincs, valamint ha van felújítási alap, képviseleti díj, 
-    vagy szemétdíj akkor azt is.
+    Az alÃ¡bbi eljÃ¡rÃ¡s a tarh.eloiras.haz-ba beÃ­rt elÅ‘Ã­rÃ¡sokat lakÃ³nkÃ©nt berÃ¶gzÃ­ti a tarh.eloiras.lako adattÃ¡blÃ¡ba
+    figyelembe vÃ©ve, hogy van-e vÃ­zÃ³rÃ¡ja, avagy nincs, valamint ha van felÃºjÃ­tÃ¡si alap, kÃ©pviseleti dÃ­j, 
+    vagy szemÃ©tdÃ­j akkor azt is.
     '''
 
     def button_kozos_ktg_beir (self, cr, uid, ids, context):
@@ -484,11 +484,11 @@ class tarh_eloiras_lako(osv.osv):
         if eloirasok:
             _eloirasok = self.pool.get('tarh.eloiras.haz').browse(cr, uid, eloirasok, context)
             '''
-            ha az albetét vásárlása nagyobb mint az elõírás kezdete, akkor az elõírás kezdete az albetét vásárlása lesz,
-            ha az albetét eladása korábbi mint az elõírás vége akkor az elõírás vége az albetét eladása lesz,
-            be kell jegyezni az elõírást, ha az albetét vétele korábbi mint az elõírás vége,
-            be kell jegyezni az elõírást, amennyiben az albetét eladása késõbbi mint az elõírás kezdete
-            str_to_date azért kell mert a date típust vissza kell alakítanom dátumra mivel az adatbázisból visszaolvasva string lesz!
+            ha az albetÃ©t vÃ¡sÃ¡rlÃ¡sa nagyobb mint az elÅ‘Ã­rÃ¡s kezdete, akkor az elÅ‘Ã­rÃ¡s kezdete az albetÃ©t vÃ¡sÃ¡rlÃ¡sa lesz,
+            ha az albetÃ©t eladÃ¡sa korÃ¡bbi mint az elÅ‘Ã­rÃ¡s vÃ©ge akkor az elÅ‘Ã­rÃ¡s vÃ©ge az albetÃ©t eladÃ¡sa lesz,
+            be kell jegyezni az elÅ‘Ã­rÃ¡st, ha az albetÃ©t vÃ©tele korÃ¡bbi mint az elÅ‘Ã­rÃ¡s vÃ©ge,
+            be kell jegyezni az elÅ‘Ã­rÃ¡st, amennyiben az albetÃ©t eladÃ¡sa kÃ©sÅ‘bbi mint az elÅ‘Ã­rÃ¡s kezdete
+            str_to_date azÃ©rt kell mert a date tÃ­pust vissza kell alakÃ­tanom dÃ¡tumra mivel az adatbÃ¡zisbÃ³l visszaolvasva string lesz!
             '''
             if lakok:
                 for lakosok in lakok:
@@ -515,11 +515,11 @@ class tarh_eloiras_lako(osv.osv):
                     keresett=''
                     if aktual_adat.vizora == 'v':
                         _vizora = True
-                        keresett = ('vízórával').decode('ISO-8859-2')
+                        keresett = 'vÃ­zÃ³rÃ¡val'
                     else:
                         if aktual_adat.vizora == 'n':
                             _vizora = False
-                            keresett = ('nélkül').decode('ISO-8859-2')
+                            keresett = 'nÃ©lkÃ¼l'
                     for eloir in _eloirasok:
                         kezdodatum = str_to_date(eloir.eloir_kezd)
                         zarodatum = str_to_date(eloir.eloir_vege)
@@ -569,8 +569,7 @@ class tarh_eloiras_lako(osv.osv):
 
                                 kiirt_id = self.create(cr, uid, eredmeny, context=None)
 
-                        if ('épviseleti').decode(
-                                'ISO-8859-2') in eloir.eloirfajta.name and alapterulet > 0 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
+                        if 'Ã©pviseleti' in eloir.eloirfajta.name and alapterulet > 0 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
                             if kezdodatum < vetel_datum:
                                 kezdodatum = vetel_datum
                             if zarodatum > eladas_datum:
@@ -591,8 +590,7 @@ class tarh_eloiras_lako(osv.osv):
 
                                 kiirt_id = self.create(cr, uid, eredmeny, context=None)
 
-                        if (('Szemétdíj').decode(
-                                'ISO-8859-2') in eloir.eloirfajta.name) and lakoszam > 0 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
+                        if ('SzemÃ©tdÃ­j' in eloir.eloirfajta.name) and lakoszam > 0 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
                             if kezdodatum < vetel_datum:
                                 kezdodatum = vetel_datum
                             if zarodatum > eladas_datum:
@@ -613,8 +611,7 @@ class tarh_eloiras_lako(osv.osv):
 
                                 kiirt_id = self.create(cr, uid, eredmeny, context=None)
 
-                        if (('Költség hozzájárulás').decode(
-                                'ISO-8859-2') in eloir.eloirfajta.name) and alapterulet > 0 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
+                        if ('KÃ¶ltsÃ©g hozzÃ¡jÃ¡rulÃ¡s' in eloir.eloirfajta.name) and alapterulet > 0 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
                             if kezdodatum < vetel_datum:
                                 kezdodatum = vetel_datum
                             if zarodatum > eladas_datum:
@@ -635,8 +632,7 @@ class tarh_eloiras_lako(osv.osv):
 
                                 kiirt_id = self.create(cr, uid, eredmeny, context=None)
 
-                        if (('Technikai').decode(
-                                'ISO-8859-2') in eloir.eloirfajta.name) and alapterulet > 0 and _vizora and vetel_datum < zarodatum and eladas_datum > kezdodatum:
+                        if ('Technikai' in eloir.eloirfajta.name) and alapterulet > 0 and _vizora and vetel_datum < zarodatum and eladas_datum > kezdodatum:
                             if kezdodatum < vetel_datum:
                                 kezdodatum = vetel_datum
                             if zarodatum > eladas_datum:
@@ -657,8 +653,7 @@ class tarh_eloiras_lako(osv.osv):
 
                                 kiirt_id = self.create(cr, uid, eredmeny, context=None)
 
-                        if (('Lakáskassza').decode(
-                                'ISO-8859-2') in eloir.eloirfajta.name) and alapterulet > 0 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
+                        if ('LakÃ¡skassza' in eloir.eloirfajta.name) and alapterulet > 0 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
                             if kezdodatum < vetel_datum:
                                 kezdodatum = vetel_datum
                             if zarodatum > eladas_datum:
@@ -679,8 +674,7 @@ class tarh_eloiras_lako(osv.osv):
 
                                 kiirt_id = self.create(cr, uid, eredmeny, context=None)
 
-                        if (('parkol').decode(
-                                'ISO-8859-2') in eloir.eloirfajta.name) and 'park' in utca2 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
+                        if ('parkol' in eloir.eloirfajta.name) and 'park' in utca2 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
                             if kezdodatum < vetel_datum:
                                 kezdodatum = vetel_datum
                                 zarodatum = eladas_datum
@@ -700,8 +694,7 @@ class tarh_eloiras_lako(osv.osv):
 
                                 kiirt_id = self.create(cr, uid, eredmeny, context=None)
 
-                        if (('gar').decode(
-                                'ISO-8859-2') in eloir.eloirfajta.name) and 'gar' in utca2 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
+                        if ('gar' in eloir.eloirfajta.name) and 'gar' in utca2 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
                             if kezdodatum < vetel_datum:
                                 kezdodatum = vetel_datum
                             if zarodatum > eladas_datum:
@@ -724,8 +717,7 @@ class tarh_eloiras_lako(osv.osv):
 
                                 # ezt szurtam be 2015-3-04
 
-                        if (('parkol').decode(
-                                'ISO-8859-2') in eloir.eloirfajta.name) and parkolo == 'v' and 'gar' not in utca2 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
+                        if ('parkol' in eloir.eloirfajta.name) and parkolo == 'v' and 'gar' not in utca2 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
                             if kezdodatum < vetel_datum:
                                 kezdodatum = vetel_datum
                             if zarodatum > eladas_datum:
@@ -769,10 +761,10 @@ class tarh_eloiras_lako(osv.osv):
 
                                 kiirt_id = self.create(cr, uid, eredmeny, context=None)
 
-                                # TODO meg kell csinálni, hogy a régi elõírás végdátuma = legyen a mostani kezdete -1 nap
+
                                 # print kiirt_id
 
-        # ez itt törli azt a rekordot amivel bevittük a sorozatot
+        # ez itt tÃ¶rli azt a rekordot amivel bevittÃ¼k a sorozatot
         igaze = self.unlink(cr, uid, ids, context)
         return igaze
 
@@ -782,14 +774,14 @@ tarh_eloiras_lako()
 
 class tarh_lakoeloir_havi(osv.osv):
     '''
-    Ebben az osztályban tároljuk a tulajdonosok tényleges havi elõírásait.
-    Figyeli, hogy él e még az elõírás (nem adták-e el a lakást) 
-    Ezt meg kell szüntetni!!!!  csak a tarh_eloiras_lako marad!
+    Ebben az osztÃ¡lyban tÃ¡roljuk a tulajdonosok tÃ©nyleges havi elÅ‘Ã­rÃ¡sait.
+    Figyeli, hogy Ã©l e mÃ©g az elÅ‘Ã­rÃ¡s (nem adtÃ¡k-e el a lakÃ¡st) 
+    Ezt meg kell szÃ¼ntetni!!!!  csak a tarh_eloiras_lako marad!
     '''
     _name = 'tarh.lakoeloir.havi'
     _columns = {
         'tarsashaz': fields.many2one('res.partner', 'Tarsashaz', domain="[('is_company','=', True)]", required=True),
-        'lako': fields.many2one('res.partner', 'Tulajdonos', domain="['|',('active','=', True),('active','=', False)]"),  # view-ben majd szûrni kell!
+        'lako': fields.many2one('res.partner', 'Tulajdonos', domain="['|',('active','=', True),('active','=', False)]"),  # view-ben majd szÅ±rni kell!
         'eloirfajta': fields.many2one('eloiras.fajta', 'Eloiras fajta'),
         'ev': fields.integer('Eloiras eve:', required=True),
         'honap': fields.integer('Eloiras honapja', required=True),
@@ -801,12 +793,12 @@ class tarh_lakoeloir_havi(osv.osv):
     _order = 'ev desc, honap desc'
 
     '''
-    ez az függvény beírja az adatbázisba a megadott hónap és év konkrét elõírásait.
+    ez az fÃ¼ggvÃ©ny beÃ­rja az adatbÃ¡zisba a megadott hÃ³nap Ã©s Ã©v konkrÃ©t elÅ‘Ã­rÃ¡sait.
     '''
 
     def havi_eloir_rogzit (self, cr, uid, ids, context):
         '''
-        a megadott dátumnál megkeresi a hónap utolsó napjának dátumát
+        a megadott dÃ¡tumnÃ¡l megkeresi a hÃ³nap utolsÃ³ napjÃ¡nak dÃ¡tumÃ¡t
         '''
 
         def honap_utolsonap (self, datum):
@@ -824,9 +816,9 @@ class tarh_lakoeloir_havi(osv.osv):
             return ujdatum
 
         '''
-        Sorban végigmegyünk a tarh_eloir_lako táblán és ha még aktuális az elõírás
-        (nem adták el a lakást stb.) akkor az elõírást felmásolja a tarh_lakoeloir_havi
-        adattáblába az adott év és hónap figyelembevételével.
+        Sorban vÃ©gigmegyÃ¼nk a tarh_eloir_lako tÃ¡blÃ¡n Ã©s ha mÃ©g aktuÃ¡lis az elÅ‘Ã­rÃ¡s
+        (nem adtÃ¡k el a lakÃ¡st stb.) akkor az elÅ‘Ã­rÃ¡st felmÃ¡solja a tarh_lakoeloir_havi
+        adattÃ¡blÃ¡ba az adott Ã©v Ã©s hÃ³nap figyelembevÃ©telÃ©vel.
         '''
         ev = self.browse(cr, uid, ids, context).ev
         honap = self.browse(cr, uid, ids, context).honap
@@ -851,7 +843,7 @@ class tarh_lakoeloir_havi(osv.osv):
                         'ev': ev,
                         'honap': honap,
                         'osszeg': egy_eloiras.osszeg,
-                        # eloiras a honap utolsó napja!
+                        # eloiras a honap utolsÃ³ napja!
                         'eloir_datum': ere_datum
                     }
                     mar_rogzitet = self.search(cr, uid, [('lako', '=', ere_lako), ('eloirfajta', '=', ere_eloir),
@@ -863,12 +855,12 @@ class tarh_lakoeloir_havi(osv.osv):
                     #            print kiirt_id
         igaze = self.unlink(cr, uid, ids, context)
         return igaze
-        '''TODO be kellene építeni egy vizsgálatot, hogy amennyiben már létezik ennek a lakónak erre, a hónapra ez az elõírása, akkor ne rögzítse be!KÉSZ!!!!
+        '''TODO be kellene Ã©pÃ­teni egy vizsgÃ¡latot, hogy amennyiben mÃ¡r lÃ©tezik ennek a lakÃ³nak erre, a hÃ³napra ez az elÅ‘Ã­rÃ¡sa, akkor ne rÃ¶gzÃ­tse be!KÃ‰SZ!!!!
         '''
 
     def havi_eloir_rogzit2 (self, cr, uid, ids, context):
         '''
-        a megadott dátumnál megkeresi a hónap utolsó napjának dátumát
+        a megadott dÃ¡tumnÃ¡l megkeresi a hÃ³nap utolsÃ³ napjÃ¡nak dÃ¡tumÃ¡t
         '''
 
         def honap_utolsonap (self, datum):
@@ -886,7 +878,7 @@ class tarh_lakoeloir_havi(osv.osv):
             return ujdatum
 
         '''
-        Ugyanaz mint az elõzõ, de csupán a megadott lakó adatait írja be
+        Ugyanaz mint az elÅ‘zÅ‘, de csupÃ¡n a megadott lakÃ³ adatait Ã­rja be
         '''
         ev = self.browse(cr, uid, ids, context).ev
         honap = self.browse(cr, uid, ids, context).honap
@@ -914,7 +906,7 @@ class tarh_lakoeloir_havi(osv.osv):
                         'ev': ev,
                         'honap': honap,
                         'osszeg': ere_osszeg,
-                        # eloiras a honap utolsó napja!
+                        # eloiras a honap utolsÃ³ napja!
                         'eloir_datum': ere_datum
                     }
                     mar_rogzitett = self.search(cr, uid, [('lako', '=', ere_lako), ('eloirfajta', '=', ere_eloir),
@@ -929,7 +921,7 @@ class tarh_lakoeloir_havi(osv.osv):
 
     def havi_eloir_rogzit3 (self, cr, uid, ids, context):
         '''
-        a megadott dátumnál megkeresi a hónap utolsó napjának dátumát
+        a megadott dÃ¡tumnÃ¡l megkeresi a hÃ³nap utolsÃ³ napjÃ¡nak dÃ¡tumÃ¡t
         '''
 
         def honap_utolsonap (self, datum):
@@ -947,7 +939,7 @@ class tarh_lakoeloir_havi(osv.osv):
             return ujdatum
 
         '''
-        Ugyanaz mint az elõzõ, de csupán a megadott társasház adatait írja be
+        Ugyanaz mint az elÅ‘zÅ‘, de csupÃ¡n a megadott tÃ¡rsashÃ¡z adatait Ã­rja be
         '''
         ev = self.browse(cr, uid, ids, context).ev
         honap = self.browse(cr, uid, ids, context).honap
@@ -975,7 +967,7 @@ class tarh_lakoeloir_havi(osv.osv):
                         'ev': ev,
                         'honap': honap,
                         'osszeg': ere_osszeg,
-                        # eloiras a honap utolsó napja! VOLT DE 10-re MEGVALTOZTATTAM!!!
+                        # eloiras a honap utolsÃ³ napja! VOLT DE 10-re MEGVALTOZTATTAM!!!
                         'eloir_datum': ere_datum
                     }
                     mar_rogzitett = self.search(cr, uid, [('lako', '=', ere_lako), ('eloirfajta', '=', ere_eloir),
@@ -996,7 +988,7 @@ class tarh_lakaselad(osv.osv):
     _name = 'tarh.lakaselad'
     _columns = {
         'tarsashaz': fields.many2one('res.partner', 'Tarsashaz', domain="[('is_company','=', True)]", required=True),
-        'elado': fields.many2one('res.partner', 'Elado', required=True),  # view-ben majd szûrni kell!
+        'elado': fields.many2one('res.partner', 'Elado', required=True),  # view-ben majd szÅ±rni kell!
         'uj_tulajdonos': fields.char('Uj tulaj nev', required=True),
         'eladas_datum': fields.date('Eladas datuma', required=True),
         'vetel_datum': fields.date('Hasznalatbavetel', required=True),
@@ -1011,11 +1003,11 @@ class tarh_lakaselad(osv.osv):
         'nyitott':True
     }
     '''
-    Amikor egy lakó eladja a lakását egy másik személynek:
-    -beolvassuk az eladó összes adatát egy dict-be
-    -vevõ adatait beolvassuk a tarh_lakaselad tábláról
-    -beállítjuk az eladónál az eladási, vevõnél a vételi dátumot,
-    -létrehozzuk a társasházban ugyanarra az albetétre a vevõ adatait
+    Amikor egy lakÃ³ eladja a lakÃ¡sÃ¡t egy mÃ¡sik szemÃ©lynek:
+    -beolvassuk az eladÃ³ Ã¶sszes adatÃ¡t egy dict-be
+    -vevÅ‘ adatait beolvassuk a tarh_lakaselad tÃ¡blÃ¡rÃ³l
+    -beÃ¡llÃ­tjuk az eladÃ³nÃ¡l az eladÃ¡si, vevÅ‘nÃ©l a vÃ©teli dÃ¡tumot,
+    -lÃ©trehozzuk a tÃ¡rsashÃ¡zban ugyanarra az albetÃ©tre a vevÅ‘ adatait
     
     def str_to_date(str_date):
             szeletelt=str_date.split("-")
@@ -1028,7 +1020,7 @@ class tarh_lakaselad(osv.osv):
 
 
             '''
-            a megadott dátumnál megkeresi a hónap utolsó napjának dátumát
+            a megadott dÃ¡tumnÃ¡l megkeresi a hÃ³nap utolsÃ³ napjÃ¡nak dÃ¡tumÃ¡t
             '''
 
             def honap_utolsonap (self, datum):
@@ -1086,10 +1078,10 @@ class tarh_lakaselad(osv.osv):
             vevo_id = _res_partner.create(cr, uid, vevo_adatai, context=None)
             # print vevo_id
             '''
-            - meg kell keresni a tarh.eloiras.lako tablaban az eladó elõírásait,
+            - meg kell keresni a tarh.eloiras.lako tablaban az eladÃ³ elÅ‘Ã­rÃ¡sait,
 
-            ( ha az eladási dátum kisebb mint az elõírás vége akkor) be kell állítani az elõírás végének az eladási dátumot.
-            - generálni kell az új tulajdonos részére ugyanezeket az elõírásokat, a vételi dátum kezdettel
+            ( ha az eladÃ¡si dÃ¡tum kisebb mint az elÅ‘Ã­rÃ¡s vÃ©ge akkor) be kell Ã¡llÃ­tani az elÅ‘Ã­rÃ¡s vÃ©gÃ©nek az eladÃ¡si dÃ¡tumot.
+            - generÃ¡lni kell az Ãºj tulajdonos rÃ©szÃ©re ugyanezeket az elÅ‘Ã­rÃ¡sokat, a vÃ©teli dÃ¡tum kezdettel
 
             '''
             if vevo_id:
@@ -1103,7 +1095,7 @@ class tarh_lakaselad(osv.osv):
                     # ha az eloiras vege nagyobb mint a vetel datuma
                     if str_to_date(ela_eloir.eloir_vege) > vetel_datum:
                         vevo_eloiras_adatai['lako'] = vevo_id
-                        '''Ha az elõírás kezdete késõbbi mint a vételi dátum akkor a régi elõírás kezdete megmarad!'''
+                        '''Ha az elÅ‘Ã­rÃ¡s kezdete kÃ©sÅ‘bbi mint a vÃ©teli dÃ¡tum akkor a rÃ©gi elÅ‘Ã­rÃ¡s kezdete megmarad!'''
                         if str_to_date(ela_eloir.eloir_kezd) < vetel_datum:
                             vevo_eloiras_adatai['eloir_kezd'] = vetel_datum
                         vevo_eloiras_id = _tarh_eloiras_lako.create(cr, uid, vevo_eloiras_adatai, context=None)
@@ -1112,8 +1104,8 @@ class tarh_lakaselad(osv.osv):
                         elado_eloiras_valtozas['eloir_vege'] = eladas_datum
                     sikeres = _tarh_eloiras_lako.write(cr, uid, ela_eloir.id, elado_eloiras_valtozas, context=None)
                 '''
-                - meg kell nézni, hogy a tarh.lakoeloir.havi táblában eladás utáni dátummal a régi lakó már ne szerepeljen,
-                - az eladás dátuma utáni összes hónap elõírását töröljük a havi elõírások közül
+                - meg kell nÃ©zni, hogy a tarh.lakoeloir.havi tÃ¡blÃ¡ban eladÃ¡s utÃ¡ni dÃ¡tummal a rÃ©gi lakÃ³ mÃ¡r ne szerepeljen,
+                - az eladÃ¡s dÃ¡tuma utÃ¡ni Ã¶sszes hÃ³nap elÅ‘Ã­rÃ¡sÃ¡t tÃ¶rÃ¶ljÃ¼k a havi elÅ‘Ã­rÃ¡sok kÃ¶zÃ¼l
                 '''
                 elado_havi_eloirasai = _tarh_lakoeloir_havi.search(cr, uid, [('lako', '=', elado)], context=None)
                 for sorszam in elado_havi_eloirasai:
@@ -1122,31 +1114,31 @@ class tarh_lakaselad(osv.osv):
                         ev = ela_havi_eloir.ev
                         honap = ela_havi_eloir.honap
                         eloiras_honapja = honap_utolsonap(self, date(ev, honap, 1))
-                        '''nem értem hogy az eladás dátuma mi a picsáért string és nem date!!!'''
+                        '''nem Ã©rtem hogy az eladÃ¡s dÃ¡tuma mi a picsÃ¡Ã©rt string Ã©s nem date!!!'''
 
                         if eloiras_honapja > eladas_datum:
-                            '''törölni kell a havi elõírás táblájából'''
+                            '''tÃ¶rÃ¶lni kell a havi elÅ‘Ã­rÃ¡s tÃ¡blÃ¡jÃ¡bÃ³l'''
                             igaze = _tarh_lakoeloir_havi.unlink(cr, uid, ela_havi_eloir.id, context=None)
 
                 '''
-                - a vevõ oldaláról meg kell nézni, hogy a vétel utáni idõpontokban hány havi bejegyzés van már a havi
-                  elõírások között, a vevõ elõírásai szerepelnek-e már, ha nem akkor be kell rögzítenünk.
+                - a vevÅ‘ oldalÃ¡rÃ³l meg kell nÃ©zni, hogy a vÃ©tel utÃ¡ni idÅ‘pontokban hÃ¡ny havi bejegyzÃ©s van mÃ¡r a havi
+                  elÅ‘Ã­rÃ¡sok kÃ¶zÃ¶tt, a vevÅ‘ elÅ‘Ã­rÃ¡sai szerepelnek-e mÃ¡r, ha nem akkor be kell rÃ¶gzÃ­tenÃ¼nk.
                 '''
 
                 ev = vetel_datum.year
                 honap = vetel_datum.month
-                '''amikor az aktuáTODO  be kell majd állítania vevõ vételkori tartozást a tulajdonosok nyitóegyenlege
-                táblában nulláralis hónapra már van bármilyen elõírás akkor elõírjuk a vevõnek is a havit. '''
+                '''amikor az aktuÃ¡TODO  be kell majd Ã¡llÃ­tania vevÅ‘ vÃ©telkori tartozÃ¡st a tulajdonosok nyitÃ³egyenlege
+                tÃ¡blÃ¡ban nullÃ¡ralis hÃ³napra mÃ¡r van bÃ¡rmilyen elÅ‘Ã­rÃ¡s akkor elÅ‘Ã­rjuk a vevÅ‘nek is a havit. '''
                 darab = _tarh_lakoeloir_havi.search(cr, uid, [('ev', '=', ev), ('honap', '=', honap)], limit=5,
                                                     context=None, count=True)
                 while darab > 0:
                     most_datum = honap_utolsonap(self, date(ev, honap, 1))
-                    '''van már a hónapra elõírás, megnézzük,hogy van e már a vevõre elõírás'''
+                    '''van mÃ¡r a hÃ³napra elÅ‘Ã­rÃ¡s, megnÃ©zzÃ¼k,hogy van e mÃ¡r a vevÅ‘re elÅ‘Ã­rÃ¡s'''
                     vevo_van_e = _tarh_lakoeloir_havi.search(cr, uid, [('ev', '=', ev), ('honap', '=', honap),
                                                                        ('lako', '=', vevo_id)], context=None, count=True)
                     if vevo_van_e == 0:
-                        '''nincs még havi elõírás a vevõre, így akkor elõírjuk
-                        de csak akkor, ha az elõírás dátuma passzol a beírandó dátumhoz'''
+                        '''nincs mÃ©g havi elÅ‘Ã­rÃ¡s a vevÅ‘re, Ã­gy akkor elÅ‘Ã­rjuk
+                        de csak akkor, ha az elÅ‘Ã­rÃ¡s dÃ¡tuma passzol a beÃ­randÃ³ dÃ¡tumhoz'''
                         eloiras_sorszamok = _tarh_eloiras_lako.search(cr, uid, [('lako', '=', vevo_id)], context=None)
                         for sorszam in eloiras_sorszamok:
                             egy_eloiras = _tarh_eloiras_lako.browse(cr, uid, sorszam, context=None)
@@ -1166,7 +1158,7 @@ class tarh_lakaselad(osv.osv):
                                     kiirt_id = _tarh_lakoeloir_havi.create(cr, uid, eredmeny, context=None)
                                     print kiirt_id
 
-                    ''' növeli egyel év-hónap'''
+                    ''' nÃ¶veli egyel Ã©v-hÃ³nap'''
                     if honap == 12:
                         honap = 1
                         ev = ev + 1
@@ -1175,9 +1167,9 @@ class tarh_lakaselad(osv.osv):
                     darab = _tarh_lakoeloir_havi.search(cr, uid, [('ev', '=', ev), ('honap', '=', honap)], limit=5,
                                                         context=None, count=True)
                     print darab
-                    '''itt a while vége'''
+                    '''itt a while vÃ©ge'''
 
-                '''létrehoznunk a vétel dátumára a vevõnek egy nullás nyitóegyenleget!'''
+                '''lÃ©trehoznunk a vÃ©tel dÃ¡tumÃ¡ra a vevÅ‘nek egy nullÃ¡s nyitÃ³egyenleget!'''
                 _nyitoegyenleg=self.pool.get('tarh.lako.nyito')
                 nyito_adatok = {
                     'tarh_lako':vevo_id,
@@ -1190,7 +1182,7 @@ class tarh_lakaselad(osv.osv):
                 elado_valtozas['alb_eladas'] = eladas_datum
                 elado_valtozas['active'] = False
                 sikeres = _res_partner.write(cr, uid, elado, elado_valtozas, context=None)
-        self.write(cr,uid,ids,{'nyitott':False}) # ezt jól beállítjuk, hogy ne lehessen mégegyszer eladni!
+        self.write(cr,uid,ids,{'nyitott':False}) # ezt jÃ³l beÃ¡llÃ­tjuk, hogy ne lehessen mÃ©gegyszer eladni!
         return
 
 
@@ -1202,7 +1194,7 @@ class my_report(osv.osv):
     _auto = False
     _columns = {
         'th_szamlatul': fields.many2one('res.partner', 'Tarsashaz', readonly=True,\
-                                        domain="[('is_company','=', True),('name','ilike','rsash')]"),
+                                        domain="[('is_company','=', True),('name','ilike','tÃ¡rsashÃ¡z')]"),
         'erteknap': fields.date('Konyveles napja', readonly=True),
         'partner': fields.many2one('res.partner', 'partner', readonly=True),
         'jovairas': fields.integer('Jovairas', readonly=True),
@@ -1251,22 +1243,22 @@ class tarh_haz_havijel(osv.osv):
           'bankszamla_thaz':fields.many2one('res.partner.bank', 'Bankszamla tarsashaz')
                 }
     '''
-    A következõ eljárásban a tranzakciók alapján csoportosítjuk a könyvelt bankszámlák sorait,
-    a kezdõ- és végdátum között, a megadott társasház minden bankszámlájára.
-    Ezeket a sorokat beírjuk a tarh_haz_havijel táblába, amelybõl így majd tudunk már aeroo reportot csinálni
+    A kÃ¶vetkezÅ‘ eljÃ¡rÃ¡sban a tranzakciÃ³k alapjÃ¡n csoportosÃ­tjuk a kÃ¶nyvelt bankszÃ¡mlÃ¡k sorait,
+    a kezdÅ‘- Ã©s vÃ©gdÃ¡tum kÃ¶zÃ¶tt, a megadott tÃ¡rsashÃ¡z minden bankszÃ¡mlÃ¡jÃ¡ra.
+    Ezeket a sorokat beÃ­rjuk a tarh_haz_havijel tÃ¡blÃ¡ba, amelybÅ‘l Ã­gy majd tudunk mÃ¡r aeroo reportot csinÃ¡lni
     '''
     def havijel_beir(self,cr,uid,ids,context):
-        '''az aktuális rekordon kívül töröljük az táblából a többi régi rekordot'''
+        '''az aktuÃ¡lis rekordon kÃ­vÃ¼l tÃ¶rÃ¶ljÃ¼k az tÃ¡blÃ¡bÃ³l a tÃ¶bbi rÃ©gi rekordot'''
         sajat_id=self.browse(cr, uid, ids, context=None).id
         torlendok=self.search(cr,uid,[('id','!=',sajat_id)])
         self.unlink(cr, uid, torlendok, context=None)
-        '''kiolvassuk a lapról az idõszakokat, a listázandó társasházat és a bankszámlát'''
+        '''kiolvassuk a laprÃ³l az idÅ‘szakokat, a listÃ¡zandÃ³ tÃ¡rsashÃ¡zat Ã©s a bankszÃ¡mlÃ¡t'''
         _kezdatum=self.browse(cr,uid,ids,context=None).kezdatum
         _vegdatum=self.browse(cr,uid,ids,context=None).vegdatum
         _szamlatul=self.browse(cr,uid,ids,context=None).th_szamlatul.id
         _bankszamla=self.browse(cr,uid,ids,context=None).bankszamla_thaz.id
-        '''Tranzakciónként összeadjuk a tranzakciófajtákat a megadott társasház megadott 
-           bankszámlájának megadott idõintervallumában és beleírjuk a táblába''' 
+        '''TranzakciÃ³nkÃ©nt Ã¶sszeadjuk a tranzakciÃ³fajtÃ¡kat a megadott tÃ¡rsashÃ¡z megadott 
+           bankszÃ¡mlÃ¡jÃ¡nak megadott idÅ‘intervallumÃ¡ban Ã©s beleÃ­rjuk a tÃ¡blÃ¡ba''' 
         conn_str="select sum(terheles) as terheles, sum(my_report.jovairas) as jovairas, tarh_tranzakcio as tarh_tranzakcio_id"\
         " from my_report join tarh_tranzakcio on tarh_tranzakcio=tarh_tranzakcio.id where th_szamlatul="+str(_szamlatul)+""\
         " and erteknap between '"+_kezdatum+"' and '"+_vegdatum+"' and bankszamla_thaz="+str(_bankszamla)+" group by tarh_tranzakcio"
@@ -1283,7 +1275,7 @@ class tarh_haz_havijel(osv.osv):
             kiirando['tarh_tranzakcio']=row['tarh_tranzakcio_id']
             kiirando['bankszamla_thaz']=_bankszamla
             self.create(cr,uid,kiirando,context=None)
-        '''töröljük a rekordot, amivel létrehoztuk az egészet '''
+        '''tÃ¶rÃ¶ljÃ¼k a rekordot, amivel lÃ©trehoztuk az egÃ©szet '''
         self.unlink(cr, uid, sajat_id, context=None)
         return
     
@@ -1322,8 +1314,8 @@ class tarh_lako_havijel(osv.osv):
                                                                                   context=None).acc_number
         return {'value': eredmeny}
 
-    '''Ebben az eljárásban a lakó idõszakra vonatkozó elszámolását tudjuk megtekinteni a kezdatum és
-    vegdatum között kilistázzuk az adott idõszakra vonatkozó elõírásokat és a megtörtént befizetéseket.'''
+    '''Ebben az eljÃ¡rÃ¡sban a lakÃ³ idÅ‘szakra vonatkozÃ³ elszÃ¡molÃ¡sÃ¡t tudjuk megtekinteni a kezdatum Ã©s
+    vegdatum kÃ¶zÃ¶tt kilistÃ¡zzuk az adott idÅ‘szakra vonatkozÃ³ elÅ‘Ã­rÃ¡sokat Ã©s a megtÃ¶rtÃ©nt befizetÃ©seket.'''
 
     def lako_havijel_beir (self, cr, uid, ids, context=None):
 
@@ -1361,25 +1353,25 @@ class tarh_lako_havijel(osv.osv):
                 if datum < _nyito_datum_date:
                     datum = _nyito_datum_date
                 eredmeny = [datum, _nyito_osszeg, '']
-            else:  # nincs nyitoegyenleg rögzitve
-                eredmeny = [datum, 0, 'Nincs a lakóhoz nyitóegyenleg rögzítve!!!']
+            else:  # nincs nyitoegyenleg rÃ¶gzitve
+                eredmeny = [datum, 0, 'Nincs a lakÃ³hoz nyitÃ³egyenleg rÃ¶gzÃ­tve!!!']
             return (eredmeny)
 
         sajat_id = self.browse(cr, uid, ids, context=None).id
 
-        '''az aktuális rekordon kívül töröljük az táblából a többi régi rekordot
+        '''az aktuÃ¡lis rekordon kÃ­vÃ¼l tÃ¶rÃ¶ljÃ¼k az tÃ¡blÃ¡bÃ³l a tÃ¶bbi rÃ©gi rekordot
         torlendok=self.search(cr,uid,[('id','!=',sajat_id)])
         self.unlink(cr, uid, torlendok, context=None)
                 
-        NEM TÖRÖLJÜK MERT HA EGYSZERRE KÉT ADATLEKÉRDEZÉS FOLYIK, AKKOR EGYIK LETÖRÖLHETI A MÁSIKÉT
+        NEM TÃ–RÃ–LJÃœK MERT HA EGYSZERRE KÃ‰T ADATLEKÃ‰RDEZÃ‰S FOLYIK, AKKOR EGYIK LETÃ–RÃ–LHETI A MÃSIKÃ‰T
     
-        De letöröljük a sorokat amelyek ehhez a lekérdezéshez tartoznak'''
+        De letÃ¶rÃ¶ljÃ¼k a sorokat amelyek ehhez a lekÃ©rdezÃ©shez tartoznak'''
 
         _havijel_sor_hiv = self.pool.get('tarh.lako.havijel.sor')
         torleno_sorok = _havijel_sor_hiv.search(cr, uid, [('havijel_id', '=', sajat_id)], context=None)
         _havijel_sor_hiv.unlink(cr, uid, torleno_sorok, context=None)
 
-        '''Beolvassuk a lapról a kezdõ és végdátumot, valamint a lakót, kiolvassuk a nyitógyenleg összegét és a dátumát'''
+        '''Beolvassuk a laprÃ³l a kezdÅ‘ Ã©s vÃ©gdÃ¡tumot, valamint a lakÃ³t, kiolvassuk a nyitÃ³gyenleg Ã¶sszegÃ©t Ã©s a dÃ¡tumÃ¡t'''
 
         _kezdatum = str_to_date(self.browse(cr, uid, ids, context=None).kezdatum)  # lekerdezes kezdete
         _vegdatum = str_to_date(self.browse(cr, uid, ids, context=None).vegdatum)  # lekerdezes vege
@@ -1391,7 +1383,7 @@ class tarh_lako_havijel(osv.osv):
 
         if len(nyitoegy[2]) == 0:  # nincs szoveg ,tehat volt nyitoegyenleg!
             kiirando['erteknap'] = nyitoegy[0]
-            kiirando['szoveg'] = 'Nyitóegyenleg'
+            kiirando['szoveg'] = 'NyitÃ³egyenleg'
             kiirando['eloiras'] = 0
             kiirando['befizetes'] = nyitoegy[1]
             kiirando['havijel_id'] = sajat_id
@@ -1440,35 +1432,35 @@ class tarh_lako_havijel(osv.osv):
                 id_je = _havijel_sor_hiv.create(cr, uid, kiirando, context=None)
 
             kiirando['erteknap'] = _vegdatum
-            kiirando['szoveg'] = 'Aktuális egyenleg'
+            kiirando['szoveg'] = 'AktuÃ¡lis egyenleg'
             kiirando['eloiras'] = 0
             kiirando['befizetes'] = szumma
             kiirando['havijel_id'] = sajat_id
             id_je = _havijel_sor_hiv.create(cr, uid, kiirando, context=None)
         else:
             kiirando['erteknap'] = _vegdatum
-            kiirando['szoveg'] = 'Nincs az idõpontra rögzített adat!!!'
+            kiirando['szoveg'] = 'Nincs az idÅ‘pontra rÃ¶gzÃ­tett adat!!!'
             kiirando['eloiras'] = 0
             kiirando['befizetes'] = 0
             kiirando['havijel_id'] = sajat_id
             id_je = _havijel_sor_hiv.create(cr, uid, kiirando, context=None)
 
-        '''töröljük a rekordot, amivel létrehoztuk az egészet'''
+        '''tÃ¶rÃ¶ljÃ¼k a rekordot, amivel lÃ©trehoztuk az egÃ©szet'''
         #        self.unlink(cr, uid, sajat_id, context=None)
 
         return self.write(cr,uid,ids,{'lekerdatum':date.today()})
 
     def onchange_tul (self, cr, uid, ids, lako, kezdatum, vegdatum, context=None):
         '''
-        megkeresi, hogy a lako melyik társasházhoz tartozik,
-        ha a lakó nyitóegyenlege késõbbi mint a kezdatum akkor módosítja azt,
-        ha a vegdatum késõbbi mint a társasház utolsó könyvelt dátuma, akkor módosítja azt
+        megkeresi, hogy a lako melyik tÃ¡rsashÃ¡zhoz tartozik,
+        ha a lakÃ³ nyitÃ³egyenlege kÃ©sÅ‘bbi mint a kezdatum akkor mÃ³dosÃ­tja azt,
+        ha a vegdatum kÃ©sÅ‘bbi mint a tÃ¡rsashÃ¡z utolsÃ³ kÃ¶nyvelt dÃ¡tuma, akkor mÃ³dosÃ­tja azt
         :param cr:
         :param uid:
         :param ids:
         :param lako: tulajdonos
-        :param kezdatum: eredetileg bevitt kezdõdátum
-        :param vegdatum: eredetileg bevitt záródátum
+        :param kezdatum: eredetileg bevitt kezdÅ‘dÃ¡tum
+        :param vegdatum: eredetileg bevitt zÃ¡rÃ³dÃ¡tum
         :param context:
         :return:
         '''
@@ -1530,7 +1522,7 @@ phonecall_to_task()
 """
 NAGY TODO LISTA
 
-Meg kell csinálni, hogyha a bankbizonylaton utólag állítják át a dátumot, akkor írja át a hozzátartozó sorokon is!
+Meg kell csinÃ¡lni, hogyha a bankbizonylaton utÃ³lag Ã¡llÃ­tjÃ¡k Ã¡t a dÃ¡tumot, akkor Ã­rja Ã¡t a hozzÃ¡tartozÃ³ sorokon is!
 
 
 
@@ -1591,6 +1583,6 @@ class warning(osv.osv_memory):
     
 #    def uzenet_feldob(self,cr,uid, ids, context=None):
 #        valami = self.pool.get('warning')
-#        ktya = valami.info(cr, uid, title='Export information', message="valami stirng Å‘itt van")
+#        ktya = valami.info(cr, uid, title='Export information', message="valami stirng Ä¹Â‘itt van")
 #        return ktya
 """
