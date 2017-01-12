@@ -9,6 +9,10 @@ from datetime import date, time, datetime, timedelta
 from openerp.tools.translate import _
 from openerp import tools
 from seged import *
+import sys
+
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 class tarh_bankbiz(osv.osv):
     _name = "tarh.bankbiz"
