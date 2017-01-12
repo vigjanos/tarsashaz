@@ -7,6 +7,9 @@
             <field name="arch" type="xml">
                 <form string="">
                     <sheet>
+                        <h1>
+                            <label string="Tulajdonosi folyószámla"/>
+                        </h1>
                         <group>
                             <field name="tulaj"/>
                             <field name="kezdatum"/>
@@ -68,7 +71,7 @@
                   sequence="50"/>
 
         <!-- This Menu Item Must have a parent -->
-        <menuitem id="UNIQUE_ID2_categ" name="Havijelentés" parent="UNIQUE_ID_categ" action="havijel2_action"
+        <menuitem id="UNIQUE_ID2_categ" name="Tulajdonos folyószámlája" parent="UNIQUE_ID_categ" action="havijel2_action"
                   sequence="20"/>
 
     </data>

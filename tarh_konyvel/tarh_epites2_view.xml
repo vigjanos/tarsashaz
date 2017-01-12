@@ -9,6 +9,9 @@
             <field name="arch" type="xml">
                 <form string="">
                     <sheet>
+                        <h1>
+                            <label string="Egy tranzakciófajta időszaki lekérdezése"/>
+                        </h1>
                         <group colspan="4">
                             <field name="tarsashaz" domain="[('name','ilike','rsash')]"/>
                             <field name="kezdatum"/>

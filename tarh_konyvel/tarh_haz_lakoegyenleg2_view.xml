@@ -7,6 +7,9 @@
             <field name="arch" type="xml">
                 <form string="">
                     <sheet>
+                        <h1>
+                            <label string="A ház tulajdonosainak egyenlege"/>
+                        </h1>
                         <group>
                             <group colspan="4">
                                 <field name="tarsashaz"/>
@@ -70,7 +73,7 @@
             <field name="view_id" ref="tarh_haz_lakoegyenleg2_view"/>
         </record>
 
-        <menuitem id="UNIQUE_ID2_categ3" name="Ház tulajdonosi egyenlegek" parent="UNIQUE_ID_categ"
+        <menuitem id="UNIQUE_ID2_categ3" name="Egy ház összes tulajdonosi egyenlege" parent="UNIQUE_ID_categ"
                   action="tarh_haz_lakoegyenleg2_action" sequence="27"/>
 
     </data>
