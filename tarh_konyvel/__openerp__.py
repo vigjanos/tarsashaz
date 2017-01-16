@@ -38,6 +38,7 @@
             'tarh_haz_lakoegyenleg_report2.xml',
             'tarh_epites2_view.xml',
             'tarh_epites2_report.xml',
+            'tarh_lako_eves2_view.xml',
             ],
     'installable': True,
   
