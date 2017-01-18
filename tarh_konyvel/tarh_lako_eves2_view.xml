@@ -27,9 +27,9 @@
                                     <field name="tulaj_id">
                                         <tree string="">
                                             <field name="tulajdonos"/>
+                                            <field name="eloiras_id"/>
                                         </tree>
                                     </field>
-
                                 </page>
                             </notebook>
                         </group>
@@ -50,9 +50,6 @@
         <menuitem id="UNIQUE_ID2_eves" name="Társasház összes lakó folyószámla" parent="UNIQUE_ID_categ"
                   action="tarh_lako_eves2_action"
                   sequence="27"/>
-
-        -->
-
 
     </data>
 </openerp>
