@@ -39,6 +39,21 @@
         </record>
 
 
+        <record id="view_tarh_lako_eves2_tree" model="ir.ui.view">
+            <field name="name">tarh.lako.eves2.tree</field>
+            <field name="model">tarh.lako.eves2</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Társasházak">
+                    <field name="tarsashaz"/>
+                    <field name="kezdatum"/>
+                    <field name="vegdatum"/>
+                    <field name="create_uid"/>
+                </tree>
+            </field>
+        </record>
+
+
         <record id="tarh_lako_eves2_action" model="ir.actions.act_window">
             <field name="name">tarh_lako_eves2</field>
             <field name="type">ir.actions.act_window</field>
@@ -47,7 +62,7 @@
             <field name="view_id" ref="tarh_lako_eves2_form"/>
         </record>
 
-        <menuitem id="UNIQUE_ID2_eves" name="Társasház összes lakó folyószámla" parent="UNIQUE_ID_categ"
+        <menuitem id="UNIQUE_ID2_eves" name="FOLYÓSZÁMLA egy társasház összes tulajdonos" parent="UNIQUE_ID_categ"
                   action="tarh_lako_eves2_action"
                   sequence="27"/>
 

@@ -73,7 +73,7 @@
             <field name="view_id" ref="tarh_haz_lakoegyenleg2_view"/>
         </record>
 
-        <menuitem id="UNIQUE_ID2_categ3" name="Egy ház összes tulajdonosi egyenlege" parent="UNIQUE_ID_categ"
+        <menuitem id="UNIQUE_ID2_categ3" name="EGYENLEGEK egy társasház összes tulajdonos" parent="UNIQUE_ID_categ"
                   action="tarh_haz_lakoegyenleg2_action" sequence="27"/>
 
     </data>

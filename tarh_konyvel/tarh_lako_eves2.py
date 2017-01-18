@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 '''
 create by vigjanos on 2017.01.12.
+Az eljárás lekérdezi a megadott társasház záróidőpontban aktív tulajdonosainak folyószámláját
+a kezdeti és záró időpontok között és kinyomtatja tulajdonosonként
+Alapból a kezdő dátumnak a tavalyi év január 01-et állítja be
+Végdátumnak az utolsó könyvet dátumot, de ha az már idei, akkor az
+előző év december 31-et.
 '''
 
 from openerp import models, fields, api, exceptions, _
-from seged3 import utolso_konyvelt_datum,lakolista,tulajegyenleg
+from seged3 import utolso_konyvelt_datum,lakolista,tulajegyenleg,str_to_date
 from datetime import date
-
 
 
 class tarh_lako_eves2(models.Model):
@@ -15,7 +19,7 @@ class tarh_lako_eves2(models.Model):
     kezdatum = fields.Date('Kezdő dátum')
     vegdatum = fields.Date('Záró dátum', default='2016-12-31')
     tarsashaz = fields.Many2one('res.partner',
-                                string='Társasház',
+                                string='Társasház', required=True,
                                 domain=[('is_company', '=', True), ('name', 'ilike', 'társasház')])
     bank = fields.Char('Bank', size=64)
     tulaj_id = fields.One2many('tarh.lako.eves2.tulaj', 'tarsashaz_id')
@@ -26,8 +30,12 @@ class tarh_lako_eves2(models.Model):
         self.bank = self.tarsashaz.uzemeltetesi
         most = date.today()
         self.kezdatum = date(most.year - 1, 1, 1)
-        if self.tarsashaz:
-            self.vegdatum = utolso_konyvelt_datum(self, self.tarsashaz.id)
+        if self.tarsashaz:  # hogy első hívásnál ne dobjon hibát
+            uts_konyv_dat= str_to_date(utolso_konyvelt_datum(self, self.tarsashaz.id))
+            if uts_konyv_dat > date(most.year-1,12,31):
+                self.vegdatum = date(most.year-1,12,31)
+            else:
+                self.vegdatum = uts_konyv_dat
         return
 
     @api.multi
@@ -35,6 +43,9 @@ class tarh_lako_eves2(models.Model):
         _kezdatum = self.kezdatum
         _vegdatum = self.vegdatum
         _tarsashaz = self.tarsashaz.id
+
+        if _kezdatum > _vegdatum:
+            raise exceptions.ValidationError(_("A befejező időpont nem lehet korábbi mint a kezdő időpont!!!"))
 
         _sajat_id = self.id
         _res_partner_hivatkozas = self.env['res.partner']
@@ -48,6 +59,7 @@ class tarh_lako_eves2(models.Model):
 
         tulajlista = lakolista(self,_vegdatum,_tarsashaz)
         for tulaj in tulajlista:
+            tul_datum=_kezdatum
             tulajdonos = _res_partner_hivatkozas.search([('id', '=', tulaj)])
             most_rogzitve = _tulajdonos_hivatkozas.create({
                 'tulajdonos' : tulajdonos.id,
@@ -59,15 +71,13 @@ class tarh_lako_eves2(models.Model):
 
             if _nyito_record:  # van nyitóegyenleg!
                 # dátumok vizsgálata
-                if _kezdatum < _nyito_record[0].egyenleg_datuma:
-                    _kezdatum = _nyito_record[0].egyenleg_datuma
+                if tul_datum < _nyito_record[0].egyenleg_datuma:
+                    tul_datum = _nyito_record[0].egyenleg_datuma
 
                 if _vegdatum < _nyito_record[0].egyenleg_datuma:
                     raise exceptions.ValidationError(_("Az időszakban még nem volt tulajdonban az ingatlant!"))
 
-                # kezdo_lekerdezes = lakoegyenleg3(self, self.env.cr, self.env.uid, _tulaj, _kezdatum)
-                # befejezo_lekerdezes = lakoegyenleg3(self, self.env.cr, self.env.uid, _tulaj, _vegdatum)
-                kezdo_lekerdezes = tulajegyenleg(self, tulaj, _kezdatum)
+                kezdo_lekerdezes = tulajegyenleg(self, tulaj, tul_datum)
                 befejezo_lekerdezes = tulajegyenleg(self, tulaj, _vegdatum)
 
                 # ha már volt ezzel a táblával lekérdezés, akkor töröljük a sorokat
@@ -86,7 +96,7 @@ class tarh_lako_eves2(models.Model):
 
                 # először kiírjuk a nyitóegyenleget a sorba
                 _tulajdonos_sor_hivatkozas.create({
-                    'erteknap': _kezdatum,
+                    'erteknap': tul_datum,
                     'szoveg': "Nyitóegyenleg",
                     'eloiras': 0,
                     'befizetes': kezdo_lekerdezes[0],
@@ -124,15 +134,13 @@ class tarh_lako_eves2(models.Model):
             else:
                 raise exceptions.ValidationError(_("Figyelem!!! Nincs nyitóegyenlege " + tulajdonos.name + " tulajdonosnak!"))
 
-
-
         return {
             'type': 'ir.actions.client',
             'tag': 'action_warn',
             'name': 'Semmi',
             'params': {
                 'title': 'Figyelem',
-                'text': 'megnyomtad a gombot!!!' ,
+                'text': 'A leválogatás elkészült!!!',
                 'sticky': False
             }
         }

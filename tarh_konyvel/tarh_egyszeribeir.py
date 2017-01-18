@@ -75,7 +75,7 @@ class tarh_egyszeribeir(osv.osv):
                         'params': {
                             'title': 'Figyelem',
                             'text': 'A bejegyzés sikeresen megtörtént!!!',
-                            'sticky': True
+                            'sticky': False
                         }
                     }
 
@@ -143,7 +143,7 @@ class tarh_egyszeribeir(osv.osv):
                     'params': {
                         'title': 'Figyelem!',
                         'text': 'A bejegyzés törlésre került!!',
-                        'sticky': True
+                        'sticky': False
                     }
                 }
             elif hiba1 != '' or hiba2 != '':
@@ -159,7 +159,7 @@ class tarh_egyszeribeir(osv.osv):
                     'params': {
                         'title': 'Figyelem!',
                         'text': hiba1 + hiba2 + ' Amit találtam, töröltem!',
-                        'sticky': True
+                        'sticky': False
                     }
                 }
 
