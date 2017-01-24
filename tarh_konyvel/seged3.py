@@ -10,13 +10,13 @@ from collections import defaultdict
 import time
 
 
-def str_to_date(str_date):
+def str_to_date (str_date):
     '''string alakú dátumot date formátumra alakít'''
     szeletelt = str_date.split("-")
     return (date(int(szeletelt[0]), int(szeletelt[1]), int(szeletelt[2])))
 
 
-def honap_utolsonap(datum):
+def honap_utolsonap (datum):
     ev = datum.year
     honap = datum.month
     nap = datum.day
@@ -31,7 +31,7 @@ def honap_utolsonap(datum):
     return ujdatum
 
 
-def add_month(ev, honap):
+def add_month (ev, honap):
     if honap == 12:
         honap = 1
         ev = ev + 1
@@ -40,7 +40,7 @@ def add_month(ev, honap):
     return (ev, honap)
 
 
-def tulajegyenleg(self, lako, datum):
+def tulajegyenleg (self, lako, datum):
     ''' kiszámolja, hogy a lako tulajdonosnak a datum időpontban mennyi az egyenlege a nyitóegyenleg felvitele
             óta, ezt az eredményt listában adjuk vissza:
             - egyenleg a datum napon,
@@ -116,7 +116,7 @@ def tulajegyenleg(self, lako, datum):
             befizetes_list.append((str_to_date(befizetes.erteknap), befizetes.tarh_tranzakcio.name,
                                    befizetes.jovairas - befizetes.terheles))
 
-        def napi_egyenleg(idopont):
+        def napi_egyenleg (idopont):
             # a nyitó, az előiras és a befizetes, alapján kiszámolja, hogy aznap mennyi az egyenleg
             # ami a kamatszámításhoz kell majd
             if type(idopont) != date:
@@ -144,7 +144,6 @@ def tulajegyenleg(self, lako, datum):
             [('konyvelt_haz', '=', tarsashaz), ('eloirfajta.name', 'ilike', 'kamat'),
              ('eloir_kezd', '<', datum)])
 
-
         if kesedelem_eloirasok:
             kamat_kezdete = str_to_date(kesedelem_eloirasok[0].eloir_kezd)  # a legkorábbi kamatelőírás
             if kamat_kezdete < datum:
@@ -152,10 +151,10 @@ def tulajegyenleg(self, lako, datum):
                 szamlalo = kamat_kezdete
                 while szamlalo <= datum:
                     npi_egyenleg = napi_egyenleg(szamlalo)
-                    if npi_egyenleg[0] < 0: #tartozás van!
-                        kesedelmi_kamat = kesedelmi_kamat + float(npi_egyenleg[1])/100/365 * npi_egyenleg[0]
+                    if npi_egyenleg[0] < 0:  # tartozás van!
+                        kesedelmi_kamat = kesedelmi_kamat + float(npi_egyenleg[1]) / 100 / 365 * npi_egyenleg[0]
                     szamlalo = szamlalo + timedelta(days=1)
-                kesedelmi_kamat = int(kesedelmi_kamat)* -1
+                kesedelmi_kamat = int(kesedelmi_kamat) * -1
                 eloiras_list.append((datum, 'Késedelmi kamat', kesedelmi_kamat))
 
         egyenleg = nyito_osszege + sum_jovairas - sum_eloiras - kesedelmi_kamat
@@ -172,7 +171,7 @@ def tulajegyenleg(self, lako, datum):
         return (eredmeny)
 
 
-def lakolista(self, datum, tarsashaz):
+def lakolista (self, datum, tarsashaz):
     '''
     megkeressük azokat a lakókat, akik a datum időpontban tulajdonosok: nem adták el korábban a lakást.
     '''
@@ -180,19 +179,28 @@ def lakolista(self, datum, tarsashaz):
     if type(datum) != date:
         datum = str_to_date(datum)
     ref_res_partner = self.env['res.partner']
-    eladottak = ref_res_partner.search([('parent_id', '=', tarsashaz), ('alb_eladas', '<', datum)])
-    eladott_idk = []
+#Elméletileg nem kell,mert az eladottak úgyis active=False és azt nem hozza a ref.search() függvény
+#     eladottak = ref_res_partner.search(
+#        [('parent_id', '=', tarsashaz), '&', ('alb_eladas', '<', datum), '|', ('active', '=', True),
+#         ('active', '=', False)])
+    nem_vettek = ref_res_partner.search([('parent_id', '=', tarsashaz), ('alb_vetel', '>', datum)])
+    nem_tulaj_idk = []
     tulaj_idk = []
-    for eladott in eladottak:
-        eladott_idk.append(eladott.id)
-    tulajdonosok = ref_res_partner.search([('parent_id', '=', tarsashaz), ('supplier', '=', False),
-                                                    ('active', '=', True)]
-                                          , order='alb_szam')
+#    for eladott in eladottak:
+#        nem_tulaj_idk.append(eladott.id)
+    for nem_vett in nem_vettek:
+        nem_tulaj_idk.append(nem_vett.id)
+#    tulajdonosok = ref_res_partner.search(
+#        ['&', ('parent_id', '=', tarsashaz), '|', ('active', '=', True), ('active', '=', False)]
+#        , order='alb_szam')
+    tulajdonosok = ref_res_partner.search([('parent_id', '=', tarsashaz)], order='alb_szam')
+
     for tulaj in tulajdonosok:
         tulaj_idk.append(tulaj.id)
-    for eladva in eladott_idk :
+    for eladva in nem_tulaj_idk:
         tulaj_idk.remove(eladva)  # eltavolitjuk a a tulajdonosok listajabol az eladottakat
     return (tulaj_idk)  # visszaterunk a tulajdonosok listajaval a datum idopontban
+
 
 def havi_fizetendo2 (self, tulajdonos, datum):
     '''
@@ -201,9 +209,9 @@ def havi_fizetendo2 (self, tulajdonos, datum):
     a nélkül is
     '''
     _tarh_eloiras_lako = self.env['tarh.eloiras.lako']
-    #_eloiras_fajta = self.pool.get('eloiras.fajta')
+    # _eloiras_fajta = self.pool.get('eloiras.fajta')
     lako_eloir_id = _tarh_eloiras_lako.search([('lako', '=', tulajdonos)])
-    #lako_eloirasai = _tarh_eloiras_lako.browse(lako_eloir_id)
+    # lako_eloirasai = _tarh_eloiras_lako.browse(lako_eloir_id)
     eloirasai = 0
     for egy_eloiras in lako_eloir_id:
         if datum >= str_to_date(egy_eloiras.eloir_kezd) and datum <= str_to_date(egy_eloiras.eloir_vege):
