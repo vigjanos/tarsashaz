@@ -9,7 +9,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//div[@name='buttons']" position="inside">
                     <button class="oe_inline oe_stat_button" type="action"
-                            name="%(tarh_konyvel.action_tarh_lako_havijel_tree)d"
+                            name="%(tarh_konyvel.havijel2_action_tree)d"
                             icon="fa-tasks"
                             context="{'search_default_tulaj': active_id}">
                         <field  string="Egyenleg" name="egyenleg" widget="statinfo"/>
