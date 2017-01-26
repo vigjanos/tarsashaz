@@ -63,6 +63,7 @@ class tarh_lako_eves2(models.Model):
             tulajdonos = _res_partner_hivatkozas.search([('id', '=', tulaj)])
             most_rogzitve = _tulajdonos_hivatkozas.create({
                 'tulajdonos' : tulajdonos.id,
+                'alb_szam': tulajdonos.alb_szam,
                 'tarsashaz_id' : _sajat_id
             })
             sajat_id=most_rogzitve.id
@@ -150,10 +151,11 @@ class tarh_lako_eves2_tulaj(models.Model):
     _name = 'tarh.lako.eves2.tulaj'
 
     tulajdonos = fields.Many2one('res.partner', string='Tulajdonos')
+    alb_szam = fields.Integer('Albetét szám')
     tarsashaz_id = fields.Many2one('tarh.lako.eves2', string='Társasház', ondelete='cascade')
     eloiras_id = fields.One2many('tarh.lako.eves2.tulaj.sor', 'tul_id')
 
-    _order = 'tulajdonos'
+    _order = 'alb_szam'
 
 
 class tarh_lako_eves2_tulaj_sor(models.Model):
