@@ -4,23 +4,25 @@
 __author__ = 'vigjani'
 
 from openerp.osv import fields, osv
+from openerp import api
 from datetime import date, timedelta, datetime
 from openerp.addons.tarh_konyvel import seged
+from seged3 import tulajegyenleg
 
 
 class tarh_felszol(osv.osv):
     _name = 'tarh.felszol'
 
-    def _egyenleg_szamol (self, cr, uid, ids, field_name, arg, context=None):
-        lako = self.browse(cr, uid, ids, context).tulaj.id
-        _tarh_lako_nyito = self.pool.get('tarh.lako.nyito')
-        talalt_id = _tarh_lako_nyito.search(cr, uid, [('tarh_lako', '=', lako)], context=None)
+    @api.multi
+    def _egyenleg_szamol (self, field_name, arg, context=None):
+        lako = self.tulaj.id
+        _tarh_lako_nyito = self.env['tarh.lako.nyito']
+        talalt_id = _tarh_lako_nyito.search([('tarh_lako', '=', lako)])
         if talalt_id:
-            sajat_id = self.browse(cr, uid, ids, context).id
             datum = date.today()
-            lekerdezes = seged.lakoegyenleg3(self, cr, uid, lako, datum)
+            lekerdezes = tulajegyenleg(self, lako, datum)
             res = {}
-            res[sajat_id] = lekerdezes[0]
+            res[self.id] = lekerdezes[0]
             return res
 
     def _havi_kotelezettseg(self, cr, uid, ids, field_name, arg, context=None):

@@ -52,6 +52,17 @@
             </field>
         </record>
 
+        <record id="tarh_lako_havijel2_search_view" model="ir.ui.view">
+            <field name="name">tarh.lako.havijel2.search</field>
+            <field name="model">tarh.lakohavijel2</field>
+            <field name="arch" type="xml">
+                <search string="tarh_lakohavijel2">
+                    <field name="tulaj"/>
+                    <field name="tarsashaz"/>
+                </search>
+            </field>
+        </record>
+
         <record id="havijel2_action" model="ir.actions.act_window">
             <field name="name">havijel2_action</field>
             <field name="type">ir.actions.act_window</field>
@@ -59,7 +70,15 @@
             <field name="view_type">form</field>
             <field name="view_mode">form,tree</field>
             <field name="view_id" ref="tarh_havijel2"/>
+        </record>
 
+        <record id="havijel2_action_tree" model="ir.actions.act_window">
+            <field name="name">havijel2_action_tree</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.lakohavijel2</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form,tree</field>
+            <field name="view_id" ref="tarh_havijel2_tree"/>
 
         </record>
 
