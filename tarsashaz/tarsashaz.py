@@ -72,6 +72,8 @@ class tul_hanyad(osv.osv):
         'onkormanyzati': 'n',
     }
 
+    _order = 'alb_szam, name'
+
 
 tul_hanyad()
 '''
