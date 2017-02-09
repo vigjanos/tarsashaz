@@ -93,7 +93,11 @@ class tarh_lako_eves2(models.Model):
                 befejezo_befizetes = befejezo_lekerdezes[5]
                 zaro_egyenleg = befejezo_lekerdezes[0]
                 eloiras_lista = list(set(befejezo_eloiras) - set(kezdo_eloiras))
-                befizetes_lista = list(set(befejezo_befizetes) - set(kezdo_befizetes))
+                #befizetes_lista = list(set(befejezo_befizetes) - set(kezdo_befizetes))  a teljesen ugyanolyan sorokat is kiveszi
+                befizetes_lista = []
+                for _befizetes in befejezo_befizetes:
+                    if not _befizetes[0] < str_to_date(_kezdatum):
+                        befizetes_lista.append(_befizetes)
 
                 # először kiírjuk a nyitóegyenleget a sorba
                 _tulajdonos_sor_hivatkozas.create({

@@ -3,7 +3,7 @@
 create by vigjanos on 2016.12.18.
 '''
 
-from seged import *
+from seged3 import *
 from openerp import models, fields, api, exceptions, _
 
 
@@ -35,9 +35,9 @@ class tarh_rendkivuli_lekerdez2(models.Model):
         torlendok = _sor_hivatkozas.search([('lekerdezes_id', '=', _sajat_id)])
         torlendok.unlink()
 
-        tulajdonosok = self.env['res.partner'].search([('parent_id', '=', _tarsashaz), ('active', '=', True)])
-        for _tulaj in tulajdonosok:
-            tulajdonos = _tulaj.id
+        tulajdonosok = lakolista(self,_vegdatum,_tarsashaz)
+        for tulajdonos in tulajdonosok:
+            _tulaj = self.env['res.partner'].search([('id','=',tulajdonos)])
             _tulajdonos_kezdatum = _kezdatum
             _tulajdonos_vegdatum = _vegdatum
             # nyitoegyenleg vizsgálata, ha későbbi mint a kezdatum akkor csak onnan kezdjük lekérdezni
@@ -45,19 +45,26 @@ class tarh_rendkivuli_lekerdez2(models.Model):
             if _tulajdonos_kezdatum < _nyito_record[0].egyenleg_datuma:
                 _tulajdonos_kezdatum = _nyito_record[0].egyenleg_datuma
 
-            kezdo_lekerdezes = lakoegyenleg3(self, self.env.cr, self.env.uid, tulajdonos, _tulajdonos_kezdatum)
-            befejezo_lekerdezes = lakoegyenleg3(self, self.env.cr, self.env.uid, tulajdonos, _tulajdonos_vegdatum)
+            kezdo_lekerdezes = tulajegyenleg(self, tulajdonos, _tulajdonos_kezdatum)
+            befejezo_lekerdezes = tulajegyenleg(self, tulajdonos, _tulajdonos_vegdatum)
 
             # előállítjuk az előírás és befizetés listákat
             sum_eloiras = 0
             sum_befizetes = 0
             kezdo_eloiras = kezdo_lekerdezes[4]
             kezdo_befizetes = kezdo_lekerdezes[5]
+            print _tulaj.name
             befejezo_eloiras = befejezo_lekerdezes[4]
             befejezo_befizetes = befejezo_lekerdezes[5]
             zaro_egyenleg = befejezo_lekerdezes[0]
             eloiras_lista = list(set(befejezo_eloiras) - set(kezdo_eloiras))
-            befizetes_lista = list(set(befejezo_befizetes) - set(kezdo_befizetes))
+            #befizetes_lista = list(set(befejezo_befizetes) - set(kezdo_befizetes))  a teljesen ugyanolyan sorokat is kiveszi
+            befizetes_lista = []
+            for _befizetes in befejezo_befizetes:
+                if not _befizetes[0] < str_to_date(_kezdatum):
+                    befizetes_lista.append(_befizetes)
+
+
             for eloiras in eloiras_lista:
                 if 'endkívüli'.decode('utf-8') in eloiras[1]:
                     sum_eloiras = sum_eloiras + eloiras[2]

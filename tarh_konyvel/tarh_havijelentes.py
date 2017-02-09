@@ -4,7 +4,7 @@ create by vigjanos on 2016.12.15.
 '''
 
 # from seged import *
-from seged3 import tulajegyenleg, utolso_konyvelt_datum
+from seged3 import tulajegyenleg, utolso_konyvelt_datum, str_to_date
 from openerp import models, fields, api, exceptions, _
 from datetime import date
 
@@ -69,7 +69,13 @@ class tarh_lakohavijel2(models.Model):
             befejezo_befizetes = befejezo_lekerdezes[5]
             zaro_egyenleg = befejezo_lekerdezes[0]
             eloiras_lista = list(set(befejezo_eloiras) - set(kezdo_eloiras))
-            befizetes_lista = list(set(befejezo_befizetes) - set(kezdo_befizetes))
+            #befizetes_lista = list(set(befejezo_befizetes) - set(kezdo_befizetes))  a teljesen ugyanolyan sorokat is kiveszi
+            befizetes_lista = []
+            for _befizetes in befejezo_befizetes:
+                if not _befizetes[0] < str_to_date(_kezdatum):
+                    befizetes_lista.append(_befizetes)
+
+
 
             # először kiírjuk a nyitóegyenleget a sorba
             _sor_hivatkozas.create({
