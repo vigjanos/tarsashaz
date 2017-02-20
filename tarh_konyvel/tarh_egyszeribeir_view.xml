@@ -67,6 +67,7 @@
                     <field name="idopont"/>
                     <field name="eloirfajta"/>
                     <field name="osszeg"/>
+                    <field name="create_uid"/>
                 </tree>
             </field>
         </record>

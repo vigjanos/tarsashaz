@@ -9,6 +9,10 @@ from datetime import date, timedelta
 from collections import defaultdict
 import time
 
+class nincsmezo(models.Model):
+    _inherit='project.task'
+    _order = 'date_start desc'
+    # a kezdési dátum szerinti sorrendben mutatja őket, legkésőbbi legelől
 
 def str_to_date (str_date):
     '''string alakú dátumot date formátumra alakít'''
