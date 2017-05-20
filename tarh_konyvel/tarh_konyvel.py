@@ -303,6 +303,7 @@ class tarh_bankbiz_sor(osv.osv):
                 _tarh_eloiras_lako = self.pool.get('tarh.eloiras.lako')
                 _eloiras_fajta = self.pool.get('eloiras.fajta')
                 _res_partner = self.pool.get('res.partner')
+                retStr = _res_partner.browse(cr, uid, tulajdonos, context=context).street2 + '\n'
                 eloirasok = _tarh_eloiras_lako.search(cr, uid,
                                                       ['&', ('lako', '=', tulajdonos), ('eloir_vege', '>=', biz_datum),
                                                        ('eloir_kezd', '<=', biz_datum)], context=context)
