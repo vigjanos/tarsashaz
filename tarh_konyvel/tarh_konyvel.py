@@ -525,246 +525,248 @@ class tarh_eloiras_lako(osv.osv):
                         if aktual_adat.vizora == 'n':
                             _vizora = False
                             keresett = 'nélkül'
-                    for eloir in _eloirasok:
-                        kezdodatum = str_to_date(eloir.eloir_kezd)
-                        zarodatum = str_to_date(eloir.eloir_vege)
-                        if eloir.terulet_aranyos:
-                            szorzo = alapterulet
-                        else:
-                            szorzo = 1
+                    if albetet > 0: #csak akkor jegyzunk be eloirast, ha valos albetet nem berlemeny stb.
 
-                        if keresett <> '' and keresett in eloir.eloirfajta.name and alapterulet > 0 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
-                            if kezdodatum < vetel_datum:
-                                kezdodatum = vetel_datum
-                            if zarodatum > eladas_datum:
-                                zarodatum = eladas_datum
-                            eloirasfajta = eloir.eloirfajta.id
-                            osszeg = eloir.osszeg
-                            fizetendo = osszeg * szorzo
-                            eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
-                                        'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
-                                        'osszeg': fizetendo, 'eloir_vege': zarodatum}
-                            #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
-                            van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
-                                                              ('eloirfajta', '=', eloirasfajta),
-                                                              ('osszeg', '=', fizetendo)], context=None)
-                            if van_e_mar:
-                                pass
+                        for eloir in _eloirasok:
+                            kezdodatum = str_to_date(eloir.eloir_kezd)
+                            zarodatum = str_to_date(eloir.eloir_vege)
+                            if eloir.terulet_aranyos:
+                                szorzo = alapterulet
                             else:
-                                kiirt_id = self.create(cr, uid, eredmeny, context=None)
+                                szorzo = 1
 
-                        if 'alapba' in eloir.eloirfajta.name and alapterulet > 0 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
-                            if kezdodatum < vetel_datum:
-                                kezdodatum = vetel_datum
-                            if zarodatum > eladas_datum:
-                                zarodatum = eladas_datum
-                            eloirasfajta = eloir.eloirfajta.id
-                            osszeg = eloir.osszeg
-                            fizetendo = osszeg * szorzo
-                            eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
-                                        'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
-                                        'osszeg': fizetendo, 'eloir_vege': zarodatum}
-                            #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
-                            van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
-                                                              ('eloirfajta', '=', eloirasfajta),
-                                                              ('osszeg', '=', fizetendo)], context=None)
-                            if van_e_mar:
-                                pass
-                            else:
+                            if keresett <> '' and keresett in eloir.eloirfajta.name and alapterulet > 0 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
+                                if kezdodatum < vetel_datum:
+                                    kezdodatum = vetel_datum
+                                if zarodatum > eladas_datum:
+                                    zarodatum = eladas_datum
+                                eloirasfajta = eloir.eloirfajta.id
+                                osszeg = eloir.osszeg
+                                fizetendo = osszeg * szorzo
+                                eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
+                                            'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
+                                            'osszeg': fizetendo, 'eloir_vege': zarodatum}
+                                #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
+                                van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
+                                                                  ('eloirfajta', '=', eloirasfajta),
+                                                                  ('osszeg', '=', fizetendo)], context=None)
+                                if van_e_mar:
+                                    pass
+                                else:
+                                    kiirt_id = self.create(cr, uid, eredmeny, context=None)
 
-                                kiirt_id = self.create(cr, uid, eredmeny, context=None)
+                            if 'alapba' in eloir.eloirfajta.name and alapterulet > 0 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
+                                if kezdodatum < vetel_datum:
+                                    kezdodatum = vetel_datum
+                                if zarodatum > eladas_datum:
+                                    zarodatum = eladas_datum
+                                eloirasfajta = eloir.eloirfajta.id
+                                osszeg = eloir.osszeg
+                                fizetendo = osszeg * szorzo
+                                eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
+                                            'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
+                                            'osszeg': fizetendo, 'eloir_vege': zarodatum}
+                                #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
+                                van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
+                                                                  ('eloirfajta', '=', eloirasfajta),
+                                                                  ('osszeg', '=', fizetendo)], context=None)
+                                if van_e_mar:
+                                    pass
+                                else:
 
-                        if 'épviseleti' in eloir.eloirfajta.name and alapterulet > 0 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
-                            if kezdodatum < vetel_datum:
-                                kezdodatum = vetel_datum
-                            if zarodatum > eladas_datum:
-                                zarodatum = eladas_datum
-                            eloirasfajta = eloir.eloirfajta.id
-                            osszeg = eloir.osszeg
-                            fizetendo = osszeg * szorzo
-                            eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
-                                        'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
-                                        'osszeg': fizetendo, 'eloir_vege': zarodatum}
-                            #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
-                            van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
-                                                              ('eloirfajta', '=', eloirasfajta),
-                                                              ('osszeg', '=', fizetendo)], context=None)
-                            if van_e_mar:
-                                pass
-                            else:
+                                    kiirt_id = self.create(cr, uid, eredmeny, context=None)
 
-                                kiirt_id = self.create(cr, uid, eredmeny, context=None)
+                            if 'épviseleti' in eloir.eloirfajta.name and alapterulet > 0 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
+                                if kezdodatum < vetel_datum:
+                                    kezdodatum = vetel_datum
+                                if zarodatum > eladas_datum:
+                                    zarodatum = eladas_datum
+                                eloirasfajta = eloir.eloirfajta.id
+                                osszeg = eloir.osszeg
+                                fizetendo = osszeg * szorzo
+                                eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
+                                            'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
+                                            'osszeg': fizetendo, 'eloir_vege': zarodatum}
+                                #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
+                                van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
+                                                                  ('eloirfajta', '=', eloirasfajta),
+                                                                  ('osszeg', '=', fizetendo)], context=None)
+                                if van_e_mar:
+                                    pass
+                                else:
 
-                        if ('Szemétdíj' in eloir.eloirfajta.name) and lakoszam > 0 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
-                            if kezdodatum < vetel_datum:
-                                kezdodatum = vetel_datum
-                            if zarodatum > eladas_datum:
-                                zarodatum = eladas_datum
-                            eloirasfajta = eloir.eloirfajta.id
-                            osszeg = eloir.osszeg
-                            fizetendo = osszeg * lakoszam
-                            eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
-                                        'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
-                                        'osszeg': fizetendo, 'eloir_vege': zarodatum}
-                            #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
-                            van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
-                                                              ('eloirfajta', '=', eloirasfajta),
-                                                              ('osszeg', '=', fizetendo)], context=None)
-                            if van_e_mar:
-                                pass
-                            else:
+                                    kiirt_id = self.create(cr, uid, eredmeny, context=None)
 
-                                kiirt_id = self.create(cr, uid, eredmeny, context=None)
+                            if ('Szemétdíj' in eloir.eloirfajta.name) and lakoszam > 0 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
+                                if kezdodatum < vetel_datum:
+                                    kezdodatum = vetel_datum
+                                if zarodatum > eladas_datum:
+                                    zarodatum = eladas_datum
+                                eloirasfajta = eloir.eloirfajta.id
+                                osszeg = eloir.osszeg
+                                fizetendo = osszeg * lakoszam
+                                eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
+                                            'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
+                                            'osszeg': fizetendo, 'eloir_vege': zarodatum}
+                                #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
+                                van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
+                                                                  ('eloirfajta', '=', eloirasfajta),
+                                                                  ('osszeg', '=', fizetendo)], context=None)
+                                if van_e_mar:
+                                    pass
+                                else:
 
-                        if ('Költség hozzájárulás' in eloir.eloirfajta.name) and alapterulet > 0 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
-                            if kezdodatum < vetel_datum:
-                                kezdodatum = vetel_datum
-                            if zarodatum > eladas_datum:
-                                zarodatum = eladas_datum
-                            eloirasfajta = eloir.eloirfajta.id
-                            osszeg = eloir.osszeg
-                            fizetendo = osszeg * szorzo
-                            eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
-                                        'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
-                                        'osszeg': fizetendo, 'eloir_vege': zarodatum}
-                            #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
-                            van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
-                                                              ('eloirfajta', '=', eloirasfajta),
-                                                              ('osszeg', '=', fizetendo)], context=None)
-                            if van_e_mar:
-                                pass
-                            else:
+                                    kiirt_id = self.create(cr, uid, eredmeny, context=None)
 
-                                kiirt_id = self.create(cr, uid, eredmeny, context=None)
+                            if ('Költség hozzájárulás' in eloir.eloirfajta.name) and alapterulet > 0 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
+                                if kezdodatum < vetel_datum:
+                                    kezdodatum = vetel_datum
+                                if zarodatum > eladas_datum:
+                                    zarodatum = eladas_datum
+                                eloirasfajta = eloir.eloirfajta.id
+                                osszeg = eloir.osszeg
+                                fizetendo = osszeg * szorzo
+                                eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
+                                            'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
+                                            'osszeg': fizetendo, 'eloir_vege': zarodatum}
+                                #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
+                                van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
+                                                                  ('eloirfajta', '=', eloirasfajta),
+                                                                  ('osszeg', '=', fizetendo)], context=None)
+                                if van_e_mar:
+                                    pass
+                                else:
 
-                        if ('Technikai' in eloir.eloirfajta.name) and alapterulet > 0 and _vizora and vetel_datum < zarodatum and eladas_datum > kezdodatum:
-                            if kezdodatum < vetel_datum:
-                                kezdodatum = vetel_datum
-                            if zarodatum > eladas_datum:
-                                zarodatum = eladas_datum
-                            eloirasfajta = eloir.eloirfajta.id
-                            osszeg = eloir.osszeg
-                            fizetendo = osszeg * szorzo
-                            eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
-                                        'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
-                                        'osszeg': fizetendo, 'eloir_vege': zarodatum}
-                            #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
-                            van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
-                                                              ('eloirfajta', '=', eloirasfajta),
-                                                              ('osszeg', '=', fizetendo)], context=None)
-                            if van_e_mar:
-                                pass
-                            else:
+                                    kiirt_id = self.create(cr, uid, eredmeny, context=None)
 
-                                kiirt_id = self.create(cr, uid, eredmeny, context=None)
+                            if ('Technikai' in eloir.eloirfajta.name) and alapterulet > 0 and _vizora and vetel_datum < zarodatum and eladas_datum > kezdodatum:
+                                if kezdodatum < vetel_datum:
+                                    kezdodatum = vetel_datum
+                                if zarodatum > eladas_datum:
+                                    zarodatum = eladas_datum
+                                eloirasfajta = eloir.eloirfajta.id
+                                osszeg = eloir.osszeg
+                                fizetendo = osszeg * szorzo
+                                eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
+                                            'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
+                                            'osszeg': fizetendo, 'eloir_vege': zarodatum}
+                                #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
+                                van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
+                                                                  ('eloirfajta', '=', eloirasfajta),
+                                                                  ('osszeg', '=', fizetendo)], context=None)
+                                if van_e_mar:
+                                    pass
+                                else:
 
-                        if ('Lakáskassza' in eloir.eloirfajta.name) and alapterulet > 0 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
-                            if kezdodatum < vetel_datum:
-                                kezdodatum = vetel_datum
-                            if zarodatum > eladas_datum:
-                                zarodatum = eladas_datum
-                            eloirasfajta = eloir.eloirfajta.id
-                            osszeg = eloir.osszeg
-                            fizetendo = osszeg * szorzo
-                            eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
-                                        'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
-                                        'osszeg': fizetendo, 'eloir_vege': zarodatum}
-                            #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
-                            van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
-                                                              ('eloirfajta', '=', eloirasfajta),
-                                                              ('osszeg', '=', fizetendo)], context=None)
-                            if van_e_mar:
-                                pass
-                            else:
+                                    kiirt_id = self.create(cr, uid, eredmeny, context=None)
 
-                                kiirt_id = self.create(cr, uid, eredmeny, context=None)
+                            if ('Lakáskassza' in eloir.eloirfajta.name) and alapterulet > 0 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
+                                if kezdodatum < vetel_datum:
+                                    kezdodatum = vetel_datum
+                                if zarodatum > eladas_datum:
+                                    zarodatum = eladas_datum
+                                eloirasfajta = eloir.eloirfajta.id
+                                osszeg = eloir.osszeg
+                                fizetendo = osszeg * szorzo
+                                eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
+                                            'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
+                                            'osszeg': fizetendo, 'eloir_vege': zarodatum}
+                                #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
+                                van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
+                                                                  ('eloirfajta', '=', eloirasfajta),
+                                                                  ('osszeg', '=', fizetendo)], context=None)
+                                if van_e_mar:
+                                    pass
+                                else:
 
-                        if ('parkol' in eloir.eloirfajta.name) and 'park' in utca2 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
-                            if kezdodatum < vetel_datum:
-                                kezdodatum = vetel_datum
-                                zarodatum = eladas_datum
-                            eloirasfajta = eloir.eloirfajta.id
-                            osszeg = eloir.osszeg
-                            fizetendo = osszeg * szorzo
-                            eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
-                                        'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
-                                        'osszeg': fizetendo, 'eloir_vege': zarodatum}
-                            #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
-                            van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
-                                                              ('eloirfajta', '=', eloirasfajta),
-                                                              ('osszeg', '=', fizetendo)], context=None)
-                            if van_e_mar:
-                                pass
-                            else:
+                                    kiirt_id = self.create(cr, uid, eredmeny, context=None)
 
-                                kiirt_id = self.create(cr, uid, eredmeny, context=None)
+                            if ('parkol' in eloir.eloirfajta.name) and 'park' in utca2 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
+                                if kezdodatum < vetel_datum:
+                                    kezdodatum = vetel_datum
+                                    zarodatum = eladas_datum
+                                eloirasfajta = eloir.eloirfajta.id
+                                osszeg = eloir.osszeg
+                                fizetendo = osszeg * szorzo
+                                eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
+                                            'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
+                                            'osszeg': fizetendo, 'eloir_vege': zarodatum}
+                                #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
+                                van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
+                                                                  ('eloirfajta', '=', eloirasfajta),
+                                                                  ('osszeg', '=', fizetendo)], context=None)
+                                if van_e_mar:
+                                    pass
+                                else:
 
-                        if ('gar' in eloir.eloirfajta.name) and 'gar' in utca2 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
-                            if kezdodatum < vetel_datum:
-                                kezdodatum = vetel_datum
-                            if zarodatum > eladas_datum:
-                                zarodatum = eladas_datum
-                            eloirasfajta = eloir.eloirfajta.id
-                            osszeg = eloir.osszeg
-                            fizetendo = osszeg * szorzo
-                            eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
-                                        'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
-                                        'osszeg': fizetendo, 'eloir_vege': zarodatum}
-                            #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
-                            van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
-                                                              ('eloirfajta', '=', eloirasfajta),
-                                                              ('osszeg', '=', fizetendo)], context=None)
-                            if van_e_mar:
-                                pass
-                            else:
+                                    kiirt_id = self.create(cr, uid, eredmeny, context=None)
 
-                                kiirt_id = self.create(cr, uid, eredmeny, context=None)
+                            if ('gar' in eloir.eloirfajta.name) and 'gar' in utca2 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
+                                if kezdodatum < vetel_datum:
+                                    kezdodatum = vetel_datum
+                                if zarodatum > eladas_datum:
+                                    zarodatum = eladas_datum
+                                eloirasfajta = eloir.eloirfajta.id
+                                osszeg = eloir.osszeg
+                                fizetendo = osszeg * szorzo
+                                eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
+                                            'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
+                                            'osszeg': fizetendo, 'eloir_vege': zarodatum}
+                                #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
+                                van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
+                                                                  ('eloirfajta', '=', eloirasfajta),
+                                                                  ('osszeg', '=', fizetendo)], context=None)
+                                if van_e_mar:
+                                    pass
+                                else:
 
-                                # ezt szurtam be 2015-3-04
+                                    kiirt_id = self.create(cr, uid, eredmeny, context=None)
 
-                        if ('parkol' in eloir.eloirfajta.name) and parkolo == 'v' and 'gar' not in utca2 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
-                            if kezdodatum < vetel_datum:
-                                kezdodatum = vetel_datum
-                            if zarodatum > eladas_datum:
-                                zarodatum = eladas_datum
-                            eloirasfajta = eloir.eloirfajta.id
-                            osszeg = eloir.osszeg
-                            fizetendo = osszeg * szorzo
-                            eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
-                                        'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
-                                        'osszeg': fizetendo, 'eloir_vege': zarodatum}
-                            #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
-                            van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
-                                                              ('eloirfajta', '=', eloirasfajta),
-                                                              ('osszeg', '=', fizetendo)], context=None)
-                            if van_e_mar:
-                                pass
-                            else:
+                                    # ezt szurtam be 2015-3-04
 
-                                kiirt_id = self.create(cr, uid, eredmeny, context=None)
+                            if ('parkol' in eloir.eloirfajta.name) and parkolo == 'v' and 'gar' not in utca2 and vetel_datum < zarodatum and eladas_datum > kezdodatum:
+                                if kezdodatum < vetel_datum:
+                                    kezdodatum = vetel_datum
+                                if zarodatum > eladas_datum:
+                                    zarodatum = eladas_datum
+                                eloirasfajta = eloir.eloirfajta.id
+                                osszeg = eloir.osszeg
+                                fizetendo = osszeg * szorzo
+                                eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
+                                            'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
+                                            'osszeg': fizetendo, 'eloir_vege': zarodatum}
+                                #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
+                                van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
+                                                                  ('eloirfajta', '=', eloirasfajta),
+                                                                  ('osszeg', '=', fizetendo)], context=None)
+                                if van_e_mar:
+                                    pass
+                                else:
 
-                            # eddig !
+                                    kiirt_id = self.create(cr, uid, eredmeny, context=None)
 
-                        if 'Rendk' in eloir.eloirfajta.name and vetel_datum < zarodatum and eladas_datum > kezdodatum and alapterulet > 0 and albetet > 0:
-                            if kezdodatum < vetel_datum:
-                                kezdodatum = vetel_datum
-                            if zarodatum > eladas_datum:
-                                zarodatum = eladas_datum
-                            eloirasfajta = eloir.eloirfajta.id
-                            osszeg = eloir.osszeg
-                            fizetendo = osszeg * szorzo
-                            eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
-                                        'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
-                                        'osszeg': fizetendo, 'eloir_vege': zarodatum}
-                            #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
-                            van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
-                                                              ('eloirfajta', '=', eloirasfajta),
-                                                              ('osszeg', '=', fizetendo)], context=None)
-                            if van_e_mar:
-                                pass
-                            else:
+                                # eddig !
 
-                                kiirt_id = self.create(cr, uid, eredmeny, context=None)
+                            if 'Rendk' in eloir.eloirfajta.name and vetel_datum < zarodatum and eladas_datum > kezdodatum and alapterulet > 0 and albetet > 0:
+                                if kezdodatum < vetel_datum:
+                                    kezdodatum = vetel_datum
+                                if zarodatum > eladas_datum:
+                                    zarodatum = eladas_datum
+                                eloirasfajta = eloir.eloirfajta.id
+                                osszeg = eloir.osszeg
+                                fizetendo = osszeg * szorzo
+                                eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
+                                            'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
+                                            'osszeg': fizetendo, 'eloir_vege': zarodatum}
+                                #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
+                                van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
+                                                                  ('eloirfajta', '=', eloirasfajta),
+                                                                  ('osszeg', '=', fizetendo)], context=None)
+                                if van_e_mar:
+                                    pass
+                                else:
+
+                                    kiirt_id = self.create(cr, uid, eredmeny, context=None)
 
 
                                 # print kiirt_id
