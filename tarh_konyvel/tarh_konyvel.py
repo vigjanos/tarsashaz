@@ -1228,6 +1228,10 @@ class my_report(osv.osv):
                     """
                    )
 
+    def project_hatarido_javit (self,cr, uid):
+        cr.execute("update project_task set date_start=create_date where date_start is null")
+        return ()
+
 
 my_report()
 
