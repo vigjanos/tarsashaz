@@ -22,31 +22,14 @@
                             </group>
                         </group>
                         <group>
-                            <field name="jkv_hitelesitok_ids"/>
+                            <field name="jkv_hitelesitok_ids" domain="[('parent_id','=', tarsashaz_id)]"/>
                         </group>
-
                         <field name="hatarozat_ids" widget="one2many"/>
-
                         <group>
                             <field name="megjegyzes"/>
                         </group>
                     </sheet>
                 </form>
-            </field>
-        </record>
-
-        <record id="view_hitelesitok_tree" model="ir.ui.view">
-            <field name="name">hitelesitok.tree</field>
-            <field name="model">res.partner</field>
-            <field name="type">tree</field>
-            <field name="priority" eval="8"/>
-            <field name="arch" type="xml">
-                <tree string="">
-                    <field name="name"/>
-                    <field name="street2"/>
-                    <field name="email"/>
-                    <field name="mobile"/>
-                </tree>
             </field>
         </record>
 
@@ -62,6 +45,51 @@
             </field>
         </record>
 
+        <record id="view_kozgyules_search" model="ir.ui.view">
+            <field name="name">kozgyules search</field>
+            <field name="model">tarh.kozgyules</field>
+            <field name="type">search</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <search string="">
+                    <field name="tarsashaz_id"/>
+                    <group expand="0" string="Csoportosítás...">
+                        <filter string="Társasházak" domain="[]" context="{'group_by':'tarsashaz_id'}"/>
+                        <filter string="Időszak" domain="[]" context="{'group_by':'kozgy_datum'}"/>
+                    </group>
+
+                </search>
+            </field>
+        </record>
+
+        <record id="kozgyules_action" model="ir.actions.act_window">
+            <field name="name">kozgyules_action</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.kozgyules</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                    Ide kattintva létrehozhatsz egy új elemet
+                </p>
+            </field>
+        </record>
+
+        <record id="view_hitelesitok_tree" model="ir.ui.view">
+            <field name="name">hitelesitok.tree</field>
+            <field name="model">res.partner</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="name"/>
+                    <field name="street2" string="Emelet, ajtó"/>
+                    <field name="email"/>
+                    <field name="mobile"/>
+                </tree>
+            </field>
+        </record>
+
         <record model="ir.ui.view" id="hatarozatok_tree_view">
             <field name="name">Hatarozatok nezet</field>
             <field name="model">tarh.hatarozatok</field>
@@ -71,9 +99,12 @@
                     <field name="hat_rovid_leir"/>
                     <field name="felelos_id" options="{'no_create_edit':True}"/>
                     <field name="vegrehajtott"/>
+                    <field name="kozgyules_id" invisible="1"/>
+                    <field name="tarsashaz"/>
                 </tree>
             </field>
         </record>
+
 
         <record model="ir.ui.view" id="hatarozatok_form_view">
             <field name="name">Hatarozatok form</field>
@@ -93,30 +124,133 @@
                         <group>
                             <field name="hat_rovid_leir"/>
                             <field name="hat_szovege"/>
+                            <!-- A következő két sort majd ki kell venni-->
+                            <field name="tarsashaz"/>
+                            <field name="kozgy_datuma"/>
                         </group>
                     </sheet>
                 </form>
             </field>
         </record>
 
-        <record id="kozgyules_action" model="ir.actions.act_window">
-            <field name="name">kozgyules_action</field>
+        <record id="view_hatarozatok_search" model="ir.ui.view">
+            <field name="name">hatarozatok search</field>
+            <field name="model">tarh.hatarozatok</field>
+            <field name="type">search</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <search string="">
+                    <field name="hat_rovid_leir"/>
+                    <group expand="0" string="Csoportosítás...">
+                        <filter string="Társasházak" domain="[]" context="{'group_by':'tarsashaz'}"/>
+                        <filter string="Időpont" domain="[]" context="{'group_by':'kozgy_datuma'}"/>
+                        <filter string="Nem kész" domain="[('vegrehajtott','=',False)]"
+                                context="{'group_by':'vegrehajtott'}"/>
+                        <filter string="Felelős" domain="[]" context="{'group_by':'felelos_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+
+        <record id="hatarozatok_action" model="ir.actions.act_window">
+            <field name="name">hatarozatok action</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">tarh.kozgyules</field>
+            <field name="res_model">tarh.hatarozatok</field>
             <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="hatarozatok_tree_view"/>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
                     <!-- Add Text Here -->
-                    Ide kattintva létrehozhatsz egy új elemet
+                </p>
+                <p>
+                    <!-- More details about what a user can do with this object will be OK -->
                 </p>
             </field>
         </record>
+
+
+        <record id="view_parkolosor_tree" model="ir.ui.view">
+            <field name="name">parkolosor tree</field>
+            <field name="model">tarh.parkolosor</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <tree colors="#CCCCCC:megkapta_e==True">
+                    <field name="tarsashaz_id"/>
+                    <field name="tulajdonos_id"/>
+                    <field name="igenyles_datum"/>
+                    <field name="dokumentum_ids"/>
+                    <field name="megkapta_e" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_parkolosor_form" model="ir.ui.view">
+            <field name="name">parkolosor form</field>
+            <field name="model">tarh.parkolosor</field>
+            <field name="type">form</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <field name="tarsashaz_id"/>
+                        </group>
+                        <group>
+                            <field name="tulajdonos_id"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="igenyles_datum"/>
+                                <field name="megkapta_datum"/>
+                            </group>
+                            <group>
+                                <field name="dokumentum_ids" widget="many2many_binary"/>
+                                <field name="megkapta_e" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_parkolosor_search" model="ir.ui.view">
+            <field name="name">parkolosor search</field>
+            <field name="model">tarh.parkolosor</field>
+            <field name="type">search</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <search string="">
+                    <field name="tarsashaz_id" select="True"/>
+                    <field name="tulajdonos_id"/>
+                    <group expand="0" string="Csoportosítás...">
+                        <filter string="Társasházak" domain="[]" context="{'group_by':'tarsashaz_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+
+        <record id="parkolosor_action" model="ir.actions.act_window">
+            <field name="name">parkolosor action</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.parkolosor</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_parkolosor_tree"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Itt hozhatsz létre új elemet!
+                </p>
+            </field>
+        </record>
+
 
         <record id="Project_hatarido_javit" model="ir.cron">
             <field name="name">Project idő javítása</field>
             <field name="user_id">1</field>
             <field name="active">False</field>
-            <field name="interval_number">1</field>
+            <field name="interval_number">5</field>
             <field name="interval_type">minutes</field>
             <field name="numbercall">-1</field>
             <field name="args">()</field>
@@ -124,12 +258,20 @@
             <field name="function">project_hatarido_javit</field>
         </record>
 
-        <menuitem name="Közgyűlések" id="kozgyules_menu_root" sequence="107"/>
+        <menuitem name="Közgyűlések, parkoló" id="kozgyules_menu_root" sequence="107"/>
         <menuitem id="kozgyules_menu1" name="Közgyűlések, határozatok" parent="kozgyules_menu_root" sequence="10"/>
         <menuitem id="kozgyules_menu2" name="Határozatok" parent="kozgyules_menu_root" sequence="20"/>
+        <menuitem id="kozgyules_menu3" name="Parkoló sor" parent="kozgyules_menu_root" sequence="30"/>
 
         <!-- This Menu Item must have a parent and an action -->
         <menuitem id="kozgyules_almenu1" name="Közgyűlés" parent="kozgyules_menu1" action="kozgyules_action"
+                  sequence="10"/>
+
+        <menuitem id="hatarozatok_almenu1" name="Határozatok könyve" parent="kozgyules_menu2"
+                  action="hatarozatok_action"
+                  sequence="10"/>
+
+        <menuitem id="parkolosor_almenu1" name="Parkoló sor" parent="kozgyules_menu3" action="parkolosor_action"
                   sequence="10"/>
     </data>
 </openerp>
