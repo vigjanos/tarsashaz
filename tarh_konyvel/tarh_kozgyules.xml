@@ -141,6 +141,9 @@
             <field name="arch" type="xml">
                 <search string="">
                     <field name="hat_rovid_leir"/>
+                    <field name="tarsashaz" domain="[('is_company','=',True),('name', 'ilike', '%rsash%')]"/>
+                    <field name="felelos_id"/>
+                    <field name="hat_szovege"/>
                     <group expand="0" string="Csoportosítás...">
                         <filter string="Társasházak" domain="[]" context="{'group_by':'tarsashaz'}"/>
                         <filter string="Időpont" domain="[]" context="{'group_by':'kozgy_datuma'}"/>
@@ -222,8 +225,8 @@
             <field name="priority" eval="8"/>
             <field name="arch" type="xml">
                 <search string="">
-                    <field name="tarsashaz_id" select="True"/>
                     <field name="tulajdonos_id"/>
+                    <field name="tarsashaz_id" select="True"/>
                     <group expand="0" string="Csoportosítás...">
                         <filter string="Társasházak" domain="[]" context="{'group_by':'tarsashaz_id'}"/>
                     </group>
