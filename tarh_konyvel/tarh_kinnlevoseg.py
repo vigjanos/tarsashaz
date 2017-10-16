@@ -68,6 +68,9 @@ class tarh_felszol(osv.osv):
         'egyenleg': fields.function(_egyenleg_szamol, string='Egyenleg', type='integer', store=False, help=''),
         'havi_eloir': fields.function(_havi_kotelezettseg, string='Havi fizetendő', type='integer', store=False, help=''),
         'utso_konyv_nap':fields.function(_last_konyvelt_nap, string='Könyvelve -ig', type='date',store=False, help=''),
+        'fmh_szam': fields.char('FMH száma', size=25, help=''), 
+        'vegrehajto': fields.many2one('res.partner', 'Végrehajtó', domain="[('name','ilike','végrehaj')]"),
+        'vh_szama': fields.char('Végrehajtás ügyszáma', size=25, help=''),
     }
     _defaults = {
         'felsz_tipus': 'felsz_kepv',
