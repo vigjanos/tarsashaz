@@ -52,6 +52,9 @@
                                 <group>
                                     <field name="felsz_tipus"/>
                                     <field name="ugyved"/>
+                                    <field name="vegrehajto"/>
+                                    <field name="fmh_szam"/>
+                                    <field name="vh_szama"/>
                                 </group>
                             </group>
                             <group colspan="4">
@@ -87,7 +90,10 @@
                     <field name="tulaj" string="Tulajdonos"/>
                     <field name="tarsashaz" string="Társasház"/>
                     <field name="ugyved" string="Ügyvéd"/>
+                    <field name="vegrehajto" string="Végrehajtó"/>
                     <field name="megjegyzes" string="Megjegyzés"/>
+                    <field name="fmh_szam" string="FMH, Vh száma"
+                           filter_domain="['|',('fmh_szam','ilike',self),('vh_szama','ilike',self)]"/>
                     <field name="felsz_tipus" string="Felszólítás típusa"/>
                     <field name="felsz_status" string="Felszólítás státusza"/>
                     <separator/>
