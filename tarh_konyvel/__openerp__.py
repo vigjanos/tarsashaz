@@ -41,6 +41,8 @@
             'tarh_lako_eves2_view.xml',
             'tarh_lako_eves2_report.xml',
             'tarh_kozgyules.xml',
+            'tarh_nullas_igazolas_view.xml',
+            'tarh_nullas_igazolas_report.xml',
             ],
     'installable': True,
   

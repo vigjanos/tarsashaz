@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <report id="nullas_nyomtat1"
+                model="tarh.nullas"
+                string="képernyőre"
+                name="tarh_konyvel.nullas_igazolas_tmpl"
+                file="tarh_konyvel.tarh_nullas_igazolas_report"
+                report_type="qweb-html"/>
+
+        <report id="nullas_nyomtat2"
+                model="tarh.nullas"
+                string="pdf-be"
+                name="tarh_konyvel.nullas_igazolas_tmpl"
+                file="tarh_konyvel.tarh_nullas_igazolas_report"
+                report_type="qweb-pdf"/>
+
+
+        <template id="nullas_igazolas_tmpl">
+            <t t-call="report.external_layout">
+                <t t-call="report.html_container">
+                    <div class="page">
+                        <div class="row col-xs-10 mb32">
+                            <h4>
+                                <strong>
+                                    <span t-field="docs[0].tulajdonos.name"/>
+                                </strong>
+                                tulajdonos
+                                <br/>
+                                <span t-field="docs[0].tulajdonos.city"/>
+                                <span t-field="docs[0].tulajdonos.zip"/>
+                                <br/>
+                                <span t-field="docs[0].tulajdonos.street"/>
+                                <br/>
+                                <span t-field="docs[0].tulajdonos.street2"/>
+                                ingatlan,
+                                <span t-field="docs[0].tulajdonos.alb_szam"/>. számú albetét
+                            </h4>
+                            <br/>
+                        </div>
+                        <div class="row col-xs-10 col-xs-offset-1 text-center mb64">
+                            <h3>
+                                IGAZOLÁS
+                            </h3>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-10 col-xs-offset-1" align="justify" style="font-size:18px;">
+                                Igazoljuk, hogy a
+                                <span t-field="docs[0].tulajdonos.city"/>
+                                <span t-field="docs[0].tulajdonos.zip"/>
+                                <span t-field="docs[0].tulajdonos.street"/>
+                                <span t-field="docs[0].tulajdonos.street2"/>
+                                alatti ingatlanra közös költség hátralékot
+                                <strong><span t-field="docs[0].datum"/>-ig
+                                </strong>
+                                nem tartunk
+                                nyilván.
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-10 col-xs-offset-1 mt64" style="font-size:16px;">
+                                Budapest,
+                                <span t-esc="time.strftime('%x')"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-3 col-xs-offset-4 mt64" style="font-size:16px;">
+                                Tisztelettel:
+                                <br/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-3 col-xs-offset-7 text-center mt64" style="font-size:16px;">
+                                Szilassy László
+                                <br/>
+                                ügyvezető igazgató
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>
