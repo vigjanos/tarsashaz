@@ -31,10 +31,12 @@
                             <field name="vegdatum" select="1" />
                             <field name="th_szamlatul" options="{'no_create' : True}" select="1"
                                    domain="[('is_company','=',True),('name','ilike','%rsash%')]" />
+                            <field name="bankszamla" />
                         </group>
                         <group>
                             <button name="kiszamol" string="Lekérdezés" type="object" />
                         </group>
+
 
                         <notebook>
                             <page string="Időszaki forgalom">

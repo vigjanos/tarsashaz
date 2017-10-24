@@ -29,13 +29,16 @@
                             időpontok közötti bankszámla forgalma
                         </h4>
 
-
+                        <t t-set="uzemeltetesi" t-value="0"/>
                         <t t-set="lakaskassza" t-value="0"/>
                         <t t-set="megtakaritasi" t-value="0"/>
                         <t t-set="felujitasi" t-value="0"/>
                         <t t-set="penztar" t-value="0"/>
 
                         <span t-foreach="docs.sor_id" t-as="sor">
+                            <span t-if="sor.bankszamla_thaz.state=='bank_uzem'">
+                                <t t-set="uzemeltetesi" t-value="1"/>
+                            </span>
                             <span t-if="sor.bankszamla_thaz.state=='lak_kassza'">
                                 <t t-set="lakaskassza" t-value="1"/>
                             </span>
@@ -52,6 +55,7 @@
 
 
                         <!-- ***************************************************Üzemeltetési********************************************************************* -->
+                        <span t-if="uzemeltetesi==1">
                         <div style="border-top: 1px solid black;"/>
                         <h4>Üzemeltetési számla bevételek:</h4>
                         <div class="col-xs-10 col-xs-offset-2">
@@ -171,6 +175,7 @@
                                 </h4>
                             </div>
                         </div>
+                        </span>
 
                         <!-- ****************************************************Lakáskassza******************************************************************** -->
                         <span t-if="lakaskassza==1">
