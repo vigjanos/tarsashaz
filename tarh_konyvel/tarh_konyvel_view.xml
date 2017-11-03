@@ -525,7 +525,7 @@
                 <search string="tarh_bankbiz">
                     <field name="th_szamlatul"/>
                     <field name="kivonatszam"/>
-                    <field name="biz_datum"/>
+                    <field name="erk_datum"/>
                     <separator/>
                     <group expand="0" string="Csoportosítás...">
                         <filter string="Társasházak" domain="[]"
