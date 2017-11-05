@@ -530,6 +530,7 @@ class tarh_eloiras_lako(osv.osv):
                         for eloir in _eloirasok:
                             kezdodatum = str_to_date(eloir.eloir_kezd)
                             zarodatum = str_to_date(eloir.eloir_vege)
+                            esedekes = eloir.esedekes
                             if eloir.terulet_aranyos:
                                 szorzo = alapterulet
                             else:
@@ -545,7 +546,7 @@ class tarh_eloiras_lako(osv.osv):
                                 fizetendo = osszeg * szorzo
                                 eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
                                             'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
-                                            'osszeg': fizetendo, 'eloir_vege': zarodatum}
+                                            'osszeg': fizetendo, 'eloir_vege': zarodatum, 'esedekes': esedekes}
                                 #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
                                 van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
                                                                   ('eloirfajta', '=', eloirasfajta),
@@ -565,7 +566,7 @@ class tarh_eloiras_lako(osv.osv):
                                 fizetendo = osszeg * szorzo
                                 eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
                                             'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
-                                            'osszeg': fizetendo, 'eloir_vege': zarodatum}
+                                            'osszeg': fizetendo, 'eloir_vege': zarodatum, 'esedekes': esedekes}
                                 #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
                                 van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
                                                                   ('eloirfajta', '=', eloirasfajta),
@@ -586,7 +587,7 @@ class tarh_eloiras_lako(osv.osv):
                                 fizetendo = osszeg * szorzo
                                 eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
                                             'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
-                                            'osszeg': fizetendo, 'eloir_vege': zarodatum}
+                                            'osszeg': fizetendo, 'eloir_vege': zarodatum, 'esedekes': esedekes}
                                 #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
                                 van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
                                                                   ('eloirfajta', '=', eloirasfajta),
@@ -607,7 +608,7 @@ class tarh_eloiras_lako(osv.osv):
                                 fizetendo = osszeg * lakoszam
                                 eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
                                             'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
-                                            'osszeg': fizetendo, 'eloir_vege': zarodatum}
+                                            'osszeg': fizetendo, 'eloir_vege': zarodatum, 'esedekes': esedekes}
                                 #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
                                 van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
                                                                   ('eloirfajta', '=', eloirasfajta),
@@ -628,7 +629,7 @@ class tarh_eloiras_lako(osv.osv):
                                 fizetendo = osszeg * szorzo
                                 eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
                                             'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
-                                            'osszeg': fizetendo, 'eloir_vege': zarodatum}
+                                            'osszeg': fizetendo, 'eloir_vege': zarodatum, 'esedekes': esedekes}
                                 #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
                                 van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
                                                                   ('eloirfajta', '=', eloirasfajta),
@@ -649,7 +650,7 @@ class tarh_eloiras_lako(osv.osv):
                                 fizetendo = osszeg * szorzo
                                 eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
                                             'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
-                                            'osszeg': fizetendo, 'eloir_vege': zarodatum}
+                                            'osszeg': fizetendo, 'eloir_vege': zarodatum, 'esedekes': esedekes}
                                 #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
                                 van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
                                                                   ('eloirfajta', '=', eloirasfajta),
@@ -670,7 +671,7 @@ class tarh_eloiras_lako(osv.osv):
                                 fizetendo = osszeg * szorzo
                                 eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
                                             'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
-                                            'osszeg': fizetendo, 'eloir_vege': zarodatum}
+                                            'osszeg': fizetendo, 'eloir_vege': zarodatum, 'esedekes': esedekes}
                                 #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
                                 van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
                                                                   ('eloirfajta', '=', eloirasfajta),
@@ -690,7 +691,7 @@ class tarh_eloiras_lako(osv.osv):
                                 fizetendo = osszeg * szorzo
                                 eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
                                             'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
-                                            'osszeg': fizetendo, 'eloir_vege': zarodatum}
+                                            'osszeg': fizetendo, 'eloir_vege': zarodatum, 'esedekes': esedekes}
                                 #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
                                 van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
                                                                   ('eloirfajta', '=', eloirasfajta),
@@ -711,7 +712,7 @@ class tarh_eloiras_lako(osv.osv):
                                 fizetendo = osszeg * szorzo
                                 eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
                                             'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
-                                            'osszeg': fizetendo, 'eloir_vege': zarodatum}
+                                            'osszeg': fizetendo, 'eloir_vege': zarodatum, 'esedekes': esedekes}
                                 #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
                                 van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
                                                                   ('eloirfajta', '=', eloirasfajta),
@@ -734,7 +735,7 @@ class tarh_eloiras_lako(osv.osv):
                                 fizetendo = osszeg * szorzo
                                 eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
                                             'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
-                                            'osszeg': fizetendo, 'eloir_vege': zarodatum}
+                                            'osszeg': fizetendo, 'eloir_vege': zarodatum, 'esedekes': esedekes}
                                 #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
                                 van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
                                                                   ('eloirfajta', '=', eloirasfajta),
@@ -757,11 +758,13 @@ class tarh_eloiras_lako(osv.osv):
                                 fizetendo = osszeg * szorzo
                                 eredmeny = {'tarsashaz': haz, 'lako': lakosok, 'eloir_kezd': kezdodatum,
                                             'eloirfajta': eloirasfajta, 'vizora': _vizora, 'alapterulet': alapterulet,
-                                            'osszeg': fizetendo, 'eloir_vege': zarodatum}
+                                            'osszeg': fizetendo, 'eloir_vege': zarodatum, 'esedekes': esedekes}
                                 #van_e_mar = self.search(cr, uid, [('lako', '=', lakosok), ('eloir_kezd', '=', kezdodatum),
                                 van_e_mar = self.search(cr, uid, [('lako', '=', lakosok),
                                                                   ('eloirfajta', '=', eloirasfajta),
-                                                                  ('osszeg', '=', fizetendo)], context=None)
+                                                                  ('osszeg', '=', fizetendo),
+                                                                  ('eloir_kezd','=',kezdodatum),
+                                                                  ('eloir_vege','=',zarodatum)], context=None)
                                 if van_e_mar:
                                     pass
                                 else:
