@@ -38,6 +38,7 @@ class tul_hanyad(osv.osv):
                 'alb_eladas': fields.date('Albetet eladasa'),
                 'onkormanyzati': fields.selection((('n', 'nem'), ('i', 'Igen')), 'Onkormanyzati'),
                 'vizora': fields.selection((('v', 'Van'), ('n', 'Nincs')), 'Vizora'),
+                'vizoras_tol': fields.date('Vízóra felszerelve:', help=''),
                 'hrsz': fields.char("Helyrajzi szam", size=32),
                 'parkolohely': fields.selection((('v', 'van'), ('n', 'nincs')), 'Sajat_parkolo'),
                 'phely_szam': fields.char(string='Parkolohely szam:', size=32),

@@ -64,6 +64,8 @@
                     <field name="onkormanyzati"
                            attrs="{'invisible': ['|',('customer','=', False), ('is_company','=',True)]}" />
                     <field name="vizora" attrs="{'invisible': [('customer','=', False)]}" />
+                    <field name="vizoras_tol"
+                           attrs="{'invisible': ['|',('customer','=', False), ('is_company','=',True)]}" />
                     <field name="parkolohely" attrs="{'invisible': [('customer','=', False)]}" />
                     <field name="phely_szam"
                            attrs="{'invisible': ['|',('parkolohely','=','n'),('customer','=', False)]}" />
