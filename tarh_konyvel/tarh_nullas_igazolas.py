@@ -131,9 +131,37 @@ class tarh_bankbiz(models.Model):
 
     @api.multi
     def unlink (self):
-        print('Ez van előtte törlés')
-        print self.ids[0]
-        res = super(tarh_bankbiz, self).unlink()
+        _bankbiz_id = self.ids[0]
+        _tarh_bankbiz_sor = self.env['tarh.bankbiz.sor']
+        _tarh_eloiras_lako = self.env['tarh.eloiras.lako']
+        _eloir_fajta = self.env['eloiras.fajta']
+        csekkes_eloir_fajta_id = _eloir_fajta.search([('name', 'ilike', '%csekkes%')]).id
+        '''
+        megvizsgáljuk, hogy van-e olyan sor amelyik ehhez a bankbizonylathoz tartozik, és van rajta postai 
+        befizetés megjelölve
+        '''
+        _postai_sorok =_tarh_bankbiz_sor.search([('bankbiz_id','=',_bankbiz_id),('postai','=',True)])
+        '''Ha van ilyen, akkor megkeressük az ehhez tartozó előírást a tarh_eloiras_lako táblában, 
+        és töröljük. Magát a tarh_bankbiz_sor-t törli maga a tarh_bankbiz eljárás, mivel ondelete esetén
+        cascade az előírás
+        '''
+        if _postai_sorok:
+            for _postai_sor in _postai_sorok:
+                print _postai_sor.id
+                ertekdatum = str_to_date(_postai_sor.erteknap)
+                erteknap = ertekdatum.day
+                eloir_kezd = date(ertekdatum.year, ertekdatum.month, 1)
+                eloir_vege = honap_utolsonap(ertekdatum)
+                lako = _postai_sor.partner.id
+                _torlendo_eloiras = _tarh_eloiras_lako.search(
+                    [('esedekes','=',erteknap),
+                     ('lako','=',lako),
+                     ('eloir_vege','=',eloir_vege),
+                     ('eloir_kezd','=', eloir_kezd),
+                     ('eloirfajta','=',csekkes_eloir_fajta_id),])
+                #töröljük az előírást
+                _torlendo_eloiras.unlink()
+        res = super(tarh_bankbiz, self).unlink() #végrehajtjuk az eredeti törlést
         print('Ez van utána törlés')
         return
 
