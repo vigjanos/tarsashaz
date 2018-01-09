@@ -57,6 +57,13 @@
                                         vízóra:
                                         <span t-field="tulaj.tulajdonos.vizora"/>
                                     </div>
+                                    <div class="text-right">
+                                        Ügyintézőnk:
+                                        <span t-field="user.name"/>
+                                        <br/>
+                                        Telefon:
+                                        <span t-field="user.phone"/>
+                                    </div>
                                 </div>
 
                                 <div class="row col-xs-10 col-xs-offset-1 mt8 mb8 text-center">

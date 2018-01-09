@@ -543,12 +543,13 @@
             <field name="model">my.report</field>
             <field name="arch" type="xml">
                 <search string="Search">
-                    <field name="partner"
+                    <field name="partner" string="Partner/Megjegyzés"
                            filter_domain="['|',('partner','ilike',self),('megjegyzes','ilike',self)]"/>
                     <field name="th_szamlatul" string="Társasház"/>
                     <field name="tarh_tranzakcio" string="Tranzakciok"
                            filter_domain="[('tarh_tranzakcio','ilike',self)]"/>
-                    <field name="megjegyzes" string="Megjegyzés"/>
+                    <field name="jovairas" string="Összeg"
+                           filter_domain="['|',('jovairas','=', self),('terheles','=',self)]"/>
                     <field name="kivonatszam" string="Bankbizonylat száma"/>
                     <separator/>
                     <group expand="0" string="Csoportosítás...">

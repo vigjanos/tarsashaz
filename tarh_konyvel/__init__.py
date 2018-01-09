@@ -44,6 +44,7 @@ import tarh_epites2
 import tarh_lako_eves2
 import tarh_kozgyules
 import tarh_nullas_igazolas
+import tarh_eloirasok
 
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
