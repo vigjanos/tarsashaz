@@ -41,6 +41,7 @@
                     <field name="alb_szam" attrs="{'invisible': [('customer','=', False)]}" />
                     <field name="hrsz" attrs="{'invisible': [('customer','=', False)]}" />
                     <field name="alapterulet" attrs="{'invisible': [('customer','=', False)]}" />
+                    <field name="legm3"  attrs="{'invisible': [('customer','=', False)]}" />
                     <field name="tulhanyad" attrs="{'invisible': [('customer','=', False)]}" />
                     <field name="th_oszto" attrs="{'invisible': [('customer','=', False)]}" />
                     <field name="postai" attrs="{'invisible': ['|',('customer','=', False), ('is_company','=',True)]}" />
