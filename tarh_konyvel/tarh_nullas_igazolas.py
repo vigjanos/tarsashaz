@@ -14,7 +14,7 @@ class tarh_nullas(models.Model):
     tarsashaz = fields.Many2one('res.partner', string='Társasház', required="True",
                                 domain="[('is_company','=',True),('name','ilike','%rsash%')]")
     tulajdonos = fields.Many2one('res.partner', string='Tulajdonos')
-    datum = fields.Date(string='Igazolás dátuma', default=fields.date.today())
+    datum = fields.Date(string='Igazolás dátuma', default=lambda self: fields.date.today())
 
 
 '''Ezt majd lehet, hogy el kell innen pakolni később!'''
