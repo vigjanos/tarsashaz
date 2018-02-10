@@ -274,8 +274,10 @@ class tarh_bankbiz_sor(osv.osv):
         ''' a tranzakcio tipusanal rogzitettektol fuggoen allitjuk a jovairast vagy terhelest'''
         if self.pool.get('tarh.tranzakcio').browse(cr, uid, tranzakcio_id, context=None).jovairas:
             eredmeny['jovairas'] = True
+            eredmeny['terheles_ossz'] = 0
         else:
             eredmeny['jovairas'] = False
+            eredmeny['jovairas_ossz'] = 0
         '''Ha a felhasználó visszaváltoztat valami másra, és az nem kozos koltsegre valtozott akkor nullazzuk a jovairast es toroljuk az eloirast'''
         valtozott = self.pool.get('tarh.tranzakcio').search(cr, uid, [
             ('name', '=', 'Közös költség befizetés')], context=context)[0]
@@ -1001,7 +1003,7 @@ class tarh_lakaselad(osv.osv):
         'elado': fields.many2one('res.partner', 'Elado', required=True),  # view-ben majd szűrni kell!
         'uj_tulajdonos': fields.char('Uj tulaj nev', required=True),
         'eladas_datum': fields.date('Eladas datuma', required=True),
-        'vetel_datum': fields.date('Hasznalatbavetel', required=True),
+        'vetel_datum': fields.date('Használatbavetel', required=True),
         'email': fields.char('Vevo email'),
         'telefon': fields.char('Vevo telefon'),
         'mobile':fields.char('Vevo mobil'),
@@ -1023,6 +1025,13 @@ class tarh_lakaselad(osv.osv):
             szeletelt=str_date.split("-")
             return(date( int(szeletelt[0]),int(szeletelt[1]),int(szeletelt[2])))
     '''
+    def onchange_eladas_datum(self,cr,uid,ids,eladas_datum,context):
+        eredmeny  = {}
+        if eladas_datum:
+            eladas_datum = str_to_date(eladas_datum)
+            vetel_datum = eladas_datum + timedelta(days=1)
+            eredmeny['vetel_datum'] = vetel_datum
+        return {'value': eredmeny}
 
     def lakaselad_rogzit (self, cr, uid, ids, context):
 

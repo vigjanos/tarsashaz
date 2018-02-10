@@ -453,7 +453,8 @@
                         </group>
                         <group>
                             <group>
-                                <field name="eladas_datum" placeholder="Eladás dátuma"/>
+                                <field name="eladas_datum" placeholder="Eladás dátuma"
+                                       on_change="onchange_eladas_datum(eladas_datum)"/>
                                 <field name="vetel_datum" placeholder="Használatbavétel dátuma"/>
                                 <field name="email" placeholder="Vevő email"/>
                                 <field name="telefon" placeholder="Vevő telefon"/>
