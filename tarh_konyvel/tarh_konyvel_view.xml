@@ -339,11 +339,14 @@
                                 <field name="eloir_kezd" placeholder="Előírás kezdete dátum"/>
                                 <field name="eloir_vege" placeholder="Előírás vége dátum"/>
                                 <field name="esedekes" placeholder="A hónap melyik napján esedékes"/>
+                                <field name="osszeg"/>
                             </group>
                             <group>
                                 <field name="terulet_aranyos"/>
-                                <field name="rendszeres"/>
-                                <field name="osszeg"/>
+                                <field name="tulhanyad_aranyos"/>
+                                <field name="legm_aranyos"/>
+                                <field name="lakoszam_aranyos"/>
+                                <field name="rendszeres" invisible="1"/>
                             </group>
                         </group>
                     </sheet>

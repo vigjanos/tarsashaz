@@ -418,14 +418,18 @@ class tarh_eloiras_haz(osv.osv):
         'eloir_vege': fields.date('Eloiras vege'),
         'esedekes': fields.integer('Esedekesseg napja'),
         'terulet_aranyos': fields.boolean('Terulettol fugg'),
+        'tulhanyad_aranyos':fields.boolean('Tulajdoni hanyad fuggo'),
+        'legm_aranyos': fields.boolean('Legkobm fuggo'),
+        'lakoszam_aranyos': fields.boolean('Lakok szamatol fuggo ', help=''),
         'rendszeres': fields.boolean('Rendszeres befizetes'),
-        'osszeg': fields.integer('Fizetendo osszeg', required=True),
+        'osszeg': fields.integer('Fizetendő összeg', required=True),
     }
     _defaults = {
         'terulet_aranyos': True,
         'rendszeres': True,
         'eloir_kezd': "2010-01-01",
-        'eloir_vege': "2050-12-31"
+        'eloir_vege': "2050-12-31",
+        'esedekes':10
     }
 
 
