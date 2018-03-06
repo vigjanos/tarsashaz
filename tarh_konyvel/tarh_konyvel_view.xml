@@ -555,6 +555,7 @@
                     <field name="jovairas" string="Összeg"
                            filter_domain="['|',('jovairas','=', self),('terheles','=',self)]"/>
                     <field name="kivonatszam" string="Bankbizonylat száma"/>
+                    <field name="erteknap" string="Könyvelés napja"/>
                     <separator/>
                     <group expand="0" string="Csoportosítás...">
                         <filter string="Társasházak" domain="[]"
