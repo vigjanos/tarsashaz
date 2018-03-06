@@ -68,7 +68,12 @@ class tarh_lakohavijel2(models.Model):
             befejezo_eloiras = befejezo_lekerdezes[4]
             befejezo_befizetes = befejezo_lekerdezes[5]
             zaro_egyenleg = befejezo_lekerdezes[0]
-            eloiras_lista = list(set(befejezo_eloiras) - set(kezdo_eloiras))
+            # eloiras_lista = list(set(befejezo_eloiras) - set(kezdo_eloiras)) kiszedte az ugyanarra a napra előírt
+            # ugyanolyan előírásokat
+            eloiras_lista = []
+            for _eloiras in befejezo_eloiras:
+                if not _eloiras[0] < str_to_date(_kezdatum):
+                    eloiras_lista.append(_eloiras)
             #befizetes_lista = list(set(befejezo_befizetes) - set(kezdo_befizetes))  a teljesen ugyanolyan sorokat is kiveszi
             befizetes_lista = []
             for _befizetes in befejezo_befizetes:
