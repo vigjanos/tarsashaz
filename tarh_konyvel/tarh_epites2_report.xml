@@ -84,7 +84,7 @@
                             </table>
                         </div>
                         <div class="row col-xs-12 text-right mt32">
-                            Nyomtatva: <span t-esc="time.strftime('%x')"/>
+                            Nyomtatva: <span t-esc="time.strftime('%Y.%m.%d')"/>
                         </div>
                     </div>
                 </t>

@@ -305,7 +305,7 @@
                             </div>
                             <div class="row col-xs-12 text-right mt32">
                                 Nyomtatva:
-                                <span t-esc="time.strftime('%x')"/>
+                                <span t-esc="time.strftime('%Y.%m.%d')"/>
                             </div>
                         </div> <!-- Ez a page div-je! -->
                     </t>
@@ -645,7 +645,7 @@
                             </div>
                             <div class="row col-xs-12 text-right mt32">
                                 Nyomtatva:
-                                <span t-esc="time.strftime('%x')"/>
+                                <span t-esc="time.strftime('%Y.%m.%d')"/>
                             </div>
                         </div> <!-- Ez a page div-je! -->
                     </t>
