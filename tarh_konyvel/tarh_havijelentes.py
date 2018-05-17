@@ -62,22 +62,35 @@ class tarh_lakohavijel2(models.Model):
             torlendok = _sor_hivatkozas.search([('havijel_id', '=', sajat_id)])
             torlendok.unlink()
 
+            # ahol van késedelmi kamat, ott kellenek majd ezek
+            kamat_kezdoidopontban=0
+            kamat_vegidopontban=0
+
             # előállítjuk az előírás és befizetés listákat
             kezdo_eloiras = kezdo_lekerdezes[4]
             kezdo_befizetes = kezdo_lekerdezes[5]
             befejezo_eloiras = befejezo_lekerdezes[4]
             befejezo_befizetes = befejezo_lekerdezes[5]
             zaro_egyenleg = befejezo_lekerdezes[0]
+
+            #kiszedjük a kezdő listában a már addig felszámított kamat összegét
+            for elo in kezdo_eloiras:
+                if elo[1] == 'Késedelmi kamat':
+                    kamat_kezdoidopontban = elo[2]
+
+
             # eloiras_lista = list(set(befejezo_eloiras) - set(kezdo_eloiras)) kiszedte az ugyanarra a napra előírt
             # ugyanolyan előírásokat
             eloiras_lista = []
             for _eloiras in befejezo_eloiras:
                 if not _eloiras[0] < str_to_date(_kezdatum):
+                    if _eloiras[1] == 'Késedelmi kamat':
+                        kamat_vegidopontban = _eloiras[2] - kamat_kezdoidopontban
                     eloiras_lista.append(_eloiras)
             #befizetes_lista = list(set(befejezo_befizetes) - set(kezdo_befizetes))  a teljesen ugyanolyan sorokat is kiveszi
             befizetes_lista = []
             for _befizetes in befejezo_befizetes:
-                if not _befizetes[0] < str_to_date(_kezdatum):
+                if not _befizetes[0] <= str_to_date(_kezdatum):
                     befizetes_lista.append(_befizetes)
 
 
@@ -93,10 +106,14 @@ class tarh_lakohavijel2(models.Model):
 
             # beírjuk az időszak alatti előírásokat
             for eloiras in eloiras_lista:
+                if eloiras[1] == 'Késedelmi kamat':
+                    ertek = kamat_vegidopontban
+                else:
+                    ertek = eloiras[2]
                 _sor_hivatkozas.create({
                     'erteknap': eloiras[0],
                     'szoveg': eloiras[1],
-                    'eloiras': eloiras[2],
+                    'eloiras': ertek,
                     'befizetes': 0,
                     'havijel_id': sajat_id
                 })
