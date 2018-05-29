@@ -47,7 +47,7 @@ class tarh_bankbiz_sor(models.Model):
                     van_csekkes = _tarh_eloiras_haz.search(
                         [('konyvelt_haz', '=', tarsashaz_id),
                          ('eloirfajta.name', 'ilike', 'Csekkes%'),
-                         ('eloir_kezd', '<', datum),
+                         ('eloir_kezd', '<=', datum),
                          ('eloir_vege', '>=', datum)])
                     if van_csekkes:
                         lako_egyszeri_eloiras(self, tarsashaz_id, partner, van_csekkes.osszeg, datum, csekkes_eloir_fajta_id)
@@ -76,7 +76,7 @@ class tarh_bankbiz_sor(models.Model):
                     van_csekkes = _tarh_eloiras_haz.search(
                         [('konyvelt_haz', '=', tarsashaz_id),
                          ('eloirfajta.name', 'ilike', 'Csekkes%'),
-                         ('eloir_kezd', '<', datum),
+                         ('eloir_kezd', '<=', datum),
                          ('eloir_vege', '>=', datum)])
                     if van_csekkes:  # van a társasházban a csekkbefizetéshez előírva a datum idején kötelezettség
                         lako_egyszeri_eloiras(self, tarsashaz_id, partner, van_csekkes.osszeg, datum,
