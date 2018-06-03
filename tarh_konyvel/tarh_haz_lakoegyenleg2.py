@@ -50,7 +50,7 @@ class tarh_haz_lakoegyenleg2(models.Model):
 
         tulajlista = lakolista(self, _vegdatum, _tarsashaz)
         for tulaj in tulajlista:
-            tulajdonos = _res_partner_hivatkozas.search([('id', '=', tulaj)])
+            tulajdonos = _res_partner_hivatkozas.search([('id', '=', tulaj),'|',('active','=',False),('active','=',True)])
             tulajertek_kezd = tulajegyenleg(self, tulaj, _kezdatum)
             tulajertek_veg = tulajegyenleg(self, tulaj, _vegdatum)
 

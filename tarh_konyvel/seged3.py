@@ -188,21 +188,30 @@ def lakolista (self, datum, tarsashaz):
 #        [('parent_id', '=', tarsashaz), '&', ('alb_eladas', '<', datum), '|', ('active', '=', True),
 #         ('active', '=', False)])
     nem_vettek = ref_res_partner.search([('parent_id', '=', tarsashaz), ('alb_vetel', '>', datum)])
+    # meg kell keresni azokat a tulajdonosokat, aki már nem aktívak, de a datum után
+    # adták el az ingatlant
+    nem_aktiv_de_kell = ref_res_partner.search([('parent_id', '=', tarsashaz),('active', '=', False),
+                                                 ('alb_eladas','>=',datum)])
+    nem_aktiv_nem_kell = ref_res_partner.search([('parent_id', '=', tarsashaz),('active', '=', False),
+                                                 ('alb_vetel','>',datum)])
     nem_tulaj_idk = []
     tulaj_idk = []
 #    for eladott in eladottak:
 #        nem_tulaj_idk.append(eladott.id)
     for nem_vett in nem_vettek:
         nem_tulaj_idk.append(nem_vett.id)
-#    tulajdonosok = ref_res_partner.search(
-#        ['&', ('parent_id', '=', tarsashaz), '|', ('active', '=', True), ('active', '=', False)]
-#        , order='alb_szam')
+#    tulajdonosok = ref_res_partner.search(['&', ('parent_id', '=', tarsashaz), '|', ('active', '=', True),
+#                                           ('active', '=', False)], order='alb_szam')
     tulajdonosok = ref_res_partner.search([('parent_id', '=', tarsashaz)], order='alb_szam')
 
     for tulaj in tulajdonosok:
         tulaj_idk.append(tulaj.id)
     for eladva in nem_tulaj_idk:
         tulaj_idk.remove(eladva)  # eltavolitjuk a a tulajdonosok listajabol az eladottakat
+    for hozza_ad in nem_aktiv_de_kell:
+        tulaj_idk.append(hozza_ad.id)
+    for elvesz in nem_aktiv_nem_kell:
+        tulaj_idk.remove(elvesz.id)
     return (tulaj_idk)  # visszaterunk a tulajdonosok listajaval a datum idopontban
 
 
