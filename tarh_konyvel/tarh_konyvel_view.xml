@@ -43,7 +43,7 @@
                                         </h1>
                                         <group>
                                             <field name="partner"
-                                                   domain="['|',('is_company','=',True),('parent_id','=',parent.th_szamlatul)]"
+                                                   domain="['|',('is_company','=',True),'&amp;',('parent_id','=',parent.th_szamlatul),'|',('active','=', True),('active','=',False)]"
                                                    on_change="onchange_partneruj(parent.biz_datum, partner)"/>
 
                                             <field name="tarh_tranzakcio"
@@ -938,4 +938,6 @@
         ezzel itt szívtam vagy fél napot, hogy felhozza az aktív meg a nem aktív partnereket is.
         De nem teccet nekik!
         domain="['|',('is_company','=',True),'&amp;',('parent_id','=',parent.th_szamlatul),'|',('active','=', True),('active','=',False)]"
+
+        ez volt az eredeti : domain="['|',('is_company','=',True),('parent_id','=',parent.th_szamlatul)]"
         -->
