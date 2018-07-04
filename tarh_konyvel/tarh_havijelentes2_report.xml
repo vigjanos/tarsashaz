@@ -422,6 +422,11 @@
                                     <br/>
                                     Telefon:
                                     <span t-field="user.phone"/>
+                                    <br/>
+                                    Műszaki előadó: <span t-field="docs[0].tulaj.parent_id.muszakis.name"/>
+                                    <br/>
+                                    Telefon: <span t-field="docs[0].tulaj.parent_id.muszakis.phone"/>
+                                    <br/>
                                 </div>
                             </div>
                         </div>
