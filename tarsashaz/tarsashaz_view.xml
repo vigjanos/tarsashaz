@@ -279,6 +279,9 @@
                     </page>
 
                     <page string="Közművek" name="kozmuvek" attrs="{'invisible': ['|',('is_company','=',False),('supplier','=',True)]}">
+
+                            <field name="kozmuvek"/>
+
                         <!--
                             <div>
                                 <p>Accounting-related settings are managed on <button name="open_commercial_entity" type="object" string="the parent company" class="oe_link"/></p>
