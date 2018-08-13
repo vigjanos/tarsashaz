@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_postazas_form" model="ir.ui.view">
+            <field name="name">postazas form</field>
+            <field name="model">tarh.postazas</field>
+            <field name="type">form</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="">
+                    <header>
+                        <field name="status" widget="statusbar" clickable="True"
+                               attrs="{'invisible': [('szamla', '=', False)]}"/>
+                    </header>
+                    <sheet>
+                        <h1>
+                            <label string="Érkező és küldött dokumentumok nyilvántartása"/>
+                        </h1>
+                        <group>
+                            <field name="id" string="Iktatószám:"/>
+                            <field name="bejovo"/>
+                            <field name="cimzett"/>
+                            <field name="bekuldo"/>
+                            <field name="erkezett" attrs="{'invisible': [('bejovo', '=', False)]}"/>
+                            <field name="elkuldve" attrs="{'invisible': [('bejovo', '=', True)]}"/>
+                            <field name="szamla"/>
+                            <field name="felelos"/>
+                            <field name="referencia" placeholder="Számlaszám, iktatószám stb."/>
+                            <field name="szamla_osszeg" attrs="{'invisible': [('szamla', '=', False)]}"/>
+                            <field name="tranzakcio_id" placeholder="Számla esetén a tranzakció megnevezése"
+                                   attrs="{'invisible': [('szamla', '=', False)]}"/>
+                            <field name="megjegyzes"/>
+                            <field name="dokumentum" widget="many2many_binary"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_postazas_tree" model="ir.ui.view">
+            <field name="name">postazas tree</field>
+            <field name="model">tarh.postazas</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <tree string="Kimenő és bejövő dokumentumok iktatása">
+                    <field name="id"/>
+                    <field name="bejovo" invisible="1"/>
+                    <field name="erkezett" attrs="{'invisible': [('bejovo', '=', False)]}"/>
+                    <field name="elkuldve" attrs="{'invisible': [('bejovo', '=', True)]}"/>
+                    <field name="cimzett"/>
+                    <field name="bekuldo"/>
+                    <field name="felelos"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="postazas_action" model="ir.actions.act_window">
+            <field name="name">Iktatás</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.postazas</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_postazas_tree"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p>
+                <p>
+                    <!-- More details about what a user can do with this object will be OK -->
+                </p>
+            </field>
+        </record>
+
+        <record id="view_postakoltseg_form" model="ir.ui.view">
+            <field name="name">postakoltseg form</field>
+            <field name="model">tarh.postakoltseg</field>
+            <field name="type">form</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Postaköltség">
+                    <sheet>
+                        <h1>
+                            <label string="Elküldött dokumentumok postaköltsége"/>
+                        </h1>
+                        <group>
+                            <field name="tarsashaz"/>
+                            <field name="cimzett"/>
+                            <field name="datum"/>
+                            <field name="fajta"/>
+                            <field name="osszeg"/>
+                            <field name="megjegyzes"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_postakoltseg_tree" model="ir.ui.view">
+            <field name="name">postakoltseg tree</field>
+            <field name="model">tarh.postakoltseg</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="datum"/>
+                    <field name="tarsashaz"/>
+                    <field name="cimzett"/>
+                    <field name="osszeg"/>
+                    <field name="fajta"/>
+                    <field name="megjegyzes"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="postakoltseg_action" model="ir.actions.act_window">
+            <field name="name">Postaköltségek</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.postakoltseg</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_postakoltseg_tree"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p>
+                <p>
+                    <!-- More details about what a user can do with this object will be OK -->
+                </p>
+            </field>
+        </record>
+
+        <record id="view_fenymasolas_form" model="ir.ui.view">
+            <field name="name">fenymasolas form</field>
+            <field name="model">tarh.fenymasolas</field>
+            <field name="type">form</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Fénymásolás">
+                    <sheet>
+                        <h1>
+                            <label string="Házak részére végzett fénymásolás"/>
+                        </h1>
+                        <group>
+                            <field name="datum"/>
+                            <field name="tarsashaz"/>
+                            <field name="oldalszam"/>
+                            <field name="megjegyzes"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_fenymasolas_tree" model="ir.ui.view">
+            <field name="name">fenymasolas tree</field>
+            <field name="model">tarh.fenymasolas</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="datum"/>
+                    <field name="tarsashaz"/>
+                    <field name="oldalszam"/>
+                    <field name="megjegyzes"/>
+                    <field name="create_uid"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="fenymasolas_action" model="ir.actions.act_window">
+            <field name="name">Fénymásolás</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.fenymasolas</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_fenymasolas_tree"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p>
+                <p>
+                    <!-- More details about what a user can do with this object will be OK -->
+                </p>
+            </field>
+        </record>
+
+
+        <menuitem name="Dokumentumok" id="postazas_menu_root" sequence="108"/>
+        <menuitem id="postazas_menu_1" name="Dokumentumok" parent="postazas_menu_root"/>
+        <menuitem id="postazas_menu_2" name="Iktatás" parent="postazas_menu_1" action="postazas_action"/>
+        <menuitem id="postazas_menu_3" name="Postaköltség" parent="postazas_menu_1" action="postakoltseg_action"/>
+        <menuitem id="postazas_menu_4" name="Fénymásolás" parent="postazas_menu_1" action="fenymasolas_action"/>
+    </data>
+</openerp>
