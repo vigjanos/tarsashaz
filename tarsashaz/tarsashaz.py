@@ -66,6 +66,7 @@ class tul_hanyad(osv.osv):
                 'konyvelo': fields.many2one('res.partner', 'Könyvelő',
                                             domain="[('parent_id.name','ilike','újlipótv')]"),
                 'legm3': fields.integer('Légköbméter', help=''),
+                'kozmuvek': fields.text(string='Közművek azonosítói', help="Ide írható pl. a Vízműveknél az azonosítónk stb."),
                 }
 
     _defaults = {
