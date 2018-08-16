@@ -9,6 +9,7 @@ from openerp import models, fields, api
 
 class Postazas(models.Model):
     _name = 'tarh.postazas'
+    _order = 'erkezett desc, id desc'
 
     cimzett = fields.Many2one('res.partner', string='Címzett', help='')
     bekuldo = fields.Many2one('res.partner', string='Feladó', help='')
@@ -32,6 +33,7 @@ class Postazas(models.Model):
 
 class Postakoltseg(models.Model):
     _name = ('tarh.postakoltseg')
+    _order = 'datum desc'
 
     tarsashaz = fields.Many2one('res.partner', string='Társasház', required="True",
                                    domain="[('is_company','=',True),('name','ilike','%rsash%')]")
@@ -47,6 +49,7 @@ class Postakoltseg(models.Model):
 
 class Fenymasolas(models.Model):
     _name = ('tarh.fenymasolas')
+    _order = 'datum desc'
 
     datum = fields.Date('Dátum', default=fields.Date.today)
     tarsashaz = fields.Many2one('res.partner', string='Társasház', required="True",

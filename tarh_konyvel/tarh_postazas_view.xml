@@ -55,6 +55,25 @@
             </field>
         </record>
 
+        <record id="view_postazas_search" model="ir.ui.view">
+            <field name="name">postazas search</field>
+            <field name="model">tarh.postazas</field>
+            <field name="type">search</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <search string="">
+                    <field name="bekuldo" select="True" string="Beküldő/Címzett" filter_domain="['|',('bekuldo','ilike',self),('cimzett','ilike',self)]"/>
+                    <field name="megjegyzes" select="True"/>
+                    <group expand="0" string="Csoportosítás...">
+                        <filter string="Címzett" domain="[]" context="{'group_by':'cimzett'}"/>
+                        <filter string="Beküldő" domain="[]" context="{'group_by':'bekuldo'}"/>
+                        <filter string="Felelős" domain="[]" context="{'group_by':'felelos'}"/>
+                        <filter string="Dátum" domain="[]" context="{'group_by':'erkezett'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
         <record id="postazas_action" model="ir.actions.act_window">
             <field name="name">Iktatás</field>
             <field name="type">ir.actions.act_window</field>
@@ -112,6 +131,23 @@
             </field>
         </record>
 
+        <record id="view_postakoltseg_search" model="ir.ui.view">
+            <field name="name">postakoltseg search</field>
+            <field name="model">tarh.postakoltseg</field>
+            <field name="type">search</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <search string="">
+                    <field name="tarsashaz" string="Társasház/Címzett" select="True"
+                           filter_domain="['|',('tarsashaz','ilike',self),('cimzett','ilike',self)]"/>
+                    <group expand="0" string="Csoportosítás...">
+                        <filter string="Társasház" domain="[]" context="{'group_by':'tarsashaz'}"/>
+                        <filter string="Dátum" domain="[]" context="{'group_by':'datum'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
 
         <record id="postakoltseg_action" model="ir.actions.act_window">
             <field name="name">Postaköltségek</field>
@@ -164,6 +200,23 @@
                     <field name="megjegyzes"/>
                     <field name="create_uid"/>
                 </tree>
+            </field>
+        </record>
+
+        <record id="view_fenymasolas_search" model="ir.ui.view">
+            <field name="name">fenymasolas search</field>
+            <field name="model">tarh.fenymasolas</field>
+            <field name="type">search</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <search string="">
+                    <field name="tarsashaz" select="True" string="Társasház/megjegyzés"
+                           filter_domain="['|',('tarsashaz','ilike',self),('megjegyzes','ilike',self)]"/>
+                    <group expand="0" string="Csoportosítás...">
+                        <filter string="Társasház" domain="[]" context="{'group_by':'tarsashaz'}"/>
+                        <filter string="Dátum" domain="[]" context="{'group_by':'datum'}"/>
+                    </group>
+                </search>
             </field>
         </record>
 
