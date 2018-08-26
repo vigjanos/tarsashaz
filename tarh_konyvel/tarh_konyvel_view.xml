@@ -42,6 +42,7 @@
                                             <label string="Egy tranzakció könyvelése"/>
                                         </h1>
                                         <group>
+                                            <field name="iktatoszam" on_change="onchange_iktatoszam(iktatoszam, parent.th_szamlatul)"/>
                                             <field name="partner"
                                                    domain="['|',('is_company','=',True),'&amp;',('parent_id','=',parent.th_szamlatul),'|',('active','=', True),('active','=',False)]"
                                                    on_change="onchange_partneruj(parent.biz_datum, partner)"/>

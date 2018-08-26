@@ -11,8 +11,8 @@ class Postazas(models.Model):
     _name = 'tarh.postazas'
     _order = 'erkezett desc, id desc'
 
-    cimzett = fields.Many2one('res.partner', string='Címzett', help='')
-    bekuldo = fields.Many2one('res.partner', string='Feladó', help='')
+    cimzett = fields.Many2one('res.partner', string='Címzett', help='', required="True")
+    bekuldo = fields.Many2one('res.partner', string='Feladó', help='', required="True")
     bejovo = fields.Boolean('Bejövő irat', default=True)
     erkezett = fields.Date('Érkezés_dátuma', default=fields.Date.today)
     elkuldve = fields.Date('Kiküldés dátuma', default=fields.Date.today)

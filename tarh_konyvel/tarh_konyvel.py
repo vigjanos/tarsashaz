@@ -7,7 +7,7 @@ Created on 2014.06.02.
 from openerp.osv import osv, fields
 from datetime import date, time, datetime, timedelta
 from openerp.tools.translate import _
-from openerp import tools
+from openerp import tools, exceptions
 from seged import *
 import sys
 
@@ -199,6 +199,7 @@ class tarh_bankbiz_sor(osv.osv):
         'megjegyzes': fields.text('Megjegyzes'),
         'eloiras': fields.text('Eloiras'),
         'postai': fields.boolean('Csekkes befizetes'),
+        'iktatoszam': fields.integer('Iktatószám', help=''),
     }
 
     _defaults = {
@@ -268,6 +269,36 @@ class tarh_bankbiz_sor(osv.osv):
                         print sikerult
                 print "hamis most jeloltek ki"
         return
+
+    def onchange_iktatoszam(self, cr,uid, ids, iktatoszam, konyvelt_haz, context=None):
+        eredmeny = {}
+        if iktatoszam > 0:
+            if not self.pool.get('tarh.postazas').search(cr, uid, [('id','=',iktatoszam)]):
+                raise exceptions.ValidationError(_("Nem találok ilyen iktatószámú iratot!"))
+            rekord = self.pool.get('tarh.postazas').browse(cr, uid, iktatoszam, context=None)
+            if rekord:
+                print iktatoszam
+                print rekord.cimzett.id
+                print "Könyvelt ház=", konyvelt_haz
+                if rekord.cimzett.id != konyvelt_haz:
+                    raise exceptions.ValidationError(_("Valami probléma van, mert ez az iktatószámú irat a " + rekord.cimzett.name +
+                                                       " részére érkezett, Te pedig mintha nem azt a céget könyvelnéd!" ))
+                if not rekord.tranzakcio_id :
+                    raise exceptions.ValidationError(_("Az iktatott iraton nincs kitöltve a tranzakció megnevezése"))
+                if not rekord.referencia:
+                    rekord.referencia = ""
+                if not rekord.megjegyzes:
+                    rekord.megjegyzes = ""
+                eredmeny['partner'] = rekord.bekuldo.id
+                eredmeny['jovairas'] = False
+                eredmeny['tarh_tranzakcio'] = rekord.tranzakcio_id
+                eredmeny['terheles_ossz'] = rekord.szamla_osszeg
+                eredmeny['megjegyzes'] = rekord.referencia + " " + rekord.megjegyzes
+                self.pool.get('tarh.postazas').write(cr,uid,iktatoszam,{'status':'fizetve'}, context=None)
+
+
+
+        return {'value': eredmeny}
 
     def onchange_tranzakcio (self, cr, uid, ids, tranzakcio_id, context=None):
         eredmeny = {}
