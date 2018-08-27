@@ -4,7 +4,7 @@
  Boldog karajcsont!
 '''
 
-from openerp import models, fields, api
+from openerp import models, fields, api, exceptions
 from seged3 import str_to_date, honap_utolsonap
 from datetime import date, timedelta
 
@@ -67,6 +67,13 @@ class tarh_eloiras_haz(models.Model):
         van_eloiras = _tarh_eloiras_haz.search([('konyvelt_haz', '=', _konyvelt_haz),
                                                 ('eloirfajta', '=', _eloirfajta),
                                                 ('eloir_vege', '=', _eloir_vege)])
+        mindegyforma = _tarh_eloiras_haz.search([('konyvelt_haz', '=', _konyvelt_haz),
+                                                ('eloirfajta', '=', _eloirfajta),
+                                                ('eloir_vege', '=', _eloir_vege),
+                                                 ('eloir_kezd','=',_eloir_kezd)])
+        if mindegyforma:
+            raise exceptions.ValidationError(("Kéteszer nem lehet teljesen ugyanazt az előírást előírni"))
+
         if len(van_eloiras) > 1:
             print 'Hiba van, több mint egy!!!! ide kell dobni egy excepsönt!'
         if van_eloiras:
@@ -160,7 +167,8 @@ class tarh_eloiras_haz(models.Model):
         else:
             '''megkeressük azokat az ingatlanokat, amelyek aktívak, vagy az albetét eladása későbbi, 
             mint az előírás kezdete, és az albetét száma nagyobb mint nulla (nem bérlemény)'''
-            aktiv_ingatlanok = _res_partner.search([('parent_id','=',_konyvelt_haz)])
+            aktiv_ingatlanok = _res_partner.search([('parent_id','=',_konyvelt_haz),
+                                                    ('alb_szam','>',0)])
             eladott_ingatlanok = _res_partner.search([('parent_id','=',_konyvelt_haz),
                                                       ('active','=',False),
                                                       ('alb_eladas', '>', _eloir_kezd)])
@@ -186,6 +194,36 @@ class tarh_eloiras_haz(models.Model):
 
             elif 'vízórával' in eloiras_neve:
                 print 'közös költség vízórával'
+            elif 'endkívüli' in eloiras_neve:
+                ingatlanok = aktiv_ingatlanok + eladott_ingatlanok
+                for ingatlan in ingatlanok:
+                    osszeg=0
+                    if ingatlan.vizora == 'v':
+                        vizoras = True
+                    else:
+                        vizoras = False
+                    alapterulet = ingatlan.alapterulet
+                    if _terulet_aranyos:
+                        osszeg = _osszeg * alapterulet
+                    elif _tulhanyad_aranyos:
+                        osszeg = _osszeg * ingatlan.tulhanyad
+                    elif _lakoszam_aranyos:
+                        osszeg = _osszeg * ingatlan.lakoszam
+                    elif _legm_aranyos:
+                        osszeg = _osszeg * ingatlan.legm3
+                    else:
+                        raise exceptions.ValidationError(("nincs megadva mi alapján számítódik a költség m2, légm3, lakószám stb!"))
+                    sikeres = _tarh_eloiras_lako.create({
+                        'esedekes': _esedekes,
+                        'lako': ingatlan.id,
+                        'tarsashaz': _konyvelt_haz,
+                        'eloirfajta': _eloirfajta,
+                        'eloir_kezd': _eloir_kezd,
+                        'eloir_vege': _eloir_vege,
+                        'osszeg': osszeg,
+                        'alapterulet': alapterulet,
+                        'vizora': vizoras
+                    })
             else:
                 print 'egyik sem, HIBA!!!'
             pass
