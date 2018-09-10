@@ -9,7 +9,7 @@ előző év december 31-et.
 '''
 
 from openerp import models, fields, api, exceptions, _
-from seged3 import utolso_konyvelt_datum,lakolista,tulajegyenleg,str_to_date
+from seged3 import utolso_konyvelt_datum,lakolista,tulajegyenleg,str_to_date, elso_konyvelt_datum
 from datetime import date
 
 
@@ -30,7 +30,11 @@ class tarh_lako_eves2(models.Model):
         self.bank = self.tarsashaz.uzemeltetesi
         most = date.today()
         self.kezdatum = date(most.year - 1, 1, 1)
+
         if self.tarsashaz:  # hogy első hívásnál ne dobjon hibát
+            kezeles_kezdete = elso_konyvelt_datum(self, self.tarsashaz.id)
+            if kezeles_kezdete > date(most.year-1,1,1):
+                self.kezdatum = kezeles_kezdete
             uts_konyv_dat= str_to_date(utolso_konyvelt_datum(self, self.tarsashaz.id))
             if uts_konyv_dat > date(most.year-1,12,31):
                 self.vegdatum = date(most.year-1,12,31)
