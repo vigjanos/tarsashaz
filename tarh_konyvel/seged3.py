@@ -250,3 +250,24 @@ def utolso_konyvelt_datum (self, tarsashaz):
         return eredmeny[0]
     else:
         return (time.strftime("%Y-%m-%d"))  # ha nincs meg konyvelt befizetes, akkor a mai datummal terunk vissza
+
+def elso_konyvelt_datum (self, tarsashaz):
+    '''
+    a társasház első könyvelt dátumát kérdezi le.
+    :param self:
+    :param tarsashaz: társasház kódja int
+    :return: a legelső lekönyvelt nap   date
+    '''
+    tarsashaz = str(tarsashaz)
+    cur = self.env.cr
+    conn_string = "select erteknap from tarh_bankbiz_sor join tarh_bankbiz on tarh_bankbiz.id=bankbiz_id \
+                   where th_szamlatul=" + tarsashaz + " order by erteknap limit 1"
+    cur.execute(conn_string)
+    eredmeny = cur.fetchone()
+    if eredmeny:
+        elso_datum = eredmeny[0]
+        elso_datum = str_to_date(elso_datum)
+        vissza_datum = date(elso_datum.year,elso_datum.month,1)
+        return vissza_datum
+    else:
+        return (time.strftime("%Y-%m-%d"))  # ha nincs meg konyvelt befizetes, akkor a mai datummal terunk vissza

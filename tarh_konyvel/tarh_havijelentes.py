@@ -4,7 +4,7 @@ create by vigjanos on 2016.12.15.
 '''
 
 # from seged import *
-from seged3 import tulajegyenleg, utolso_konyvelt_datum, str_to_date
+from seged3 import tulajegyenleg, utolso_konyvelt_datum, str_to_date, elso_konyvelt_datum
 from openerp import models, fields, api, exceptions, _
 from datetime import date
 
@@ -30,9 +30,22 @@ class tarh_lakohavijel2(models.Model):
         self.tarsashaz = self.tulaj.parent_id
         self.bankszamla = self.tulaj.parent_id.uzemeltetesi
         most = date.today()
-        self.kezdatum = date(most.year-1, most.month, 1)
+        beirando_kezdo_datum = date(most.year-1, most.month, 1)
+        #ha még nem könyveljük legalább egy éve a házat!
         if self.tarsashaz:
-            self.vegdatum = utolso_konyvelt_datum(self, self.tulaj.parent_id.id)
+            elso_datum = elso_konyvelt_datum(self, self.tulaj.parent_id.id)
+            if elso_datum >= beirando_kezdo_datum:
+                beirando_kezdo_datum = elso_datum
+        vetel_datum = self.tulaj.alb_vetel
+        if vetel_datum:
+            if str_to_date(vetel_datum) >= beirando_kezdo_datum:
+                beirando_kezdo_datum = str_to_date(vetel_datum)
+        self.kezdatum = beirando_kezdo_datum
+        if self.tarsashaz:
+            beirando_veg_datum = str_to_date(utolso_konyvelt_datum(self, self.tulaj.parent_id.id))
+            self.vegdatum = beirando_veg_datum
+            if beirando_kezdo_datum >= beirando_veg_datum:
+                raise exceptions.ValidationError(("Még nincs a tulajdonosnak könyvelt adata az időszakban!"))
         return
 
     @api.multi
