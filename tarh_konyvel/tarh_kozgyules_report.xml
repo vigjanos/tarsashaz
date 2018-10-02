@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <report id="kozgyules_report1"
+                model="tarh.hatarozatok"
+                string="képernyőre"
+                name="tarh_konyvel.kozgyules_riport1"
+                file="tarh_konyvel.tarh_kozgyules_report"
+                report_type="qweb-html"/>
+
+        <report id="kozgyules_report2"
+                model="tarh.hatarozatok"
+                string="pdf-be"
+                name="tarh_konyvel.kozgyules_riport1"
+                file="tarh_konyvel.tarh_kozgyules_report"
+                report_type="qweb-pdf"/>
+
+        <template id="kozgyules_riport1">
+            <t t-call="report.external_layout">
+                <t t-call="report.html_container">
+                    <div class="page">
+                        <h3>
+                            <div class="text-center">
+                                Közgyűlési Határozatok Könyve
+                                <span t-field="docs[0].tarsashaz.name"/>
+                            </div>
+                        </h3>
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Közgyűlés időpontja</th>
+                                    <th class="text-center">Határozat száma</th>
+                                    <th class="text-center">Határozat rövid leírása</th>
+                                    <th class="text-center">Felelős</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="docs" t-as="dokk">
+                                    <td width="10%">
+                                        <span t-field="dokk.kozgy_datuma"/>
+                                    </td>
+                                    <td width="10%">
+                                        <span t-field="dokk.name"/>
+                                    </td>
+                                    <td width="65%">
+                                        <span t-field="dokk.hat_rovid_leir"/>
+                                    </td>
+                                    <td width="15%">
+                                        <span t-field="dokk.felelos_id.name"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>

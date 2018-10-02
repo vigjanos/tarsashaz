@@ -44,6 +44,7 @@
             'tarh_nullas_igazolas_view.xml',
             'tarh_nullas_igazolas_report.xml',
             'tarh_postazas_view.xml',
+            'tarh_kozgyules_report.xml',
             ],
     'installable': True,
   

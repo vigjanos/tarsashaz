@@ -38,6 +38,8 @@ class Hatarozatok(models.Model):
     vegrehajtott = fields.Boolean(default=False, string='Kész')
     kozgyules_id = fields.Many2one('tarh.kozgyules', string='Közgyűlés')
 
+    _order = 'kozgy_datuma, name'
+
     @api.onchange('name')
     def tarsashaz_keres (self):
         if not self.tarsashaz:
