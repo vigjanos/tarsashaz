@@ -62,7 +62,8 @@
             <field name="priority" eval="8"/>
             <field name="arch" type="xml">
                 <search string="">
-                    <field name="bekuldo" select="True" string="Beküldő/Címzett" filter_domain="['|',('bekuldo','ilike',self),('cimzett','ilike',self)]"/>
+                    <field name="bekuldo" select="True" string="Beküldő/Címzett"
+                           filter_domain="['|',('bekuldo','ilike',self),('cimzett','ilike',self)]"/>
                     <field name="megjegyzes" select="True"/>
                     <group expand="0" string="Csoportosítás...">
                         <filter string="Címzett" domain="[]" context="{'group_by':'cimzett'}"/>
@@ -236,11 +237,175 @@
             </field>
         </record>
 
+        <record id="mero_ora_form" model="ir.ui.view">
+            <field name="name">meroora form</field>
+            <field name="model">tarh.mero.ora</field>
+            <field name="arch" type="xml">
+                <form string="Mérőórák">
+                    <sheet>
+                        <group>
+                            <field name="tarsashaz"/>
+                            <field name="tulajdonos" options="{'no_create' : True}"
+                                   domain="[('parent_id','=', tarsashaz)]"/>
+                            <field name="ora_tipus"/>
+                            <field name="name"/>
+                            <field name="felszerelve"/>
+                            <field name="ervenyes"/>
+                            <field name="aktiv"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
 
-        <menuitem name="Dokumentumok" id="postazas_menu_root" sequence="108"/>
+        <record id="mero_ora_tree" model="ir.ui.view">
+            <field name="name">meroora tree</field>
+            <field name="model">tarh.mero.ora</field>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="tarsashaz"/>
+                    <field name="tulajdonos"/>
+                    <field name="ora_tipus"/>
+                    <field name="name"/>
+                    <field name="felszerelve"/>
+                    <field name="ervenyes"/>
+                    <field name="aktiv"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="mero_ora_search" model="ir.ui.view">
+            <field name="name">meroora search</field>
+            <field name="model">tarh.mero.ora</field>
+            <field name="type">search</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <search string="">
+                    <field name="tarsashaz" string="Társasház" select="True"
+                           filter_domain="[('tarsashaz','ilike',self)]"/>
+                    <field name="tulajdonos" string="Tulajdonos" select="True"
+                           filter_domain="[('tulajdonos','ilike',self)]"/>
+                    <field name="name" string="Gyári szám" select="True"
+                           filter_domain="[('name','ilike',self)]"/>
+                    <field name="ora_tipus" string="Óra típus" select="True"
+                           filter_domain="[('ora_tipus','ilike',self)]"/>
+                    <group expand="0" string="Csoportosítás...">
+                        <filter string="Társasház" domain="[]" context="{'group_by':'tarsashaz'}"/>
+                        <filter string="Tulajdonos" domain="[]" context="{'group_by':'tulajdonos'}"/>
+                        <filter string="Gyári szám" domain="[]" context="{'group_by':'name'}"/>
+                        <filter string="Aktív" domain="[]" context="{'group_by':'aktiv'}"/>
+                        <filter string="Óratípus" domain="[]" context="{'group_by':'ora_tipus'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="meroora_action" model="ir.actions.act_window">
+            <field name="name">Mérő órák</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.mero.ora</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="mero_ora_tree"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p>
+                <p>
+                    <!-- More details about what a user can do with this object will be OK -->
+                </p>
+            </field>
+        </record>
+
+
+        <record id="oraallas_form" model="ir.ui.view">
+            <field name="name">Óraállás</field>
+            <field name="model">tarh.oraallas.rogzites</field>
+            <field name="arch" type="xml">
+                <form string="Óraállás rögzítés">
+                    <sheet>
+                        <group>
+                            <field name="tarsashaz"/>
+                            <field name="tulaj" options="{'no_create' : True}"
+                                   domain="[('parent_id','=', tarsashaz)]"/>
+                            <field name="mero_ora"
+                                   domain="[('tulajdonos','=', tulaj)]"/>
+                            <field name="oratipus"/>
+                            <field name="ora_allas"/>
+                            <group>
+                                <field name="datum"/>
+                                <field name="olvasott"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="oraallas_tree" model="ir.ui.view">
+            <field name="name">Óraállás tree</field>
+            <field name="model">tarh.oraallas.rogzites</field>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="tulaj"/>
+                    <field name="mero_ora"/>
+                    <field name="oratipus"/>
+                    <field name="datum"/>
+                    <field name="olvasott"/>
+                    <field name="ora_allas"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="oraallas_search" model="ir.ui.view">
+            <field name="name">oraallas search</field>
+            <field name="model">tarh.oraallas.rogzites</field>
+            <field name="type">search</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <search string="">
+                    <field name="tarsashaz" string="Társasház" select="True"
+                           filter_domain="[('tarsashaz','ilike',self)]"/>
+                    <field name="tulaj" string="Tulajdonos" select="True"
+                           filter_domain="[('tulaj','ilike',self)]"/>
+                    <field name="oratipus" string="Óratípus" select="True"
+                           filter_domain="[('oratipus','ilike',self)]"/>
+                    <group expand="0" string="Csoportosítás...">
+                        <filter string="Társasház" domain="[]" context="{'group_by':'tarsashaz'}"/>
+                        <filter string="Gyári szám" domain="[]" context="{'group_by':'mero_ora'}"/>
+                        <filter string="Dátum" domain="[]" context="{'group_by':'datum'}"/>
+                        <filter string="Tulajdonos" domain="[]" context="{'group_by':'tulaj'}"/>
+                        <filter string="Óratípus" domain="[]" context="{'group_by':'oratipus'}"/>
+                        <filter string="Olvasott/Becsült" domain="[]" context="{'group_by':'olvasott'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+
+        <record id="oraallas_action" model="ir.actions.act_window">
+            <field name="name">Óraállás</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tarh.oraallas.rogzites</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="oraallas_tree"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p>
+                <p>
+                    <!-- More details about what a user can do with this object will be OK -->
+                </p>
+            </field>
+        </record>
+
+
+        <menuitem name="Dokumentumok, Mérőórák" id="postazas_menu_root" sequence="108"/>
         <menuitem id="postazas_menu_1" name="Dokumentumok" parent="postazas_menu_root"/>
         <menuitem id="postazas_menu_2" name="Iktatás" parent="postazas_menu_1" action="postazas_action"/>
         <menuitem id="postazas_menu_3" name="Postaköltség" parent="postazas_menu_1" action="postakoltseg_action"/>
         <menuitem id="postazas_menu_4" name="Fénymásolás" parent="postazas_menu_1" action="fenymasolas_action"/>
+        <menuitem id="postazas_menu_5" name="Mérőórák" parent="postazas_menu_root"/>
+        <menuitem id="postazas_menu_6" name="Mérőórák" parent="postazas_menu_5" action="meroora_action"/>
+        <menuitem id="postazas_menu_7" name="Mérőállás rögzítés" parent="postazas_menu_5" action="oraallas_action"/>
     </data>
 </openerp>
