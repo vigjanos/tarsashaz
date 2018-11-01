@@ -64,7 +64,9 @@ class tarh_lako_eves2(models.Model):
         tulajlista = lakolista(self,_vegdatum,_tarsashaz)
         for tulaj in tulajlista:
             tul_datum=_kezdatum
-            tulajdonos = _res_partner_hivatkozas.search([('id', '=', tulaj)])
+            #tulajdonos = _res_partner_hivatkozas.search([('id', '=', tulaj)])
+            tulajdonos = _res_partner_hivatkozas.search(['&',('id', '=', tulaj),'|', ('active', '=', True),
+                                           ('active', '=', False)])
             most_rogzitve = _tulajdonos_hivatkozas.create({
                 'tulajdonos' : tulajdonos.id,
                 'alb_szam': tulajdonos.alb_szam,
