@@ -45,7 +45,8 @@ class tarh_lakohavijel2(models.Model):
             beirando_veg_datum = str_to_date(utolso_konyvelt_datum(self, self.tulaj.parent_id.id))
             self.vegdatum = beirando_veg_datum
             if beirando_kezdo_datum >= beirando_veg_datum:
-                raise exceptions.ValidationError(("Még nincs a tulajdonosnak könyvelt adata az időszakban!"))
+                return {'value': {}, 'warning': {'title': 'Figyelem!!!', 'message': 'Még nincs a tulajdonosnak könyvelt adata az időszakban! Kérlek ellenőrizd a kezdő- és záró dátumokat!'}}
+                #raise exceptions.Warning(("Még nincs a tulajdonosnak könyvelt adata az időszakban!"))
         return
 
     @api.multi
