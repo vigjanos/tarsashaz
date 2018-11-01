@@ -331,10 +331,8 @@
                                    domain="[('tulajdonos','=', tulaj)]"/>
                             <field name="oratipus"/>
                             <field name="ora_allas"/>
-                            <group>
-                                <field name="datum"/>
-                                <field name="olvasott"/>
-                            </group>
+                            <field name="datum"/>
+                            <field name="olvasott"/>
                         </group>
                     </sheet>
                 </form>
