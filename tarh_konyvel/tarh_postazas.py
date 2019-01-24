@@ -55,6 +55,7 @@ class Fenymasolas(models.Model):
     tarsashaz = fields.Many2one('res.partner', string='Társasház', required="True",
                                 domain="[('is_company','=',True),('name','ilike','%rsash%')]")
     oldalszam = fields.Integer('Oldalszám')
+    boritek = fields.Integer('Boríték')
     megjegyzes = fields.Char('Megjegyzés')
 
 class Mero_ora(models.Model):

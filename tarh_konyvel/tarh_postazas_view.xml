@@ -181,6 +181,7 @@
                             <field name="datum"/>
                             <field name="tarsashaz"/>
                             <field name="oldalszam"/>
+                            <field name="boritek"/>
                             <field name="megjegyzes"/>
                         </group>
                     </sheet>
@@ -198,6 +199,7 @@
                     <field name="datum"/>
                     <field name="tarsashaz"/>
                     <field name="oldalszam"/>
+                    <field name="boritek"/>
                     <field name="megjegyzes"/>
                     <field name="create_uid"/>
                 </tree>
