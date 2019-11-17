@@ -39,6 +39,13 @@
                 file="tarh_konyvel.tarh_havijelentes2_report"
                 report_type="qweb-pdf"/>
 
+        <report id="report_havijelentes_lekerdez6"
+                model="tarh.lakohavijel2"
+                string="felszólító Frisch pdf"
+                name="tarh_konyvel.frisch_felsz_lakoss"
+                file="tarh_konyvel.tarh_havijelentes2_report"
+                report_type="qweb-pdf"/>
+
         <template id="rep_kepviseleti_felszolit">
             <t t-call="report.external_layout">
                 <t t-call="report.html_container">
@@ -272,7 +279,6 @@
             </t>
         </template>
 
-
         <template id="zvekan_felsz_lakoss">
             <t t-call="tarh_konyvel.external_layout_zvekan">
                 <t t-call="report.html_container">
@@ -386,6 +392,127 @@
                             <br/>
                             ügyvéd
                         </div>
+                    </div>
+
+                    <!-- page div-je -->
+                </t>
+            </t>
+        </template>
+
+        <template id="frisch_felsz_lakoss">
+            <t t-call="tarh_konyvel.external_layout_frisch">
+                <t t-call="report.html_container">
+                    <div class="page">
+                        <div class="row">
+                            <div class="col-xs-6" style="font-size:16px;">
+                                <h3>
+                                    <strong>
+                                        <span t-field="docs[0].tulaj.name"/>
+                                        <br/>
+                                    </strong>
+                                </h3>
+                                <span t-field="docs[0].tulaj.city"/>
+                                <span t-field="docs[0].tulaj.parent_id.zip"/>
+                                <span t-field="docs[0].tulaj.street"/>
+                                <br/>
+
+                                <span t-field="docs[0].tulaj.street2"/>
+                                ingatlan
+                                <t t-if="docs[0].tulaj.alb_szam &gt; 0">,
+                                    <span t-field="docs[0].tulaj.alb_szam"/>. számú albetét
+                                </t>
+                                <br/>
+                            </div>
+                            <div class="col-xs-4 col-xs-offset-2" style="font-size:16px;">
+                                <div class="text-right">
+                                    <t t-if="docs[0].tulaj.email">Email:
+                                        <span t-field="docs[0].tulaj.email"/>
+                                    </t>
+                                </div>
+                                <div class="text-right">
+                                    <t t-if="docs[0].tulaj.postai">Levélcím:
+                                        <span t-field="docs[0].tulaj.levcim"/>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt16 mb16 col-xs-12">
+                            <h4>
+                                <strong>
+                                    Tárgy: Ügyvédi felszólítás társasházi közös költség megfizetése iránt
+                                </strong>
+                            </h4>
+                        </div>
+                        <div class="row mt16 mb16 col-xs-11 col-xs-offset-1">
+                            <h4>
+                                <strong>
+                                    Tisztelt <span t-field="docs[0].tulaj.name"/>!
+                                </strong>
+                            </h4>
+                        </div>
+                        <t t-set="aktualegy" t-value="0"/>
+                        <span t-foreach="docs.sor_id" t-as="o">
+                            <t t-if="'Aktu' in o.szoveg">
+                                <t t-set="aktualegy" t-value="o.befizetes"/>
+                            </t>
+                        </span>
+                        <div class="row mt32 mb16 col-xs-10 col-xs-offset-1 text-justify" style="font-size:16px;">
+                            Alulírott dr. Frisch Gábor ügyvéd a
+                            <span t-field="docs[0].tulaj.parent_id.name"/>
+                            megbízásából eljárva, tájékoztatom, hogy <span t-field="docs[0].vegdatum"/>. napjával
+                            bezárólag Önnek
+                        </div>
+                        <div class="row mb16 col-xs-10 col-xs-offset-1 text-center">
+                            <h2>
+                                <strong>
+                                    <span t-esc="aktualegy * -1"
+                                          t-esc-options='{"widget": "monetary", "display_currency": "res_company.currency_id"}'/>
+                                </strong>
+                            </h2>
+                        </div>
+                        <div class="row mb16 col-xs-10 col-xs-offset-1" style="font-size:16px;">
+                            közös költség tartozása áll fenn a Társasházzal szemben.
+                        </div>
+
+                        <div class="row mb16 col-xs-10 col-xs-offset-1 text-justify" style="font-size:16px;">
+                            Kérem Önt, hogy tartozását, valamint jelen ügyvédi fizetési felszólítás 5.000,- Ft ügyvédi
+                            díját levelem kézhezvételét
+                            követő 8 napon belül rendezni szíveskedjék a közös képviselet által biztosított csekk
+                            felhasználásával, vagy banki átutalással, a Társasház
+                            <span t-field="docs[0].bankszamla"/>
+                            számú bankszámlájára, mert ellenkező esetben kénytelen leszek jogi úton érvényt szerezni
+                            a Társasház követelésének.
+                        </div>
+                        <div class="row mt16 mb16 col-xs-10 col-xs-offset-1 text-justify" style="font-size:16px;">
+                            Megjegyzem, hogy amennyiben jelen ügyvédi felszólításom eredménytelen marad, úgy Irodánk <strong>
+                            fizetési meghagyást
+                        </strong> indít Önnel
+                            szemben, amely késedelmi kamat, illeték és további ügyvédi költség fizetési
+                            kötelezettségével is jár. Tájékoztatom,
+                            hogy a jogerős fizetési meghagyás, illetve a 2003. évi CXXXIII. társasházi törvény 30. és
+                            31. §-a alapján kezdeményezni
+                            fogom ingatlanának <strong>jelzálogjoggal</strong> történő megterhelését, mely eljárás
+                            tetemes költsége szintén Önt fogja terhelni.
+                        </div>
+                        <div class="row mt16 mb32 col-xs-10 col-xs-offset-1 text-justify" style="font-size:16px;">
+                            Amennyiben tartozását időközben rendezte, úgy szíves elnézését kérem a zavarásért!
+                        </div>
+
+                        <div class="row mb32 col-xs-8 col-xs-offset-1" style="font-size:16px;">
+                            Budapest,
+                            <span t-field="docs[0].lekerdatum"/>
+                        </div>
+                        <div class="row mb32 col-xs-8 col-xs-offset-4" style="font-size:16px;">
+                            Köszönettel:
+                        </div>
+                        <div class="row mb32 col-xs-4 col-xs-offset-6 text-center" style="font-size:16px;">
+                            ......................................
+                            <br/>
+                            dr. Frisch Gábor
+                            <br/>
+                            ügyvéd
+                        </div>
+
                     </div>
 
                     <!-- page div-je -->
