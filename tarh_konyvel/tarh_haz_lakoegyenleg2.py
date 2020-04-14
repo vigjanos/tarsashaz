@@ -17,9 +17,9 @@ class tarh_haz_lakoegyenleg2(models.Model):
 
     _name = 'tarh.haz.lakoegyenleg2'
 
-    kezdatum = fields.Date('Kezdő dátum', default="2016-01-01", required=True)
-    vegdatum = fields.Date('Befejező dátum', default=fields.date.today(), required=True)
-    lekerdate = fields.Date('Lekérdezés dátuma', default=fields.date.today(), required=True)
+    kezdatum = fields.Date('Kezdő dátum', default="2019-01-01", required=True)
+    vegdatum = fields.Date('Befejező dátum', default=lambda self: fields.date.today(), required=True)
+    lekerdate = fields.Date('Lekérdezés dátuma',  default=lambda self: fields.date.today(), required=True)
     tarsashaz = fields.Many2one('res.partner', string='Társasház', required=True,
                                 domain=[('is_company', '=', True), ('name', 'ilike', 'társash')])
     min_tartozas = fields.Integer('Nyomtatás csak ekkora tartozástól', default=20000)

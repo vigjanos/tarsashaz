@@ -62,8 +62,13 @@
             <field name="priority" eval="8"/>
             <field name="arch" type="xml">
                 <search string="">
+                    <!--
                     <field name="bekuldo" select="True" string="Beküldő/Címzett"
                            filter_domain="['|',('bekuldo','ilike',self),('cimzett','ilike',self)]"/>
+                    -->
+                    <field name="cimzett" select="True" />
+                    <field name="bekuldo" select="True" />
+                    <field name="tranzakcio_id" select="True" />
                     <field name="megjegyzes" select="True"/>
                     <group expand="0" string="Csoportosítás...">
                         <filter string="Címzett" domain="[]" context="{'group_by':'cimzett'}"/>
